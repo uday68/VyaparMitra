@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Interactive Voice Guide</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4387f4",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .ios-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111418] dark:text-white min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 bg-white/80 dark:bg-background-dark/80 ios-blur px-4 py-3 flex items-center justify-between border-b border-gray-100 dark:border-gray-800">
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight">Voice Guide</h1>
+</div>
+<button class="flex items-center justify-center size-10 rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">help</span>
+</button>
+</header>
+<main class="flex-1 overflow-y-auto pb-24">
+<!-- Quick Tips Action Panel -->
+<div class="p-4">
+<div class="flex flex-col gap-4 rounded-xl border border-primary/20 bg-primary/5 p-5 dark:bg-primary/10">
+<div class="flex items-start gap-3">
+<div class="bg-primary text-white p-2 rounded-full">
+<span class="material-symbols-outlined text-sm">lightbulb</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-primary text-base font-bold leading-tight">Quick Tip</p>
+<p class="text-gray-600 dark:text-gray-300 text-sm font-normal leading-normal">
+                            Keep your phone within 3 feet and say "Hey Assistant" to start hands-free.
+                        </p>
+</div>
+</div>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-white dark:bg-gray-800 rounded-full text-[10px] font-bold uppercase tracking-wider text-primary border border-primary/20">New Feature</span>
+<span class="px-3 py-1 bg-white dark:bg-gray-800 rounded-full text-[10px] font-bold uppercase tracking-wider text-gray-500 border border-gray-200 dark:border-gray-700">Offline Mode</span>
+</div>
+</div>
+</div>
+<!-- Section Header -->
+<div class="px-4 py-2">
+<h2 class="text-2xl font-bold tracking-tight">Interactive Tutorial</h2>
+<p class="text-gray-500 text-sm">Master your business with voice commands</p>
+</div>
+<!-- Interactive Timeline / Card Flow -->
+<div class="relative px-4 mt-6">
+<!-- Timeline Line -->
+<div class="absolute left-9 top-10 bottom-0 w-0.5 bg-primary/20 dark:bg-primary/40 rounded-full"></div>
+<div class="space-y-12 relative">
+<!-- Step 1: Stock -->
+<div class="flex gap-6">
+<div class="relative z-10 flex-shrink-0 flex items-center justify-center size-10 rounded-full bg-primary text-white shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+<div class="flex-1">
+<div class="bg-white dark:bg-gray-900 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+<div class="flex items-center justify-between mb-4">
+<span class="bg-blue-50 dark:bg-blue-900/30 text-primary px-3 py-1 rounded-full text-xs font-bold">📦 STOCK</span>
+<div class="flex gap-1">
+<div class="size-1.5 rounded-full bg-primary"></div>
+<div class="size-1.5 rounded-full bg-gray-200"></div>
+<div class="size-1.5 rounded-full bg-gray-200"></div>
+</div>
+</div>
+<div class="relative h-40 bg-gray-50 dark:bg-gray-800 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-blue-100/50 to-primary/10"></div>
+<img alt="Inventory Voice Guide" class="h-full w-full object-cover opacity-80" data-alt="Person checking inventory on a digital tablet with voice interface icons" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWndRZkEf30x2zMu1jcDTcvGrTkSnMVtOlIznznZJwZna9q1jnay39CGSd2gcBRsp5n6MonyzeNDzn9cD95sLfemG1t_Yty4vxX0UbBfMNlEQ3501ZWJb33deEBFGroNdIEcGCZDaT6YHfbDogNPckRHwANVroYJ1E_mpAlg__DLEDXQ31uk_kAWvbD8ZEGDzKdqQdyTkXguSu8qobi08uZAx6fZLU3D6nmfxH2vFbIS0l2EwKIMr42Jj8A1yyRSjUFQt1O0XZ"/>
+<div class="absolute bottom-2 right-2 bg-white/90 dark:bg-gray-900/90 p-2 rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-primary">mic</span>
+</div>
+</div>
+<h3 class="text-lg font-bold mb-2">Check Inventory</h3>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg group">
+<p class="text-sm italic">"What's my current stock level?"</p>
+<button class="bg-primary text-white text-xs px-3 py-1 rounded-full font-medium">Try it</button>
+</div>
+<div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg group">
+<p class="text-sm italic">"List items low on stock"</p>
+<button class="bg-primary text-white text-xs px-3 py-1 rounded-full font-medium">Try it</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 2: Chat -->
+<div class="flex gap-6">
+<div class="relative z-10 flex-shrink-0 flex items-center justify-center size-10 rounded-full bg-primary text-white shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined">forum</span>
+</div>
+<div class="flex-1">
+<div class="bg-white dark:bg-gray-900 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-800">
+<div class="flex items-center justify-between mb-4">
+<span class="bg-green-50 dark:bg-green-900/30 text-green-600 px-3 py-1 rounded-full text-xs font-bold">💬 CHAT</span>
+<div class="flex gap-1">
+<div class="size-1.5 rounded-full bg-gray-200"></div>
+<div class="size-1.5 rounded-full bg-primary"></div>
+<div class="size-1.5 rounded-full bg-gray-200"></div>
+</div>
+</div>
+<div class="relative h-40 bg-gray-50 dark:bg-gray-800 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-green-100/50 to-green-500/10"></div>
+<img alt="Chat Voice Guide" class="h-full w-full object-cover opacity-80" data-alt="Close up of a person speaking into their phone with message bubbles" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwtfCayUPFMA1CXW_kBfk69LgV-t9x8qbrZ9yWbY_HBmRhUfGBqlkATZaGNoVFoSBS96pm7Vyb4cXxEueNGSBnBmPHMlqP6d08EHyYKDoEQeJydbddwT5Q6wfeNOKzvzu0-9zalOt8LkhcJYFQlu_-cyrfahgNeJ7JDNQ0E9jJeQQTUk8NuhP7Zt38wGX2UAwdP-P3DnK6L3PKzqdqxI_yKdtGPccuyAqvZZTTiSzoY_qgxyS1UMpLea1tMIkpgPViLdgoUWYF"/>
+</div>
+<h3 class="text-lg font-bold mb-2">Manage Messages</h3>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+<p class="text-sm italic">"Read my unread messages"</p>
+<button class="bg-primary text-white text-xs px-3 py-1 rounded-full font-medium">Try it</button>
+</div>
+<div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+<p class="text-sm italic">"Reply to the last buyer..."</p>
+<button class="bg-primary text-white text-xs px-3 py-1 rounded-full font-medium">Try it</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 3: Deals -->
+<div class="flex gap-6 pb-8">
+<div class="relative z-10 flex-shrink-0 flex items-center justify-center size-10 rounded-full bg-primary text-white shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div class="flex-1">
+<div class="bg-white dark:bg-gray-900 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-800">
+<div class="flex items-center justify-between mb-4">
+<span class="bg-amber-50 dark:bg-amber-900/30 text-amber-600 px-3 py-1 rounded-full text-xs font-bold">💰 DEALS</span>
+<div class="flex gap-1">
+<div class="size-1.5 rounded-full bg-gray-200"></div>
+<div class="size-1.5 rounded-full bg-gray-200"></div>
+<div class="size-1.5 rounded-full bg-primary"></div>
+</div>
+</div>
+<div class="relative h-40 bg-gray-50 dark:bg-gray-800 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-amber-100/50 to-amber-500/10"></div>
+<img alt="Deals Voice Guide" class="h-full w-full object-cover opacity-80" data-alt="Happy person receiving a payment notification on their smartphone" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA60VoouxypVR1LHenS-XgGouBadB8MphDETG2hm7uQG2Q8tsNQ6wN5PVkAym7u9cKzXpb8Qgd-zHTFKwGZ1X2dZNGG4aFs5wAVrWidUk2fzOgGhVyxg7StnZT6s8FvlHjt3pFsvi0zxjwB5oCklXW7XuuaG5eeSfF2oHegriKCyHch9D47uc3i--X5F6L_eUpmMInry2PgB0UQgro_HhtO8BDvuOtYXkIfwXRYvHPuWMBCMSc-_utd_CcHObihVHjMhFETRXvL"/>
+</div>
+<h3 class="text-lg font-bold mb-2">Track Transactions</h3>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+<p class="text-sm italic">"What are today's top deals?"</p>
+<button class="bg-primary text-white text-xs px-3 py-1 rounded-full font-medium">Try it</button>
+</div>
+<div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+<p class="text-sm italic">"Show recent sales revenue"</p>
+<button class="bg-primary text-white text-xs px-3 py-1 rounded-full font-medium">Try it</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (iOS Style) -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-background-dark/90 ios-blur border-t border-gray-100 dark:border-gray-800 px-6 pt-2 pb-8 flex justify-between items-center z-50">
+<button class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined font-variation-fill">mic</span>
+<span class="text-[10px] font-medium">Voice</span>
+</button>
+<div class="-mt-8 size-14 bg-primary text-white rounded-full flex items-center justify-center shadow-lg shadow-primary/40">
+<span class="material-symbols-outlined text-3xl">add</span>
+</div>
+<button class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[10px] font-medium">Stats</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</button>
+</nav>
+</body></html>

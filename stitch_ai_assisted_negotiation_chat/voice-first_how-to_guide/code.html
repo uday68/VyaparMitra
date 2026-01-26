@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Voice-First Onboarding</title>
+<!-- Tailwind CSS with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Work Sans -->
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4387f4",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111418] transition-colors duration-300">
+<div class="relative flex h-screen w-full max-w-[430px] mx-auto flex-col bg-white dark:bg-background-dark overflow-hidden shadow-2xl">
+<!-- TopAppBar / Navigation -->
+<div class="flex items-center justify-between p-4 pt-6">
+<button class="text-[#111418] dark:text-white flex size-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<button class="text-primary font-medium text-sm px-4 py-2 hover:bg-primary/10 rounded-lg transition-colors">
+                Skip
+            </button>
+</div>
+<!-- Page Indicators -->
+<div class="flex w-full flex-row items-center justify-center gap-2 py-2">
+<div class="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+<div class="h-1.5 w-8 rounded-full bg-primary"></div>
+<div class="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+<div class="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+</div>
+<!-- Central Illustration Section -->
+<div class="flex-1 flex flex-col items-center justify-center px-6 relative overflow-hidden">
+<!-- Background Decoration (Abstract Voice Waves) -->
+<div class="absolute inset-0 flex items-center justify-center opacity-10 dark:opacity-20 pointer-events-none">
+<div class="w-64 h-64 rounded-full border-[20px] border-primary animate-pulse"></div>
+</div>
+<!-- Smartphone Mockup with Waveform -->
+<div class="relative z-10 w-48 h-80 bg-gray-900 rounded-[2.5rem] border-[6px] border-gray-800 shadow-2xl flex flex-col items-center p-4 overflow-hidden">
+<!-- Phone Top -->
+<div class="w-16 h-1 bg-gray-800 rounded-full mb-8"></div>
+<!-- Inner Waveform Graphic -->
+<div class="flex-1 flex items-center justify-center gap-1 w-full">
+<div class="w-1 h-8 bg-primary rounded-full"></div>
+<div class="w-1 h-16 bg-primary rounded-full"></div>
+<div class="w-1 h-24 bg-primary rounded-full"></div>
+<div class="w-1 h-12 bg-primary rounded-full"></div>
+<div class="w-1 h-20 bg-primary rounded-full"></div>
+<div class="w-1 h-14 bg-primary rounded-full"></div>
+</div>
+<!-- Phone Bottom Bar -->
+<div class="w-12 h-1 bg-primary/40 rounded-full mt-auto mb-2"></div>
+</div>
+<!-- Example Floating Bubbles -->
+<div class="absolute top-[20%] right-[10%] bg-white dark:bg-gray-800 shadow-lg p-3 rounded-xl border border-gray-100 dark:border-gray-700 max-w-[140px] z-20">
+<p class="text-[10px] text-gray-500 mb-1">Say</p>
+<p class="text-xs font-medium dark:text-gray-200">"How much for 2kg apples?"</p>
+</div>
+<div class="absolute bottom-[35%] left-[10%] bg-white dark:bg-gray-800 shadow-lg p-3 rounded-xl border border-gray-100 dark:border-gray-700 max-w-[140px] z-20">
+<p class="text-[10px] text-gray-500 mb-1">Say</p>
+<p class="text-xs font-medium dark:text-gray-200">"I want to bid 150 rupees"</p>
+</div>
+</div>
+<!-- Headline & Body Text -->
+<div class="px-6 pb-4">
+<h1 class="text-[#111418] dark:text-white tracking-tight text-[28px] font-bold leading-tight text-center mb-2">
+                Shop with your Voice
+            </h1>
+<p class="text-gray-600 dark:text-gray-400 text-base font-normal leading-relaxed text-center px-4">
+                Just tap the mic and speak naturally to bid or ask questions
+            </p>
+</div>
+<!-- Try It Button Section -->
+<div class="p-8 pb-12 flex flex-col items-center">
+<button class="group flex items-center justify-center gap-3 bg-primary hover:bg-primary/90 text-white w-full max-w-xs py-4 rounded-xl font-semibold text-lg shadow-lg shadow-primary/30 transition-all active:scale-95">
+<span class="material-symbols-outlined transition-transform group-hover:scale-110">mic</span>
+<span>Try it</span>
+</button>
+<p class="mt-4 text-xs text-gray-400 dark:text-gray-500 uppercase tracking-widest font-medium">
+                Simulation Mode
+            </p>
+</div>
+<!-- iOS Home Indicator Spacing -->
+<div class="h-6 w-full flex items-center justify-center">
+<div class="h-1 w-32 bg-gray-200 dark:bg-gray-800 rounded-full"></div>
+</div>
+</div>
+</body></html>

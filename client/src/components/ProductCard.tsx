@@ -1,5 +1,4 @@
 import { Product } from "@shared/schema";
-import { Button } from "@/components/ui/button";
 
 interface ProductCardProps {
   product: Product;
@@ -9,30 +8,30 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onBid, isPending }: ProductCardProps) {
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-md transition-shadow duration-300">
+    <div className="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm">
       <div className="p-4 flex items-stretch justify-between gap-4">
-        <div className="flex flex-[2] flex-col justify-between">
+        <div className="flex flex-[2_2_0px] flex-col justify-between">
           <div className="flex flex-col gap-1">
-            <h3 className="text-slate-900 text-lg font-bold leading-tight">
+            <p className="text-[#111418] text-lg font-bold leading-tight">
               {product.name}
-            </h3>
-            <p className="text-primary text-base font-semibold">
+            </p>
+            <p className="text-primary text-base font-semibold leading-normal">
               ₹{product.price}/{product.unit}
             </p>
-            <p className="text-slate-500 text-sm font-normal line-clamp-2 mt-1">
+            <p className="text-[#637388] text-sm font-normal line-clamp-2">
               {product.description}
             </p>
           </div>
-          <Button
+          <button 
             onClick={() => onBid(product)}
             disabled={isPending}
-            className="mt-4 w-fit bg-primary hover:bg-blue-600 text-white font-bold rounded-xl h-10 px-6 shadow-lg shadow-blue-500/20 active:scale-95 transition-all"
+            className="flex mt-3 min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-white text-sm font-bold leading-normal w-fit disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isPending ? "Starting..." : "Place Bid"}
-          </Button>
+            <span>{isPending ? "Starting..." : "Place Bid"}</span>
+          </button>
         </div>
         <div 
-          className="w-28 h-28 bg-center bg-no-repeat bg-cover rounded-xl flex-shrink-0 shadow-inner bg-slate-100"
+          className="w-28 h-28 bg-center bg-no-repeat bg-cover rounded-lg flex-shrink-0"
           style={{ backgroundImage: `url(${product.imageUrl})` }}
           aria-label={product.name}
         />

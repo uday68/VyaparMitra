@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Voice Assistant Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8743f4",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#171022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .slider-thumb::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #8743f4;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen pb-24">
+<!-- Top Navigation Bar -->
+<div class="sticky top-0 z-10 flex items-center bg-white dark:bg-background-dark p-4 border-b border-gray-100 dark:border-white/10 justify-between">
+<div class="text-primary flex size-10 items-center justify-center cursor-pointer">
+<span class="material-symbols-outlined">arrow_back_ios</span>
+</div>
+<h2 class="text-[#141118] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Voice Assistant Settings</h2>
+<div class="flex w-10 items-center justify-end">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-transparent text-[#141118] dark:text-white">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+</div>
+<div class="max-w-md mx-auto">
+<!-- Main Toggle Panel -->
+<div class="p-4">
+<div class="flex flex-1 flex-col items-start justify-between gap-4 rounded-xl border border-[#dfdbe6] dark:border-white/10 bg-white dark:bg-[#231a31] p-5 sm:flex-row sm:items-center">
+<div class="flex flex-col gap-1">
+<p class="text-[#141118] dark:text-white text-base font-bold leading-tight">Voice Assistant</p>
+<p class="text-[#70608a] dark:text-gray-400 text-sm font-normal leading-normal">Enable or disable the voice-first AI experience</p>
+</div>
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-[#f2f0f5] dark:bg-gray-700 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all">
+<div class="h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+<input checked="" class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+</div>
+<!-- Voice Selection Section -->
+<h3 class="text-[#141118] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Voice Selection</h3>
+<div class="bg-white dark:bg-[#231a31] border-y border-[#dfdbe6] dark:border-white/10">
+<!-- Male Voice -->
+<div class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between border-b border-[#dfdbe6] dark:border-white/10">
+<div class="flex items-center gap-4">
+<div class="flex size-7 items-center justify-center">
+<input checked="" class="h-5 w-5 rounded-full border-[#dfdbe6] dark:border-white/20 border-2 bg-transparent text-primary checked:bg-primary checked:border-primary focus:ring-0 focus:outline-none" name="voice-type" type="radio"/>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-[#141118] dark:text-white text-base font-medium leading-normal line-clamp-1">Male Voice</p>
+<p class="text-[#70608a] dark:text-gray-400 text-sm font-normal leading-normal line-clamp-2">Deep and resonant</p>
+</div>
+</div>
+<button class="shrink-0 text-primary p-2 hover:bg-primary/10 rounded-full">
+<span class="material-symbols-outlined">play_circle</span>
+</button>
+</div>
+<!-- Female Voice -->
+<div class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between border-b border-[#dfdbe6] dark:border-white/10">
+<div class="flex items-center gap-4">
+<div class="flex size-7 items-center justify-center">
+<input class="h-5 w-5 rounded-full border-[#dfdbe6] dark:border-white/20 border-2 bg-transparent text-primary checked:bg-primary checked:border-primary focus:ring-0 focus:outline-none" name="voice-type" type="radio"/>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-[#141118] dark:text-white text-base font-medium leading-normal line-clamp-1">Female Voice</p>
+<p class="text-[#70608a] dark:text-gray-400 text-sm font-normal leading-normal line-clamp-2">Clear and melodic</p>
+</div>
+</div>
+<button class="shrink-0 text-primary p-2 hover:bg-primary/10 rounded-full">
+<span class="material-symbols-outlined">play_circle</span>
+</button>
+</div>
+<!-- Neutral Voice -->
+<div class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between">
+<div class="flex items-center gap-4">
+<div class="flex size-7 items-center justify-center">
+<input class="h-5 w-5 rounded-full border-[#dfdbe6] dark:border-white/20 border-2 bg-transparent text-primary checked:bg-primary checked:border-primary focus:ring-0 focus:outline-none" name="voice-type" type="radio"/>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-[#141118] dark:text-white text-base font-medium leading-normal line-clamp-1">Neutral Voice</p>
+<p class="text-[#70608a] dark:text-gray-400 text-sm font-normal leading-normal line-clamp-2">Balanced and professional</p>
+</div>
+</div>
+<button class="shrink-0 text-primary p-2 hover:bg-primary/10 rounded-full">
+<span class="material-symbols-outlined">play_circle</span>
+</button>
+</div>
+</div>
+<!-- Speech Rate Section -->
+<h3 class="text-[#141118] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">Speech Rate</h3>
+<div class="px-4 py-6 bg-white dark:bg-[#231a31] border-y border-[#dfdbe6] dark:border-white/10">
+<div class="relative w-full h-8 flex items-center">
+<input class="w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-primary slider-thumb" max="100" min="0" type="range" value="50"/>
+</div>
+<div class="flex justify-between mt-2">
+<span class="text-[#70608a] dark:text-gray-400 text-xs font-medium uppercase tracking-wider">Slower</span>
+<span class="text-[#70608a] dark:text-gray-400 text-xs font-medium uppercase tracking-wider">Faster</span>
+</div>
+</div>
+<!-- Language Detection Section -->
+<h3 class="text-[#141118] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">Language Detection</h3>
+<div class="bg-white dark:bg-[#231a31] border-y border-[#dfdbe6] dark:border-white/10">
+<div class="flex items-center justify-between px-4 py-4 border-b border-[#dfdbe6] dark:border-white/10">
+<p class="text-[#141118] dark:text-white text-base font-medium">Auto-detect Language</p>
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-[#f2f0f5] dark:bg-gray-700 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all">
+<div class="h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+<input checked="" class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+<div class="flex items-center justify-between px-4 py-4 cursor-pointer">
+<div class="flex flex-col">
+<p class="text-[#141118] dark:text-white text-base font-medium">Primary Language</p>
+<p class="text-[#70608a] dark:text-gray-400 text-sm">English (United States)</p>
+</div>
+<span class="material-symbols-outlined text-[#70608a]">chevron_right</span>
+</div>
+</div>
+<!-- Voice Commands Help Card -->
+<div class="p-4 pt-8">
+<div class="bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl p-5">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-primary">info</span>
+<h4 class="text-primary font-bold">Voice Commands Help</h4>
+</div>
+<p class="text-[#70608a] dark:text-gray-300 text-sm mb-4">Try saying these phrases to interact with the trade platform:</p>
+<ul class="space-y-2">
+<li class="flex items-start gap-2 text-sm text-[#141118] dark:text-white/90">
+<span class="text-primary">•</span>
+                        "Find local plumbers in my area"
+                    </li>
+<li class="flex items-start gap-2 text-sm text-[#141118] dark:text-white/90">
+<span class="text-primary">•</span>
+                        "Check my recent service requests"
+                    </li>
+<li class="flex items-start gap-2 text-sm text-[#141118] dark:text-white/90">
+<span class="text-primary">•</span>
+                        "Post a new job for roof repair"
+                    </li>
+</ul>
+</div>
+</div>
+<!-- Privacy Section -->
+<h3 class="text-[#141118] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">Privacy</h3>
+<div class="bg-white dark:bg-[#231a31] border-y border-[#dfdbe6] dark:border-white/10 mb-8">
+<div class="flex items-center justify-between px-4 py-4 border-b border-[#dfdbe6] dark:border-white/10 cursor-pointer">
+<p class="text-[#141118] dark:text-white text-base font-medium">Voice History</p>
+<span class="material-symbols-outlined text-[#70608a]">chevron_right</span>
+</div>
+<div class="px-4 py-4 cursor-pointer">
+<p class="text-red-500 text-base font-medium">Clear Voice Data</p>
+<p class="text-[#70608a] dark:text-gray-400 text-xs mt-1">This will permanently delete your voice recognition model and history.</p>
+</div>
+</div>
+</div>
+<!-- Floating Action Button -->
+<div class="fixed bottom-6 right-6 z-20">
+<button class="flex items-center gap-2 bg-primary text-white px-6 py-4 rounded-full shadow-lg hover:shadow-xl transition-shadow active:scale-95">
+<span class="material-symbols-outlined">mic</span>
+<span class="font-bold">Test Voice</span>
+</button>
+</div>
+</body></html>

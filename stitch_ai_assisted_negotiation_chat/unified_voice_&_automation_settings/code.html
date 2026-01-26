@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Unified Voice &amp; Automation Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3e84f4",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            outline: none;
+        }
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #3e84f4;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111418] dark:text-white antialiased">
+<div class="relative flex min-h-screen w-full flex-col max-w-[480px] mx-auto bg-white dark:bg-background-dark shadow-xl overflow-x-hidden pb-24">
+<!-- Top App Bar -->
+<div class="sticky top-0 z-50 flex items-center bg-white/90 dark:bg-background-dark/90 backdrop-blur-md px-4 py-4 border-b border-[#f0f2f5] dark:border-gray-800 justify-between">
+<div class="flex items-center gap-3">
+<button class="text-[#111418] dark:text-white flex items-center justify-center">
+<span class="material-symbols-outlined">arrow_back_ios</span>
+</button>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Voice &amp; Automation</h2>
+</div>
+<div class="flex items-center gap-2">
+<div class="h-2 w-2 bg-primary rounded-full animate-pulse"></div>
+<span class="text-xs font-medium text-primary">Live</span>
+</div>
+</div>
+<!-- Main Content -->
+<div class="flex flex-col">
+<!-- Activation Section -->
+<div class="bg-primary/5 dark:bg-primary/10 m-4 rounded-xl border border-primary/10">
+<!-- Always-On Voice Listening -->
+<div class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between">
+<div class="flex flex-col justify-center">
+<p class="text-[#111418] dark:text-white text-base font-bold leading-normal">Always-On Listening</p>
+<p class="text-[#60708a] dark:text-gray-400 text-sm font-normal leading-normal">Hands-free interaction while you work</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-[#f0f2f5] dark:bg-gray-700 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary">
+<div class="h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+<input checked="" class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+</div>
+<!-- Wake Word TextField (Modified Style) -->
+<div class="px-4 pb-4">
+<label class="flex flex-col">
+<p class="text-[#111418] dark:text-white text-sm font-semibold leading-normal pb-2">Wake Word</p>
+<div class="relative">
+<select class="form-input flex w-full appearance-none rounded-lg text-[#111418] dark:text-white focus:outline-0 focus:ring-0 border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 h-12 px-4 text-base font-normal">
+<option value="hey_assistant">"Hey Assistant"</option>
+<option value="shop_mode">"Shop Mode"</option>
+<option value="hey_shop">"Hey Shop"</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 text-[#60708a] pointer-events-none">expand_more</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Voice Profile Section -->
+<h3 class="text-[#111418] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Voice Profile</h3>
+<!-- Feedback Style -->
+<div class="px-4 py-2">
+<label class="flex flex-col">
+<p class="text-[#111418] dark:text-white text-base font-medium leading-normal pb-2">Feedback Style</p>
+<div class="relative">
+<select class="form-input flex w-full appearance-none rounded-lg text-[#111418] dark:text-white focus:outline-0 focus:ring-0 border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 h-14 px-4 text-base font-normal">
+<option value="natural">Natural (Detailed responses)</option>
+<option value="brief">Brief (Concise updates)</option>
+<option value="silent">Silent (Visual only)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-4 text-[#60708a] pointer-events-none">unfold_more</span>
+</div>
+</label>
+</div>
+<!-- Speaking Speed Slider -->
+<div class="px-4 py-4">
+<div class="flex justify-between items-center mb-2">
+<p class="text-[#111418] dark:text-white text-base font-medium leading-normal">Speaking Speed</p>
+<span class="text-primary font-bold text-sm">1.2x</span>
+</div>
+<input class="custom-slider" max="2.0" min="0.5" step="0.1" type="range" value="1.2"/>
+<div class="flex justify-between mt-1">
+<span class="text-[10px] text-[#60708a]">Slower</span>
+<span class="text-[10px] text-[#60708a]">Faster</span>
+</div>
+</div>
+<!-- Automation Section -->
+<h3 class="text-[#111418] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 border-t border-[#f0f2f5] dark:border-gray-800 mt-2">Automation</h3>
+<!-- Auto-Read New Bids -->
+<div class="flex items-center gap-4 bg-white dark:bg-background-dark px-4 min-h-[72px] py-2 justify-between">
+<div class="flex flex-col justify-center">
+<p class="text-[#111418] dark:text-white text-base font-medium leading-normal">Auto-Read New Bids</p>
+<p class="text-[#60708a] dark:text-gray-400 text-sm font-normal leading-normal">Announce incoming bids immediately</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-[#f0f2f5] dark:bg-gray-700 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary">
+<div class="h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+<input checked="" class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+</div>
+<!-- Voice Confirmation -->
+<div class="flex items-center gap-4 bg-white dark:bg-background-dark px-4 min-h-[72px] py-2 justify-between">
+<div class="flex flex-col justify-center">
+<p class="text-[#111418] dark:text-white text-base font-medium leading-normal">Voice Confirmation</p>
+<p class="text-[#60708a] dark:text-gray-400 text-sm font-normal leading-normal">Confirm deals with a verbal "Yes"</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-[#f0f2f5] dark:bg-gray-700 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary">
+<div class="h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+<input class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+</div>
+<!-- Audio Control Section -->
+<h3 class="text-[#111418] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 border-t border-[#f0f2f5] dark:border-gray-800 mt-2">Audio Control</h3>
+<div class="px-4 py-4 mb-4">
+<div class="flex justify-between items-center mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">volume_up</span>
+<p class="text-[#111418] dark:text-white text-base font-medium leading-normal">AI Assistant Volume</p>
+</div>
+<span class="text-primary font-bold text-sm">80%</span>
+</div>
+<input class="custom-slider" max="100" min="0" type="range" value="80"/>
+</div>
+<!-- Recent Voice Log Preview -->
+<div class="px-4 py-2">
+<div class="bg-background-light dark:bg-gray-800/50 rounded-xl p-4">
+<div class="flex justify-between items-center mb-4">
+<h4 class="text-sm font-bold uppercase tracking-wider text-[#60708a]">Recent Voice Log</h4>
+<span class="text-primary text-xs font-bold cursor-pointer">View All</span>
+</div>
+<div class="space-y-4">
+<!-- Log Item 1 -->
+<div class="flex gap-3">
+<div class="shrink-0 mt-1">
+<span class="material-symbols-outlined text-primary text-lg">mic</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<p class="text-xs font-semibold text-[#111418] dark:text-white">"Show current bids"</p>
+<span class="text-[10px] text-[#60708a]">2m ago</span>
+</div>
+<p class="text-xs text-[#60708a] dark:text-gray-400 mt-0.5 italic">AI: Opening negotiations panel...</p>
+</div>
+</div>
+<!-- Log Item 2 -->
+<div class="flex gap-3">
+<div class="shrink-0 mt-1">
+<span class="material-symbols-outlined text-[#60708a] text-lg">record_voice_over</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<p class="text-xs font-semibold text-[#111418] dark:text-white">"Set volume to 80%"</p>
+<span class="text-[10px] text-[#60708a]">15m ago</span>
+</div>
+<p class="text-xs text-[#60708a] dark:text-gray-400 mt-0.5 italic">AI: Volume updated to 80.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white dark:bg-background-dark border-t border-[#f0f2f5] dark:border-gray-800 flex justify-around items-center py-3 px-2 z-50">
+<button class="flex flex-col items-center gap-1 text-[#60708a] hover:text-primary transition-colors">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-[10px] font-medium">Inventory</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#60708a] hover:text-primary transition-colors">
+<span class="material-symbols-outlined">handshake</span>
+<span class="text-[10px] font-medium">Deals</span>
+</button>
+<button class="flex flex-col items-center gap-1 bg-primary text-white p-2 rounded-xl shadow-lg -mt-6 border-4 border-white dark:border-background-dark">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#60708a] hover:text-primary transition-colors">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</button>
+</div>
+</div>
+</body></html>

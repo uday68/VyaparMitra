@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Permissions &amp; Ready to Shop</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1c74e9",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111821",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: "Work Sans", sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111418] dark:text-white antialiased">
+<!-- Main Container (Mobile Form Factor) -->
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Top App Bar -->
+<div class="flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between border-b border-gray-100 dark:border-gray-800">
+<div class="text-[#111418] dark:text-white flex size-12 shrink-0 items-center cursor-pointer">
+<span class="material-symbols-outlined">arrow_back_ios</span>
+</div>
+<h2 class="text-[#111418] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Permissions</h2>
+</div>
+<!-- Page Indicators -->
+<div class="flex w-full flex-row items-center justify-center gap-3 py-6 bg-white dark:bg-background-dark">
+<div class="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+<div class="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+<div class="h-1.5 w-6 rounded-full bg-primary"></div>
+</div>
+<!-- Headline & Body -->
+<div class="bg-white dark:bg-background-dark px-6 pb-4">
+<h1 class="text-[#111418] dark:text-white tracking-tight text-[32px] font-bold leading-tight text-center pt-2">Let's get you set up</h1>
+<p class="text-[#637388] dark:text-gray-400 text-base font-normal leading-normal pt-4 px-4 text-center">To enable voice shopping and find local deals, we need a few permissions.</p>
+</div>
+<!-- Permissions List -->
+<div class="flex flex-col gap-2 p-4 flex-1">
+<!-- Microphone Permission -->
+<div class="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[88px] py-4 justify-between rounded-xl border border-gray-50 dark:border-gray-800 shadow-sm">
+<div class="flex items-center gap-4">
+<div class="text-primary flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-14">
+<span class="material-symbols-outlined" style="font-size: 32px;">mic</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-[#111418] dark:text-white text-base font-semibold leading-normal">Microphone</p>
+<p class="text-[#637388] dark:text-gray-400 text-sm font-normal leading-snug">Used to hear your voice commands for a hands-free experience.</p>
+</div>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-[#f0f2f4] dark:bg-gray-700 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all">
+<div class="h-full w-[27px] rounded-full bg-white shadow-md"></div>
+<input checked="" class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+</div>
+<!-- Location Permission -->
+<div class="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[88px] py-4 justify-between rounded-xl border border-gray-50 dark:border-gray-800 shadow-sm">
+<div class="flex items-center gap-4">
+<div class="text-primary flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-14">
+<span class="material-symbols-outlined" style="font-size: 32px;">location_on</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-[#111418] dark:text-white text-base font-semibold leading-normal">Location</p>
+<p class="text-[#637388] dark:text-gray-400 text-sm font-normal leading-snug">Used to find the best local shops and deals near you.</p>
+</div>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-[#f0f2f4] dark:bg-gray-700 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all">
+<div class="h-full w-[27px] rounded-full bg-white shadow-md"></div>
+<input class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+</div>
+</div>
+<!-- Action Footer -->
+<div class="bg-white dark:bg-background-dark p-6 flex flex-col gap-6">
+<!-- Ready to Shop Button -->
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all text-lg flex items-center justify-center gap-2">
+                Ready to Shop
+                <span class="material-symbols-outlined">shopping_bag</span>
+</button>
+<!-- Voice Prompt Assistant -->
+<div class="flex flex-col items-center gap-3 py-4">
+<div class="flex items-center gap-3 px-6 py-3 rounded-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
+<div class="flex items-center justify-center">
+<div class="absolute w-4 h-4 bg-primary/40 rounded-full animate-ping"></div>
+<span class="material-symbols-outlined text-primary" style="font-size: 20px;">graphic_eq</span>
+</div>
+<p class="text-[#111418] dark:text-white text-sm font-medium">
+                        Say <span class="font-bold text-primary">"Start Shopping"</span> to begin
+                    </p>
+</div>
+</div>
+<!-- iOS Home Indicator Spacing -->
+<div class="h-4"></div>
+</div>
+</div>
+</body></html>

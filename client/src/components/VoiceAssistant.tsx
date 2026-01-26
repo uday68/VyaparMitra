@@ -51,43 +51,37 @@ export function VoiceAssistant({ conversationId, onTranscript, onUserTranscript 
   const isPlaying = stream.playbackState === "playing";
 
   return (
-    <div className="flex flex-col items-center justify-center py-4">
+    <div className="flex items-center justify-center mt-2">
       <div className="relative flex items-center justify-center">
         <AnimatePresence>
-          {(isRecording || isPlaying || isProcessing) && (
+          {isRecording && (
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1.5, opacity: 0.5 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-              className={cn(
-                "absolute w-16 h-16 rounded-full",
-                isRecording ? "bg-red-500/20" : "bg-primary/20"
-              )}
+              initial={{ scale: 1 }}
+              animate={{ scale: 1.2 }}
+              exit={{ scale: 1 }}
+              transition={{ repeat: Infinity, duration: 1, ease: "easeInOut" }}
+              className="absolute w-16 h-16 bg-primary/20 rounded-full"
             />
           )}
         </AnimatePresence>
 
         <button
           onClick={handleMicClick}
-          disabled={isProcessing || isPlaying}
+          disabled={isProcessing}
           className={cn(
-            "relative size-16 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 z-10",
-            isRecording 
-              ? "bg-red-500 text-white shadow-red-500/30 scale-110" 
-              : "bg-primary text-white shadow-primary/30 hover:shadow-xl hover:-translate-y-1",
-            (isProcessing || isPlaying) && "bg-slate-200 text-slate-400 shadow-none cursor-not-allowed"
+            "relative bg-primary text-white size-16 rounded-full flex items-center justify-center shadow-lg shadow-primary/30 z-20",
+            isProcessing && "bg-gray-400 shadow-none cursor-not-allowed"
           )}
         >
           <span className="material-symbols-outlined text-3xl">
-            {isProcessing ? "hourglass_empty" : isPlaying ? "volume_up" : isRecording ? "stop" : "mic"}
+            {isProcessing ? "hourglass_empty" : isRecording ? "mic" : "mic"}
           </span>
         </button>
+        
+        <div className="absolute -bottom-6 text-[10px] font-bold text-primary uppercase tracking-[2px]">
+          {isRecording ? "Listening..." : isProcessing ? "Processing..." : isPlaying ? "Speaking..." : "Tap to Speak"}
+        </div>
       </div>
-      
-      <p className="mt-3 text-[10px] font-bold uppercase tracking-[2px] text-primary/80 h-4">
-        {isRecording ? "Listening..." : isProcessing ? "Thinking..." : isPlaying ? "Speaking..." : "Tap to Speak"}
-      </p>
     </div>
   );
 }

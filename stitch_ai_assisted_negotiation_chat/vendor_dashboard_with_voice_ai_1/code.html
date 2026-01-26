@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Shop QR Code - Sanjay's Fruit Shop</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1c74e9",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111821",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+            font-family: "Work Sans", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .qr-card-shadow {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col">
+<header class="sticky top-0 z-30 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
+<div class="flex items-center justify-between px-4 h-16 max-w-md mx-auto">
+<button class="flex items-center justify-center p-2 -ml-2 text-[#111418] dark:text-white">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<h1 class="text-[#111418] dark:text-white font-bold text-lg">Shop QR Code</h1>
+<button class="flex items-center gap-1 text-primary font-bold text-sm">
+<span class="material-symbols-outlined text-lg">print</span>
+                Print
+            </button>
+</div>
+</header>
+<main class="flex-1 flex flex-col max-w-md mx-auto w-full px-6 py-8">
+<div class="flex-1 flex flex-col items-center justify-center">
+<div class="w-full bg-white dark:bg-gray-800 rounded-3xl p-8 border border-gray-100 dark:border-gray-700 qr-card-shadow flex flex-col items-center">
+<div class="relative w-full aspect-square max-w-[280px] bg-white p-4 rounded-xl shadow-inner border border-gray-50 mb-8">
+<div class="w-full h-full bg-center bg-no-repeat bg-contain" data-alt="Shop payment and identity QR code" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAgmhSkUvfO1GxWPpVrBYnHgrBTyv5ak-2FpXN3U0_-gwrQSylgI8eJ3SzuNGVakT8JPkX42MtVZ1nIL8x7wzgvM37n1Ye4s9-em-yKdPkXPIR7_G9VCHIMrRzhal5rCx7Drl9W3QH5vQ-M1-IQPmP2ntmngpcCTkOYlPypnr1u9AnmLtz_MtIbgCZe-AFMD85NfJpgW9kOsR3-gBJ8J-jmmQQnQmO7YzeGpEuln7c7z0byb43a4yjZyZNP2tXnm3bmkPBe5cEw");'>
+</div>
+</div>
+<div class="text-center">
+<h2 class="text-2xl font-bold text-[#111418] dark:text-white mb-1">Sanjay's Fruit Shop</h2>
+<p class="text-sm font-medium text-gray-500 dark:text-gray-400 font-mono tracking-wider">ID: SANJAY88219</p>
+</div>
+</div>
+<div class="w-full mt-10 space-y-4">
+<button class="w-full bg-primary text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-3 shadow-lg shadow-primary/20 active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined">download</span>
+                    Download Image
+                </button>
+<button class="w-full bg-white dark:bg-gray-800 text-[#111418] dark:text-white border border-gray-200 dark:border-gray-700 font-bold py-4 rounded-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined">share</span>
+                    Share QR Code
+                </button>
+</div>
+</div>
+</main>
+<div class="max-w-md mx-auto w-full px-6 pb-10">
+<div class="bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-2xl p-4 flex items-start gap-4">
+<div class="bg-primary rounded-full p-2 text-white shrink-0">
+<span class="material-symbols-outlined text-lg">record_voice_over</span>
+</div>
+<div>
+<p class="text-primary font-bold text-sm mb-0.5">Voice Negotiation Enabled</p>
+<p class="text-[#637388] dark:text-gray-400 text-xs leading-relaxed">
+                    Customers scan this to start chatting with you in their language. Negotiation happens automatically!
+                </p>
+</div>
+</div>
+</div>
+<div class="h-8 w-full bg-transparent"></div>
+
+</body></html>

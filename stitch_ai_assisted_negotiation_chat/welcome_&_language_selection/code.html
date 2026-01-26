@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Welcome &amp; Language Selection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2bee6c",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Work Sans', sans-serif;
+        }
+        .radio-dot-svg {
+            --radio-dot-svg: url('data:image/svg+xml,%3csvg viewBox=%270 0 16 16%27 fill=%27rgb(17,24,19)%27 xmlns=%27http://www.w3.org/2000/svg%27%3e%3ccircle cx=%278%27 cy=%278%27 r=%274%27/%3e%3c/svg%3e');
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col items-center">
+<!-- Phone Container for Preview -->
+<div class="relative flex h-full min-h-screen w-full max-w-[430px] flex-col bg-white dark:bg-background-dark shadow-2xl overflow-x-hidden radio-dot-svg">
+<!-- Top Illustration Section -->
+<div class="w-full @container">
+<div class="w-full gap-0 overflow-hidden bg-white dark:bg-background-dark aspect-[4/3] flex">
+<div class="w-full bg-center bg-no-repeat bg-cover aspect-auto flex-1" data-alt="Illustration of a customer scanning a QR code at a colorful fruit stall" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBiuZVc5fhFR05SJOynYfqYguILJchK2EELf3b2WobHxkrhcMwMhjFwpszBWo3nd1j9eos1HluZmUrDUNy-iCTT8cSKgcDl09ja5o1quXJWOEWhfQukAqt5X4-ADWqv1czMv5gXwm1Enm1jky7x3HlJBubt9APNmB3jONafHpT6YJ_mNVSZueQqgy6s8q44U1u8sVZIag7qMMRFpV6lvljY78EQLFQDm5lEZc6ha2Z5CtsgGzhzUBcFzoDLfisncjfxdqQyk4YP");'>
+</div>
+</div>
+</div>
+<!-- Headline -->
+<div class="px-4">
+<h1 class="text-[#111813] dark:text-white tracking-tight text-[32px] font-bold leading-tight pt-6 pb-2">
+                Welcome to Sanjay's Fruit Shop!
+            </h1>
+<p class="text-[#61896f] dark:text-primary/70 text-base font-normal leading-normal">
+                Please select your preferred language to start shopping.
+            </p>
+</div>
+<!-- Voice Assistant Panel -->
+<div class="p-4 @container">
+<div class="flex flex-1 flex-col items-start justify-between gap-4 rounded-xl border border-[#dbe6df] dark:border-primary/20 bg-white dark:bg-background-dark/50 p-4 @[480px]:flex-row @[480px]:items-center">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 text-primary">
+<span class="material-symbols-outlined">mic</span>
+</div>
+<div class="flex flex-col">
+<p class="text-[#111813] dark:text-white text-sm font-bold leading-tight">Voice Assistant</p>
+<p class="text-[#61896f] dark:text-primary/60 text-xs font-normal leading-normal">"Hi! Choose your language, or just say 'I speak English'"</p>
+</div>
+</div>
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-primary text-[#111813] text-xs font-bold leading-normal">
+<span class="truncate uppercase tracking-wider">Listening...</span>
+</button>
+</div>
+</div>
+<!-- Language Selection List -->
+<div class="flex flex-col gap-3 px-4 pb-24">
+<label class="flex items-center gap-4 rounded-xl border border-solid border-[#dbe6df] dark:border-primary/10 p-4 flex-row-reverse bg-white dark:bg-background-dark/40 cursor-pointer hover:border-primary transition-colors">
+<input checked="" class="h-6 w-6 border-2 border-[#dbe6df] bg-transparent text-transparent checked:border-primary checked:bg-[image:--radio-dot-svg] focus:outline-none focus:ring-0 focus:ring-offset-0 checked:focus:border-primary" name="language" type="radio"/>
+<div class="flex grow flex-col">
+<p class="text-[#111813] dark:text-white text-base font-medium leading-normal">English</p>
+</div>
+</label>
+<label class="flex items-center gap-4 rounded-xl border border-solid border-[#dbe6df] dark:border-primary/10 p-4 flex-row-reverse bg-white dark:bg-background-dark/40 cursor-pointer hover:border-primary transition-colors">
+<input class="h-6 w-6 border-2 border-[#dbe6df] bg-transparent text-transparent checked:border-primary checked:bg-[image:--radio-dot-svg] focus:outline-none focus:ring-0 focus:ring-offset-0 checked:focus:border-primary" name="language" type="radio"/>
+<div class="flex grow flex-col">
+<p class="text-[#111813] dark:text-white text-base font-medium leading-normal">Hindi (हिन्दी)</p>
+</div>
+</label>
+<label class="flex items-center gap-4 rounded-xl border border-solid border-[#dbe6df] dark:border-primary/10 p-4 flex-row-reverse bg-white dark:bg-background-dark/40 cursor-pointer hover:border-primary transition-colors">
+<input class="h-6 w-6 border-2 border-[#dbe6df] bg-transparent text-transparent checked:border-primary checked:bg-[image:--radio-dot-svg] focus:outline-none focus:ring-0 focus:ring-offset-0 checked:focus:border-primary" name="language" type="radio"/>
+<div class="flex grow flex-col">
+<p class="text-[#111813] dark:text-white text-base font-medium leading-normal">Spanish (Español)</p>
+</div>
+</label>
+<label class="flex items-center gap-4 rounded-xl border border-solid border-[#dbe6df] dark:border-primary/10 p-4 flex-row-reverse bg-white dark:bg-background-dark/40 cursor-pointer hover:border-primary transition-colors">
+<input class="h-6 w-6 border-2 border-[#dbe6df] bg-transparent text-transparent checked:border-primary checked:bg-[image:--radio-dot-svg] focus:outline-none focus:ring-0 focus:ring-offset-0 checked:focus:border-primary" name="language" type="radio"/>
+<div class="flex grow flex-col">
+<p class="text-[#111813] dark:text-white text-base font-medium leading-normal">French (Français)</p>
+</div>
+</label>
+<label class="flex items-center gap-4 rounded-xl border border-solid border-[#dbe6df] dark:border-primary/10 p-4 flex-row-reverse bg-white dark:bg-background-dark/40 cursor-pointer hover:border-primary transition-colors">
+<input class="h-6 w-6 border-2 border-[#dbe6df] bg-transparent text-transparent checked:border-primary checked:bg-[image:--radio-dot-svg] focus:outline-none focus:ring-0 focus:ring-offset-0 checked:focus:border-primary" name="language" type="radio"/>
+<div class="flex grow flex-col">
+<p class="text-[#111813] dark:text-white text-base font-medium leading-normal">Chinese (中文)</p>
+</div>
+</label>
+</div>
+<!-- Sticky Footer for Primary Button -->
+<div class="fixed bottom-0 left-0 right-0 max-w-[430px] mx-auto bg-gradient-to-t from-white dark:from-background-dark via-white dark:via-background-dark pt-8 pb-10 px-4">
+<button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-5 bg-primary text-[#111813] text-lg font-bold leading-normal tracking-wide shadow-lg shadow-primary/30 active:scale-[0.98] transition-transform">
+<span class="truncate">Continue</span>
+</button>
+</div>
+</div>
+</body></html>
