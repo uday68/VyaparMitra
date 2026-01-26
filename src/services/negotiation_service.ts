@@ -373,7 +373,7 @@ export class NegotiationService {
         cutoffTime
       ]);
 
-      if (result.rowCount > 0) {
+      if (result.rowCount && result.rowCount > 0) {
         console.log(`✅ Expired ${result.rowCount} old negotiations`);
       }
     } catch (error) {
