@@ -234,4 +234,14 @@ export class SV2TTSService {
     const profile = await VoiceProfile.findOne({ userId, userType });
     return profile ? profile.consentGiven : null;
   }
+
+  async isHealthy(): Promise<boolean> {
+    try {
+      // Check if models are loaded and ready
+      return this.modelLoaded;
+    } catch (error) {
+      console.error('SV2TTS health check failed:', error);
+      return false;
+    }
+  }
 }

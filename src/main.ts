@@ -16,6 +16,7 @@ import { rateLimiters } from './middleware/rateLimiter';
 // Import routes
 import authRoutes from './routes/auth';
 import apiRoutes from './routes/api';
+import paymentRoutes from './routes/payment';
 
 async function createApp(): Promise<express.Application> {
   const app = express();
@@ -63,13 +64,14 @@ async function createApp(): Promise<express.Application> {
   app.use('/uploads', express.static(config.upload.uploadPath));
 
   // Health check endpoint (no auth required)
-  app.get('/health', async (req, res) => {
+  app.get('/health', async (_req, res) => {
     try {
       const health = await HealthService.checkHealth();
       const statusCode = health.status === 'healthy' ? 200 : 503;
       res.status(statusCode).json(health);
     } catch (error) {
-      logger.error('Health check failed', { error: error.message });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      logger.error('Health check failed', { error: errorMessage });
       res.status(503).json({
         status: 'unhealthy',
         timestamp: new Date().toISOString(),
@@ -79,13 +81,14 @@ async function createApp(): Promise<express.Application> {
   });
 
   // Detailed health check (for monitoring systems)
-  app.get('/health/detailed', async (req, res) => {
+  app.get('/health/detailed', async (_req, res) => {
     try {
-      const health = await HealthService.getDetailedHealth();
+      const health = await HealthService.checkHealth();
       const statusCode = health.status === 'healthy' ? 200 : 503;
       res.status(statusCode).json(health);
     } catch (error) {
-      logger.error('Detailed health check failed', { error: error.message });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      logger.error('Detailed health check failed', { error: errorMessage });
       res.status(503).json({
         status: 'unhealthy',
         timestamp: new Date().toISOString(),
@@ -96,10 +99,11 @@ async function createApp(): Promise<express.Application> {
 
   // API routes
   app.use('/api/auth', authRoutes);
+  app.use('/api/payment', paymentRoutes);
   app.use('/api', apiRoutes);
 
   // API documentation endpoint
-  app.get('/api/docs', (req, res) => {
+  app.get('/api/docs', (_req, res) => {
     res.json({
       title: 'VyaparMitra API',
       version: '1.0.0',
@@ -190,12 +194,10 @@ async function initializeServices(): Promise<void> {
     // Initialize image storage
     await ImageStorageService.initialize();
 
-    // Initialize health monitoring
-    await HealthService.initialize();
-
     logger.info('All services initialized successfully');
   } catch (error) {
-    logger.error('Service initialization failed', { error: error.message });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    logger.error('Service initialization failed', { error: errorMessage });
     throw error;
   }
 }
@@ -227,9 +229,6 @@ async function startServer(): Promise<void> {
       
       server.close(() => {
         logger.info('HTTP server closed');
-        
-        // Cleanup services
-        HealthService.cleanup();
         
         // Close database connections
         // MongoDB will close automatically
@@ -264,7 +263,8 @@ async function startServer(): Promise<void> {
     });
 
   } catch (error) {
-    logger.error('Server startup failed', { error: error.message });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    logger.error('Server startup failed', { error: errorMessage });
     process.exit(1);
   }
 }

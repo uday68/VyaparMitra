@@ -227,4 +227,14 @@ export class VoiceboxTTS {
         return text;
     }
   }
+
+  async isHealthy(): Promise<boolean> {
+    try {
+      // Check if model is loaded and ready
+      return this.modelLoaded;
+    } catch (error) {
+      console.error('Voicebox health check failed:', error);
+      return false;
+    }
+  }
 }

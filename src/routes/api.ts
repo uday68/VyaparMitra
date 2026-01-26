@@ -11,6 +11,7 @@ import { authenticateToken, requireUserType, optionalAuth, AuthenticatedRequest 
 import { validateRequest, productSchemas, negotiationSchemas, voiceSchemas, qrSchemas } from '../middleware/validation';
 import { rateLimiters, burstProtection, dynamicRateLimit } from '../middleware/rateLimiter';
 import { logHelpers, PerformanceMonitor } from '../utils/logger';
+import { config } from '../config/settings';
 
 const router = express.Router();
 
@@ -33,7 +34,7 @@ router.get('/products',
 
       const products = await PerformanceMonitor.measure(
         'products_search',
-        () => InventoryService.searchProducts(filter, { page, limit }),
+        () => InventoryService.searchProducts(filter, parseInt(page as string) || 1, parseInt(limit as string) || 10),
         { filter, userId: req.user?.id }
       );
 
@@ -84,12 +85,7 @@ router.post('/products',
 
       const product = await InventoryService.addProduct(vendorId, productData);
       
-      logHelpers.businessEvent('product_created', {
-        productId: product._id,
-        vendorId,
-        name,
-        basePrice,
-      });
+      logHelpers.negotiationCreated(product._id, vendorId, name, basePrice);
 
       res.status(201).json({ success: true, data: product });
     } catch (error) {
@@ -107,7 +103,7 @@ router.patch('/products/:id',
   async (req: AuthenticatedRequest, res) => {
     try {
       const updates = req.body;
-      const product = await InventoryService.updateProduct(req.params.id, updates, req.user!.id);
+      const product = await InventoryService.updateProduct(req.params.id, updates);
       res.json({ success: true, data: product });
     } catch (error) {
       console.error('Failed to update product:', error);
@@ -122,7 +118,7 @@ router.delete('/products/:id',
   validateRequest(productSchemas.get),
   async (req: AuthenticatedRequest, res) => {
     try {
-      await InventoryService.deleteProduct(req.params.id, req.user!.id);
+      await InventoryService.deleteProduct(req.params.id);
       res.json({ success: true, message: 'Product deleted successfully' });
     } catch (error) {
       console.error('Failed to delete product:', error);
@@ -326,25 +322,150 @@ router.post('/voice/profile', async (req, res) => {
 });
 
 // Translation API
-router.post('/translate', async (req, res) => {
+router.post('/translate', 
+  rateLimiters.translation,
+  validateRequest(voiceSchemas.translate),
+  async (req, res) => {
+    try {
+      const { text, sourceLanguage, targetLanguage, context } = req.body;
+      
+      const translatedText = context 
+        ? await TranslationService.translateWithContext(text, sourceLanguage, targetLanguage, context)
+        : await TranslationService.translateText(text, sourceLanguage, targetLanguage);
+      
+      res.json({ 
+        success: true, 
+        data: { 
+          translatedText,
+          sourceLanguage,
+          targetLanguage 
+        } 
+      });
+    } catch (error) {
+      console.error('Failed to translate text:', error);
+      res.status(400).json({ success: false, error: 'Failed to translate text' });
+    }
+  }
+);
+
+router.post('/translate/batch', 
+  rateLimiters.translation,
+  async (req, res) => {
+    try {
+      const { texts, sourceLanguage, targetLanguage } = req.body;
+      
+      if (!Array.isArray(texts) || texts.length === 0) {
+        return res.status(400).json({ success: false, error: 'texts must be a non-empty array' });
+      }
+
+      if (texts.length > 100) {
+        return res.status(400).json({ success: false, error: 'Maximum 100 texts allowed per batch' });
+      }
+      
+      const translations = await TranslationService.translateBatch(texts, sourceLanguage, targetLanguage);
+      
+      res.json({ 
+        success: true, 
+        data: { 
+          translations,
+          sourceLanguage,
+          targetLanguage,
+          count: translations.length
+        } 
+      });
+    } catch (error) {
+      console.error('Failed to translate batch:', error);
+      res.status(400).json({ success: false, error: 'Failed to translate batch' });
+    }
+  }
+);
+
+// Voice processing health checks
+router.get('/voice/health', async (req, res) => {
   try {
-    const { text, sourceLanguage, targetLanguage, context } = req.body;
+    const ttsHealth = await TTSService.checkTacotronHealth();
+    const voiceboxHealth = await TTSService.checkVoiceboxHealth();
+    const sv2ttsHealth = await TTSService.checkSV2TTSHealth();
+    const translationHealth = await TranslationService.isHealthy();
     
-    const translatedText = context 
-      ? await TranslationService.translateWithContext(text, sourceLanguage, targetLanguage, context)
-      : await TranslationService.translateText(text, sourceLanguage, targetLanguage);
-    
-    res.json({ 
-      success: true, 
-      data: { 
-        translatedText,
-        sourceLanguage,
-        targetLanguage 
-      } 
+    const health = {
+      tts: {
+        tacotron: ttsHealth,
+        voicebox: voiceboxHealth,
+        sv2tts: sv2ttsHealth,
+      },
+      translation: translationHealth,
+      timestamp: new Date().toISOString(),
+    };
+
+    const allHealthy = ttsHealth && 
+                      voiceboxHealth &&
+                      sv2ttsHealth &&
+                      translationHealth.bhashini && 
+                      (translationHealth.fallback || !config.bhashini?.fallback?.enabled);
+
+    res.status(allHealthy ? 200 : 503).json({
+      success: true,
+      status: allHealthy ? 'healthy' : 'degraded',
+      data: health
     });
   } catch (error) {
-    console.error('Failed to translate text:', error);
-    res.status(400).json({ success: false, error: 'Failed to translate text' });
+    console.error('Voice health check failed:', error);
+    res.status(503).json({
+      success: false,
+      status: 'unhealthy',
+      error: 'Voice health check failed'
+    });
+  }
+});
+
+// Mock audio endpoint for development
+router.get('/audio/mock/:filename', (req, res) => {
+  try {
+    const { filename } = req.params;
+    
+    // Generate a simple beep sound for testing
+    const sampleRate = 22050;
+    const duration = 2; // 2 seconds
+    const frequency = 440; // A4 note
+    const samples = sampleRate * duration;
+    
+    // Create WAV header
+    const header = Buffer.alloc(44);
+    header.write('RIFF', 0);
+    header.writeUInt32LE(36 + samples * 2, 4);
+    header.write('WAVE', 8);
+    header.write('fmt ', 12);
+    header.writeUInt32LE(16, 16);
+    header.writeUInt16LE(1, 20); // PCM
+    header.writeUInt16LE(1, 22); // Mono
+    header.writeUInt32LE(sampleRate, 24);
+    header.writeUInt32LE(sampleRate * 2, 28);
+    header.writeUInt16LE(2, 32);
+    header.writeUInt16LE(16, 34);
+    header.write('data', 36);
+    header.writeUInt32LE(samples * 2, 40);
+    
+    // Generate sine wave
+    const audioData = Buffer.alloc(samples * 2);
+    for (let i = 0; i < samples; i++) {
+      const sample = Math.sin(2 * Math.PI * frequency * i / sampleRate) * 0.3;
+      const intSample = Math.round(sample * 32767);
+      audioData.writeInt16LE(intSample, i * 2);
+    }
+    
+    const wavFile = Buffer.concat([header, audioData]);
+    
+    res.set({
+      'Content-Type': 'audio/wav',
+      'Content-Length': wavFile.length,
+      'Cache-Control': 'public, max-age=3600',
+    });
+    
+    res.send(wavFile);
+  } catch (error) {
+    console.error('Failed to generate mock audio:', error);
+    res.status(500).json({ success: false, error: 'Failed to generate mock audio' });
   }
 });
 

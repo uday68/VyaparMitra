@@ -1,0 +1,70 @@
+{
+  "project": {
+    "name": "VyaparMitra",
+    "type": "voice-commerce-platform",
+    "primaryLanguage": "typescript",
+    "framework": "node-express-react"
+  },
+  "codeStyle": {
+    "indentation": "2-spaces",
+    "quotes": "single",
+    "semicolons": true,
+    "trailingCommas": true,
+    "maxLineLength": 100
+  },
+  "development": {
+    "testFirst": false,
+    "autoFormat": true,
+    "strictTypeChecking": true,
+    "preferFunctionalComponents": true,
+    "useModernSyntax": true
+  },
+  "architecture": {
+    "patterns": [
+      "service-layer",
+      "repository-pattern",
+      "middleware-chain",
+      "event-driven"
+    ],
+    "databases": [
+      "postgresql",
+      "mongodb", 
+      "redis"
+    ],
+    "apiStyle": "rest-graphql-hybrid"
+  },
+  "deployment": {
+    "containerized": true,
+    "cicd": "github-actions",
+    "environment": "docker-compose",
+    "monitoring": "winston-logging"
+  },
+  "features": {
+    "voiceCommerce": {
+      "tts": ["tacotron", "voicebox", "sv2tts"],
+      "translation": "bhashini",
+      "languages": ["hi", "en", "bn", "ta", "te", "kn", "ml", "mr", "gu", "or", "pa", "as"]
+    },
+    "payments": {
+      "gateway": "razorpay",
+      "methods": ["upi", "cards", "netbanking"],
+      "currency": "INR"
+    },
+    "realtime": {
+      "negotiations": "websockets",
+      "notifications": "graphql-subscriptions"
+    }
+  },
+  "quality": {
+    "testCoverage": 85,
+    "linting": "eslint-typescript",
+    "formatting": "prettier",
+    "typeChecking": "strict"
+  },
+  "documentation": {
+    "apiDocs": "openapi",
+    "codeComments": "jsdoc",
+    "architecture": "markdown",
+    "deployment": "docker-readme"
+  }
+}
