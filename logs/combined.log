@@ -1,0 +1,8 @@
+{"timestamp":"2026-01-26 16:23:31","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 16:24:01","level":"error","message":"Service initialization failed","service":"vyapar-mitra-api","version":"1.0.0","error":"connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017"}
+{"timestamp":"2026-01-26 16:43:48","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 16:44:18","level":"error","message":"Service initialization failed","service":"vyapar-mitra-api","version":"1.0.0","error":"connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017"}
+{"timestamp":"2026-01-26 17:09:49","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 17:10:20","level":"error","message":"Service initialization failed","service":"vyapar-mitra-api","version":"1.0.0","error":"connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017"}
+{"timestamp":"2026-01-26 17:16:14","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 17:16:44","level":"error","message":"Service initialization failed","service":"vyapar-mitra-api","version":"1.0.0","error":"connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017"}
