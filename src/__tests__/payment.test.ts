@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { PaymentService } from '../services/payment_service';
+import { PaymentService, getPaymentService } from '../services/payment_service';
 import { getPool } from '../db/postgres';
 
 describe('Payment Service', () => {

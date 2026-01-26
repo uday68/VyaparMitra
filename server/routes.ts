@@ -1,20 +1,61 @@
-import type { Express } from "express";
+import express, { type Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { api } from "@shared/routes";
+import { api } from "../shared/routes";
 import { z } from "zod";
 import { registerAudioRoutes } from "./replit_integrations/audio";
 import { chatStorage } from "./replit_integrations/chat/storage";
+
+// Import our main API routes
+import authRoutes from "../src/routes/auth";
+import apiRoutes from "../src/routes/api";
+import paymentRoutes from "../src/routes/payment";
+
+// Import database initialization
+import { connectMongoDB } from "../src/db/mongo";
+import { connectRedis } from "../src/db/redis";
+import { connectPostgreSQL } from "../src/db/postgres";
+import { ImageStorageService } from "../src/services/image_storage";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
   
+  // Initialize database connections
+  try {
+    await connectMongoDB();
+    await connectRedis();
+    await connectPostgreSQL();
+    await ImageStorageService.initialize();
+    console.log('✅ All services initialized successfully');
+  } catch (error) {
+    console.error('❌ Service initialization failed:', error);
+    // Continue anyway for development
+  }
+
+  // Add necessary middleware
+  app.use(express.json({ limit: '10mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+  
   // Register AI Audio routes (Voice Chat)
   registerAudioRoutes(app);
 
-  // === API ROUTES ===
+  // === MAIN API ROUTES (from src/routes) ===
+  app.use('/api/auth', authRoutes);
+  app.use('/api/payment', paymentRoutes);
+  app.use('/api', apiRoutes);
+
+  // Health check endpoints
+  app.get('/health', async (_req, res) => {
+    res.json({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      service: 'vyapar-mitra'
+    });
+  });
+
+  // === LEGACY API ROUTES (for compatibility) ===
 
   // Products
   app.get(api.products.list.path, async (req, res) => {

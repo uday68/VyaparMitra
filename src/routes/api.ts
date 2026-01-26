@@ -11,6 +11,7 @@ import { authenticateToken, requireUserType, optionalAuth, AuthenticatedRequest 
 import { validateRequest, productSchemas, negotiationSchemas, voiceSchemas, qrSchemas } from '../middleware/validation';
 import { rateLimiters, burstProtection, dynamicRateLimit } from '../middleware/rateLimiter';
 import { logHelpers, PerformanceMonitor } from '../utils/logger';
+import { config } from '../config/settings';
 
 const router = express.Router();
 
@@ -33,7 +34,7 @@ router.get('/products',
 
       const products = await PerformanceMonitor.measure(
         'products_search',
-        () => InventoryService.searchProducts(filter, { page, limit }),
+        () => InventoryService.searchProducts(filter, parseInt(page as string) || 1, parseInt(limit as string) || 10),
         { filter, userId: req.user?.id }
       );
 
@@ -84,12 +85,7 @@ router.post('/products',
 
       const product = await InventoryService.addProduct(vendorId, productData);
       
-      logHelpers.businessEvent('product_created', {
-        productId: product._id,
-        vendorId,
-        name,
-        basePrice,
-      });
+      logHelpers.negotiationCreated(product._id, vendorId, name, basePrice);
 
       res.status(201).json({ success: true, data: product });
     } catch (error) {
@@ -107,7 +103,7 @@ router.patch('/products/:id',
   async (req: AuthenticatedRequest, res) => {
     try {
       const updates = req.body;
-      const product = await InventoryService.updateProduct(req.params.id, updates, req.user!.id);
+      const product = await InventoryService.updateProduct(req.params.id, updates);
       res.json({ success: true, data: product });
     } catch (error) {
       console.error('Failed to update product:', error);
@@ -122,7 +118,7 @@ router.delete('/products/:id',
   validateRequest(productSchemas.get),
   async (req: AuthenticatedRequest, res) => {
     try {
-      await InventoryService.deleteProduct(req.params.id, req.user!.id);
+      await InventoryService.deleteProduct(req.params.id);
       res.json({ success: true, message: 'Product deleted successfully' });
     } catch (error) {
       console.error('Failed to delete product:', error);
@@ -387,22 +383,26 @@ router.post('/translate/batch',
 // Voice processing health checks
 router.get('/voice/health', async (req, res) => {
   try {
-    const ttsHealth = await TTSService.tacotron.isHealthy();
+    const ttsHealth = await TTSService.checkTacotronHealth();
+    const voiceboxHealth = await TTSService.checkVoiceboxHealth();
+    const sv2ttsHealth = await TTSService.checkSV2TTSHealth();
     const translationHealth = await TranslationService.isHealthy();
     
     const health = {
       tts: {
         tacotron: ttsHealth,
-        voicebox: true, // Would implement similar health check
-        sv2tts: true,   // Would implement similar health check
+        voicebox: voiceboxHealth,
+        sv2tts: sv2ttsHealth,
       },
       translation: translationHealth,
       timestamp: new Date().toISOString(),
     };
 
     const allHealthy = ttsHealth && 
+                      voiceboxHealth &&
+                      sv2ttsHealth &&
                       translationHealth.bhashini && 
-                      (translationHealth.fallback || !config.bhashini.fallback.enabled);
+                      (translationHealth.fallback || !config.bhashini?.fallback?.enabled);
 
     res.status(allHealthy ? 200 : 503).json({
       success: true,
