@@ -1,0 +1,80 @@
+{
+  "mcpServers": {
+    "vyaparmitra-docs": {
+      "command": "uvx",
+      "args": ["mcp-server-docs@latest"],
+      "env": {
+        "DOCS_PATH": "./docs",
+        "PROJECT_NAME": "VyaparMitra",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "search_docs",
+        "get_doc_content",
+        "list_docs"
+      ]
+    },
+    "database-tools": {
+      "command": "uvx",
+      "args": ["mcp-database-tools@latest"],
+      "env": {
+        "POSTGRES_URI": "postgresql://localhost:5432/vyapar_mitra",
+        "MONGODB_URI": "mongodb://localhost:27017/vyapar-mitra",
+        "REDIS_URL": "redis://localhost:6379",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "check_connection",
+        "list_tables",
+        "describe_schema"
+      ]
+    },
+    "git-tools": {
+      "command": "uvx",
+      "args": ["mcp-git@latest"],
+      "env": {
+        "GIT_REPO_PATH": ".",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "git_status",
+        "git_log",
+        "git_diff",
+        "git_branch"
+      ]
+    },
+    "testing-tools": {
+      "command": "uvx",
+      "args": ["mcp-testing@latest"],
+      "env": {
+        "TEST_FRAMEWORK": "jest",
+        "TEST_DIR": "./src/__tests__",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "run_tests",
+        "get_coverage",
+        "list_test_files"
+      ]
+    },
+    "deployment-tools": {
+      "command": "uvx",
+      "args": ["mcp-docker@latest"],
+      "env": {
+        "DOCKER_COMPOSE_FILE": "docker-compose.production.yml",
+        "DOCKERFILE": "Dockerfile.production",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "docker_status",
+        "docker_logs",
+        "docker_health"
+      ]
+    }
+  }
+}
