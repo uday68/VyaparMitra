@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'wouter';
+import { useTranslation } from '../hooks/useTranslation';
 
 export function VoiceSettingsPage() {
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
+  const { t, supportedLanguages, language, changeLanguage } = useTranslation();
   const [settings, setSettings] = useState({
     voiceEnabled: true,
     autoListen: true,
     voiceSpeed: 'normal',
     voiceGender: 'female',
-    language: 'english',
+    language: language,
     handsFreeModeEnabled: false,
     voiceConfirmation: true,
     backgroundNoise: 'low'
@@ -16,18 +18,23 @@ export function VoiceSettingsPage() {
 
   const handleSettingChange = (key: string, value: any) => {
     setSettings(prev => ({ ...prev, [key]: value }));
+    
+    // If language is changed, update i18n
+    if (key === 'language') {
+      changeLanguage(value);
+    }
   };
 
   const handleSave = () => {
     // Save settings to localStorage or API
     localStorage.setItem('voiceSettings', JSON.stringify(settings));
-    navigate(-1);
+    setLocation(-1);
   };
 
   const handleTestVoice = () => {
     // Test voice synthesis
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance('Hello! This is how your voice assistant will sound.');
+      const utterance = new SpeechSynthesisUtterance(t('voice.settings.testVoice'));
       speechSynthesis.speak(utterance);
     }
   };
@@ -54,17 +61,17 @@ export function VoiceSettingsPage() {
         <div className="sticky top-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-4">
           <div className="flex items-center justify-between">
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => setLocation(-1)}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
             >
               <span className="material-symbols-outlined text-gray-900 dark:text-white">arrow_back</span>
             </button>
-            <h1 className="text-lg font-bold text-gray-900 dark:text-white">Voice Settings</h1>
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white">{t('voice.settings.title')}</h1>
             <button
               onClick={handleSave}
               className="text-blue-600 font-semibold hover:bg-blue-50 px-3 py-1 rounded-lg transition-colors"
             >
-              Save
+              {t('common.save')}
             </button>
           </div>
         </div>
@@ -78,8 +85,8 @@ export function VoiceSettingsPage() {
                   <span className="material-symbols-outlined text-white text-lg">mic</span>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Voice Assistant</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Enable voice commands</p>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">{t('voice.settings.title')}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('permissions.microphone.description')}</p>
                 </div>
               </div>
               <ToggleSwitch
@@ -92,7 +99,7 @@ export function VoiceSettingsPage() {
                 onClick={handleTestVoice}
                 className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
-                Test Voice
+                {t('voice.settings.testVoice')}
               </button>
             )}
           </div>
@@ -102,24 +109,23 @@ export function VoiceSettingsPage() {
             <>
               {/* Language Selection */}
               <div className="space-y-3">
-                <h3 className="font-semibold text-gray-900 dark:text-white">Language</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-white">{t('voice.settings.language')}</h3>
                 <select
                   value={settings.language}
                   onChange={(e) => handleSettingChange('language', e.target.value)}
                   className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="english">English</option>
-                  <option value="hindi">Hindi</option>
-                  <option value="marathi">Marathi</option>
-                  <option value="gujarati">Gujarati</option>
-                  <option value="tamil">Tamil</option>
-                  <option value="bengali">Bengali</option>
+                  {Object.entries(supportedLanguages).map(([code, info]) => (
+                    <option key={code} value={code}>
+                      {info.nativeName} ({info.name})
+                    </option>
+                  ))}
                 </select>
               </div>
 
               {/* Voice Speed */}
               <div className="space-y-3">
-                <h3 className="font-semibold text-gray-900 dark:text-white">Voice Speed</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-white">{t('voice.settings.speed')}</h3>
                 <div className="grid grid-cols-3 gap-2">
                   {['slow', 'normal', 'fast'].map((speed) => (
                     <button
@@ -139,19 +145,22 @@ export function VoiceSettingsPage() {
 
               {/* Voice Gender */}
               <div className="space-y-3">
-                <h3 className="font-semibold text-gray-900 dark:text-white">Voice Gender</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-white">{t('voice.settings.voiceType')}</h3>
                 <div className="grid grid-cols-2 gap-2">
-                  {['female', 'male'].map((gender) => (
+                  {[
+                    { key: 'female', label: t('voice.settings.female') },
+                    { key: 'male', label: t('voice.settings.male') }
+                  ].map((gender) => (
                     <button
-                      key={gender}
-                      onClick={() => handleSettingChange('voiceGender', gender)}
-                      className={`p-3 rounded-lg border-2 font-medium capitalize transition-colors ${
-                        settings.voiceGender === gender
+                      key={gender.key}
+                      onClick={() => handleSettingChange('voiceGender', gender.key)}
+                      className={`p-3 rounded-lg border-2 font-medium transition-colors ${
+                        settings.voiceGender === gender.key
                           ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-600'
                           : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-blue-300'
                       }`}
                     >
-                      {gender}
+                      {gender.label}
                     </button>
                   ))}
                 </div>
@@ -159,13 +168,13 @@ export function VoiceSettingsPage() {
 
               {/* Advanced Settings */}
               <div className="space-y-4">
-                <h3 className="font-semibold text-gray-900 dark:text-white">Advanced Settings</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-white">{t('settings.title')}</h3>
                 
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-gray-900 dark:text-white">Auto Listen</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Automatically start listening after responses</p>
+                      <p className="font-medium text-gray-900 dark:text-white">{t('settings.handsFree.continuousListening')}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings.handsFree.continuousListening')}</p>
                     </div>
                     <ToggleSwitch
                       enabled={settings.autoListen}
@@ -175,8 +184,8 @@ export function VoiceSettingsPage() {
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-gray-900 dark:text-white">Hands-Free Mode</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Continuous voice interaction</p>
+                      <p className="font-medium text-gray-900 dark:text-white">{t('settings.handsFree.title')}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings.handsFree.enabled')}</p>
                     </div>
                     <ToggleSwitch
                       enabled={settings.handsFreeModeEnabled}
@@ -186,8 +195,8 @@ export function VoiceSettingsPage() {
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-gray-900 dark:text-white">Voice Confirmation</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Confirm actions with voice</p>
+                      <p className="font-medium text-gray-900 dark:text-white">{t('settings.handsFree.voiceConfirmation')}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings.handsFree.voiceConfirmation')}</p>
                     </div>
                     <ToggleSwitch
                       enabled={settings.voiceConfirmation}
@@ -199,7 +208,7 @@ export function VoiceSettingsPage() {
 
               {/* Background Noise Filtering */}
               <div className="space-y-3">
-                <h3 className="font-semibold text-gray-900 dark:text-white">Background Noise Filtering</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-white">{t('voice.settings.calibrateMic')}</h3>
                 <div className="grid grid-cols-3 gap-2">
                   {['low', 'medium', 'high'].map((level) => (
                     <button
@@ -221,13 +230,13 @@ export function VoiceSettingsPage() {
 
           {/* Help Section */}
           <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Voice Commands</h3>
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t('voice.commands.title')}</h3>
             <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-              <p>• "Place bid for [amount]" - Start negotiation</p>
-              <p>• "Accept offer" - Accept current price</p>
-              <p>• "Counter with [amount]" - Make counter offer</p>
-              <p>• "Show products" - Browse available items</p>
-              <p>• "Help" - Get assistance</p>
+              <p>• "{t('voice.commands.negotiation.makeOffer')}" - {t('negotiation.title')}</p>
+              <p>• "{t('voice.commands.negotiation.acceptDeal')}" - {t('negotiation.acceptOffer')}</p>
+              <p>• "{t('voice.commands.shopping.negotiate')}" - {t('negotiation.counterOffer')}</p>
+              <p>• "{t('voice.commands.shopping.showCategory')}" - {t('shop.categories.all')}</p>
+              <p>• "{t('navigation.help')}" - {t('navigation.help')}</p>
             </div>
           </div>
         </div>

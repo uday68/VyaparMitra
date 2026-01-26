@@ -1,4 +1,5 @@
 import { Product } from "@shared/schema";
+import { useTranslation } from "../hooks/useTranslation";
 
 interface ProductCardProps {
   product: Product;
@@ -7,6 +8,8 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onBid, isPending }: ProductCardProps) {
+  const { t, formatCurrency } = useTranslation();
+  
   return (
     <div className="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm">
       <div className="p-4 flex items-stretch justify-between gap-4">
@@ -16,7 +19,7 @@ export function ProductCard({ product, onBid, isPending }: ProductCardProps) {
               {product.name}
             </p>
             <p className="text-primary text-base font-semibold leading-normal">
-              ₹{product.price}/{product.unit}
+              {formatCurrency(product.price)}/{t(`shop.product.${product.unit}` as any) || product.unit}
             </p>
             <p className="text-[#637388] text-sm font-normal line-clamp-2">
               {product.description}
@@ -27,7 +30,7 @@ export function ProductCard({ product, onBid, isPending }: ProductCardProps) {
             disabled={isPending}
             className="flex mt-3 min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-white text-sm font-bold leading-normal w-fit disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span>{isPending ? "Starting..." : "Place Bid"}</span>
+            <span>{isPending ? t('common.loading') : t('shop.product.negotiate')}</span>
           </button>
         </div>
         <div 

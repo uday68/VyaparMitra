@@ -1,5 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "../hooks/useTranslation";
 
 interface BottomNavProps {
   currentPage?: "shop" | "bids" | "account";
@@ -7,11 +8,12 @@ interface BottomNavProps {
 
 export function BottomNav({ currentPage }: BottomNavProps = {}) {
   const [location] = useLocation();
+  const { t } = useTranslation();
 
   const navItems = [
-    { href: "/", key: "shop", label: "Shop", icon: "storefront" },
-    { href: "/vendor", key: "bids", label: "My Bids", icon: "gavel" },
-    { href: "#", key: "account", label: "Account", icon: "account_circle" },
+    { href: "/", key: "shop", label: t('navigation.shop'), icon: "storefront" },
+    { href: "/vendor", key: "bids", label: t('navigation.negotiations'), icon: "gavel" },
+    { href: "#", key: "account", label: t('navigation.profile'), icon: "account_circle" },
   ];
 
   return (

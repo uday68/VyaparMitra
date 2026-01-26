@@ -1,0 +1,399 @@
+{
+  "common": {
+    "welcome": "स्वागत है",
+    "continue": "जारी रखें",
+    "cancel": "रद्द करें",
+    "save": "सहेजें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "add": "जोड़ें",
+    "remove": "हटाएं",
+    "search": "खोजें",
+    "filter": "फिल्टर",
+    "sort": "क्रमबद्ध करें",
+    "loading": "लोड हो रहा है...",
+    "error": "त्रुटि",
+    "success": "सफलता",
+    "warning": "चेतावनी",
+    "info": "जानकारी",
+    "yes": "हाँ",
+    "no": "नहीं",
+    "ok": "ठीक है",
+    "back": "वापस",
+    "next": "अगला",
+    "previous": "पिछला",
+    "close": "बंद करें",
+    "open": "खोलें",
+    "select": "चुनें",
+    "submit": "जमा करें",
+    "reset": "रीसेट करें",
+    "clear": "साफ करें",
+    "refresh": "ताज़ा करें",
+    "retry": "पुनः प्रयास करें",
+    "home": "होम",
+    "settings": "सेटिंग्स",
+    "profile": "प्रोफाइल",
+    "logout": "लॉग आउट",
+    "login": "लॉग इन",
+    "register": "पंजीकरण",
+    "and": "और",
+    "canBeChanged": "सेटिंग्स में कभी भी बदला जा सकता है",
+    "or": "या"
+  },
+  "navigation": {
+    "home": "होम",
+    "shop": "दुकान",
+    "negotiations": "बातचीत",
+    "orders": "ऑर्डर",
+    "profile": "प्रोफाइल",
+    "settings": "सेटिंग्स",
+    "help": "सहायता"
+  },
+  "auth": {
+    "login": {
+      "title": "व्यापारमित्र में लॉग इन करें",
+      "subtitle": "अपने खाते तक पहुंचने के लिए अपनी जानकारी दर्ज करें",
+      "identifier": "नाम या आईडी",
+      "password": "पासवर्ड",
+      "userType": "उपयोगकर्ता प्रकार",
+      "vendor": "विक्रेता",
+      "customer": "ग्राहक",
+      "loginButton": "लॉग इन करें",
+      "forgotPassword": "पासवर्ड भूल गए?",
+      "noAccount": "कोई खाता नहीं है?",
+      "signUp": "साइन अप करें"
+    },
+    "register": {
+      "title": "खाता बनाएं",
+      "subtitle": "व्यापार शुरू करने के लिए व्यापारमित्र में शामिल हों",
+      "name": "पूरा नाम",
+      "location": "स्थान",
+      "language": "पसंदीदा भाषा",
+      "password": "पासवर्ड",
+      "confirmPassword": "पासवर्ड की पुष्टि करें",
+      "userType": "खाता प्रकार",
+      "registerButton": "खाता बनाएं",
+      "hasAccount": "पहले से खाता है?",
+      "signIn": "साइन इन करें",
+      "terms": "खाता बनाकर, आप हमारी सेवा की शर्तों और गोपनीयता नीति से सहमत हैं"
+    },
+    "errors": {
+      "invalidCredentials": "गलत जानकारी",
+      "userExists": "उपयोगकर्ता पहले से मौजूद है",
+      "passwordMismatch": "पासवर्ड मेल नहीं खाते",
+      "networkError": "नेटवर्क त्रुटि। कृपया पुनः प्रयास करें।",
+      "serverError": "सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।"
+    }
+  },
+  "welcome": {
+    "title": "व्यापारमित्र में आपका स्वागत है",
+    "subtitle": "आपका आवाज़-संचालित व्यापार सहायक",
+    "description": "भाषा की बाधाओं को तोड़ें और AI-संचालित आवाज़ सहायता के साथ अपनी पसंदीदा भाषा में बातचीत करें।",
+    "selectLanguage": "अपनी भाषा चुनें",
+    "getStarted": "शुरू करें",
+    "features": {
+      "voice": "आवाज़-संचालित बातचीत",
+      "multilingual": "12+ भारतीय भाषाएं",
+      "realtime": "रियल-टाइम अनुवाद",
+      "secure": "सुरक्षित लेनदेन"
+    }
+  },
+  "permissions": {
+    "title": "आवाज़ अनुमतियां",
+    "subtitle": "सर्वोत्तम अनुभव के लिए आवाज़ सुविधाएं सक्षम करें",
+    "microphone": {
+      "title": "माइक्रोफोन पहुंच",
+      "description": "आवाज़ कमांड और बातचीत के लिए माइक्रोफोन पहुंच की अनुमति दें",
+      "grant": "अनुमति दें",
+      "granted": "अनुमति दी गई"
+    },
+    "notifications": {
+      "title": "सूचनाएं",
+      "description": "नई बोलियों और सौदों के बारे में सूचना पाएं",
+      "enable": "सूचनाएं सक्षम करें",
+      "enabled": "सूचनाएं सक्षम हैं"
+    },
+    "location": {
+      "title": "स्थान पहुंच",
+      "description": "आस-पास के विक्रेता और उत्पाद खोजें",
+      "allow": "स्थान की अनुमति दें",
+      "allowed": "स्थान की अनुमति दी गई"
+    },
+    "readyToShop": "खरीदारी के लिए तैयार!",
+    "skipForNow": "अभी के लिए छोड़ें"
+  },
+  "shop": {
+    "title": "उत्पाद खरीदें",
+    "searchPlaceholder": "उत्पाद खोजें...",
+    "voiceSearch": "आवाज़ खोज",
+    "categories": {
+      "all": "सभी श्रेणियां",
+      "fruits": "फल",
+      "vegetables": "सब्जियां",
+      "grains": "अनाज",
+      "spices": "मसाले",
+      "dairy": "डेयरी",
+      "meat": "मांस और मछली"
+    },
+    "filters": {
+      "price": "मूल्य सीमा",
+      "location": "स्थान",
+      "rating": "रेटिंग",
+      "availability": "केवल स्टॉक में"
+    },
+    "product": {
+      "price": "मूल्य",
+      "per": "प्रति",
+      "kg": "किलो",
+      "piece": "पीस",
+      "liter": "लीटर",
+      "inStock": "स्टॉक में",
+      "outOfStock": "स्टॉक खत्म",
+      "negotiate": "बातचीत शुरू करें",
+      "addToCart": "कार्ट में जोड़ें",
+      "viewDetails": "विवरण देखें"
+    },
+    "voiceCommands": {
+      "searchFor": "'[उत्पाद का नाम] खोजें' कहें",
+      "showCategory": "'[श्रेणी का नाम] दिखाएं' कहें",
+      "negotiate": "'[उत्पाद] के लिए मोल-भाव करें' कहें",
+      "addToCart": "'कार्ट में जोड़ें' कहें"
+    }
+  },
+  "negotiation": {
+    "title": "मूल्य बातचीत",
+    "with": "बातचीत कर रहे हैं",
+    "product": "उत्पाद",
+    "basePrice": "आधार मूल्य",
+    "yourOffer": "आपका प्रस्ताव",
+    "vendorOffer": "विक्रेता का प्रस्ताव",
+    "currentBid": "वर्तमान बोली",
+    "makeOffer": "प्रस्ताव दें",
+    "acceptOffer": "प्रस्ताव स्वीकार करें",
+    "rejectOffer": "प्रस्ताव अस्वीकार करें",
+    "counterOffer": "जवाबी प्रस्ताव दें",
+    "finalPrice": "अंतिम मूल्य",
+    "dealClosed": "सौदा पक्का!",
+    "negotiationEnded": "बातचीत समाप्त",
+    "status": {
+      "active": "सक्रिय",
+      "accepted": "स्वीकृत",
+      "rejected": "अस्वीकृत",
+      "expired": "समाप्त",
+      "completed": "पूर्ण"
+    },
+    "voice": {
+      "listening": "सुन रहे हैं...",
+      "processing": "आपके प्रस्ताव को प्रोसेस कर रहे हैं...",
+      "speakOffer": "अपना प्रस्ताव बोलें",
+      "sayPrice": "जो मूल्य देना चाहते हैं वो बोलें",
+      "example": "उदाहरण: 'मैं पचास रुपए प्रति किलो देता हूं'"
+    },
+    "chat": {
+      "placeholder": "अपना संदेश टाइप करें या आवाज़ का उपयोग करें...",
+      "send": "भेजें",
+      "voiceMessage": "आवाज़ संदेश",
+      "typing": "टाइप कर रहे हैं...",
+      "translated": "{{language}} से अनुवादित"
+    }
+  },
+  "vendor": {
+    "dashboard": {
+      "title": "विक्रेता डैशबोर्ड",
+      "welcome": "वापसी पर स्वागत है, {{name}}",
+      "stats": {
+        "totalProducts": "कुल उत्पाद",
+        "activeNegotiations": "सक्रिय बातचीत",
+        "todaysSales": "आज की बिक्री",
+        "totalRevenue": "कुल आय"
+      },
+      "quickActions": {
+        "addProduct": "उत्पाद जोड़ें",
+        "viewOrders": "ऑर्डर देखें",
+        "manageInventory": "इन्वेंटरी प्रबंधन",
+        "generateQR": "QR कोड बनाएं"
+      }
+    },
+    "products": {
+      "title": "मेरे उत्पाद",
+      "addNew": "नया उत्पाद जोड़ें",
+      "name": "उत्पाद का नाम",
+      "description": "विवरण",
+      "price": "मूल्य",
+      "stock": "स्टॉक मात्रा",
+      "category": "श्रेणी",
+      "images": "उत्पाद की तस्वीरें",
+      "save": "उत्पाद सहेजें",
+      "update": "उत्पाद अपडेट करें",
+      "delete": "उत्पाद हटाएं",
+      "confirmDelete": "क्या आप वाकई इस उत्पाद को हटाना चाहते हैं?"
+    },
+    "qrCode": {
+      "title": "आपकी दुकान का QR कोड",
+      "description": "ग्राहक इस QR कोड को स्कैन करके आपकी दुकान तक पहुंच सकते हैं",
+      "download": "QR कोड डाउनलोड करें",
+      "print": "QR कोड प्रिंट करें",
+      "share": "QR कोड साझा करें",
+      "regenerate": "कोड पुनः बनाएं"
+    }
+  },
+  "voice": {
+    "settings": {
+      "title": "आवाज़ सेटिंग्स",
+      "language": "आवाज़ की भाषा",
+      "speed": "बोलने की गति",
+      "volume": "आवाज़ का वॉल्यूम",
+      "voiceType": "आवाज़ का प्रकार",
+      "male": "पुरुष",
+      "female": "महिला",
+      "testVoice": "आवाज़ टेस्ट करें",
+      "calibrateMic": "माइक्रोफोन कैलिब्रेट करें"
+    },
+    "commands": {
+      "title": "आवाज़ कमांड गाइड",
+      "navigation": {
+        "title": "नेवीगेशन",
+        "goHome": "होम जाएं",
+        "openShop": "दुकान खोलें",
+        "showOrders": "मेरे ऑर्डर दिखाएं",
+        "openSettings": "सेटिंग्स खोलें"
+      },
+      "shopping": {
+        "title": "खरीदारी",
+        "searchProduct": "[उत्पाद का नाम] खोजें",
+        "showCategory": "[श्रेणी] दिखाएं",
+        "addToCart": "कार्ट में जोड़ें",
+        "negotiate": "बातचीत शुरू करें"
+      },
+      "negotiation": {
+        "title": "बातचीत",
+        "makeOffer": "मैं [राशि] देता हूं",
+        "acceptDeal": "सौदा मंजूर है",
+        "rejectOffer": "प्रस्ताव अस्वीकार करें",
+        "endNegotiation": "बातचीत समाप्त करें"
+      }
+    },
+    "customization": {
+      "title": "आवाज़ कस्टमाइज़ेशन",
+      "createProfile": "आवाज़ प्रोफाइल बनाएं",
+      "recordSample": "आवाज़ का नमूना रिकॉर्ड करें",
+      "trainModel": "आवाज़ मॉडल ट्रेन करें",
+      "useCustomVoice": "कस्टम आवाज़ का उपयोग करें",
+      "deleteProfile": "आवाज़ प्रोफाइल हटाएं"
+    },
+    "errors": {
+      "microphoneNotFound": "माइक्रोफोन नहीं मिला",
+      "permissionDenied": "माइक्रोफोन की अनुमति नहीं दी गई",
+      "networkError": "आवाज़ प्रोसेसिंग के दौरान नेटवर्क त्रुटि",
+      "recognitionFailed": "आवाज़ पहचान असफल",
+      "tryAgain": "कृपया पुनः प्रयास करें"
+    }
+  },
+  "orders": {
+    "title": "ऑर्डर इतिहास",
+    "recent": "हाल के ऑर्डर",
+    "all": "सभी ऑर्डर",
+    "status": {
+      "pending": "लंबित",
+      "confirmed": "पुष्ट",
+      "shipped": "भेजा गया",
+      "delivered": "डिलीवर किया गया",
+      "cancelled": "रद्द किया गया"
+    },
+    "orderNumber": "ऑर्डर #{{number}}",
+    "orderDate": "ऑर्डर की तारीख",
+    "totalAmount": "कुल राशि",
+    "items": "आइटम",
+    "viewDetails": "विवरण देखें",
+    "trackOrder": "ऑर्डर ट्रैक करें",
+    "reorder": "फिर से ऑर्डर करें",
+    "cancelOrder": "ऑर्डर रद्द करें"
+  },
+  "profile": {
+    "title": "प्रोफाइल",
+    "personalInfo": "व्यक्तिगत जानकारी",
+    "name": "नाम",
+    "email": "ईमेल",
+    "phone": "फोन नंबर",
+    "location": "स्थान",
+    "language": "पसंदीदा भाषा",
+    "accountType": "खाता प्रकार",
+    "memberSince": "सदस्य बने",
+    "editProfile": "प्रोफाइल संपादित करें",
+    "changePassword": "पासवर्ड बदलें",
+    "deleteAccount": "खाता हटाएं",
+    "confirmDelete": "क्या आप वाकई अपना खाता हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "general": {
+      "title": "सामान्य",
+      "language": "भाषा",
+      "theme": "थीम",
+      "notifications": "सूचनाएं"
+    },
+    "voice": {
+      "title": "आवाज़ सेटिंग्स",
+      "enabled": "आवाज़ सुविधाएं सक्षम हैं",
+      "language": "आवाज़ की भाषा",
+      "speed": "बोलने की गति",
+      "volume": "वॉल्यूम"
+    },
+    "privacy": {
+      "title": "गोपनीयता और सुरक्षा",
+      "dataSharing": "डेटा साझाकरण",
+      "voiceData": "आवाज़ डेटा संग्रहण",
+      "locationTracking": "स्थान ट्रैकिंग"
+    },
+    "handsFree": {
+      "title": "हैंड्स-फ्री मोड",
+      "enabled": "हैंड्स-फ्री मोड सक्षम करें",
+      "wakeWord": "वेक वर्ड",
+      "continuousListening": "निरंतर सुनना",
+      "voiceConfirmation": "क्रियाओं के लिए आवाज़ पुष्टि"
+    }
+  },
+  "errors": {
+    "generic": "कुछ गलत हुआ। कृपया पुनः प्रयास करें।",
+    "network": "नेटवर्क त्रुटि। कृपया अपना कनेक्शन जांचें।",
+    "server": "सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।",
+    "notFound": "अनुरोधित संसाधन नहीं मिला।",
+    "unauthorized": "आप इस क्रिया को करने के लिए अधिकृत नहीं हैं।",
+    "forbidden": "पहुंच अस्वीकृत।",
+    "validation": "कृपया अपना इनपुट जांचें और पुनः प्रयास करें।",
+    "timeout": "अनुरोध का समय समाप्त हो गया। कृपया पुनः प्रयास करें।"
+  },
+  "success": {
+    "saved": "सफलतापूर्वक सहेजा गया",
+    "updated": "सफलतापूर्वक अपडेट किया गया",
+    "deleted": "सफलतापूर्वक हटाया गया",
+    "created": "सफलतापूर्वक बनाया गया",
+    "sent": "सफलतापूर्वक भेजा गया",
+    "uploaded": "सफलतापूर्वक अपलोड किया गया"
+  },
+  "offline": {
+    "title": "आप ऑफलाइन हैं",
+    "message": "ऑफलाइन रहते समय कुछ सुविधाएं उपलब्ध नहीं हो सकतीं",
+    "voiceStillWorks": "आवाज़ कमांड अभी भी ऑफलाइन काम करते हैं",
+    "reconnecting": "पुनः कनेक्ट हो रहे हैं...",
+    "reconnected": "वापस ऑनलाइन!"
+  },
+  "accessibility": {
+    "screenReader": {
+      "button": "बटन",
+      "link": "लिंक",
+      "image": "तस्वीर",
+      "menu": "मेनू",
+      "dialog": "डायलॉग",
+      "loading": "सामग्री लोड हो रही है",
+      "error": "त्रुटि संदेश",
+      "success": "सफलता संदेश"
+    },
+    "voiceInstructions": {
+      "tapToSpeak": "बोलने के लिए टैप करें",
+      "holdToRecord": "रिकॉर्ड करने के लिए दबाकर रखें",
+      "releaseToSend": "भेजने के लिए छोड़ें",
+      "listeningForCommand": "आवाज़ कमांड के लिए सुन रहे हैं"
+    }
+  }
+}

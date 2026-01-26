@@ -1,27 +1,24 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'wouter';
+import { useTranslation } from '../hooks/useTranslation';
+import { LanguageGrid } from '../components/LanguageSelector';
 
 export function WelcomeLanguageSelection() {
-  const navigate = useNavigate();
-  const [selectedLanguage, setSelectedLanguage] = useState('english');
+  const [, setLocation] = useLocation();
+  const { t } = useTranslation();
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
 
-  const languages = [
-    { id: 'english', name: 'English', nativeName: 'English', flag: '🇺🇸' },
-    { id: 'hindi', name: 'Hindi', nativeName: 'हिंदी', flag: '🇮🇳' },
-    { id: 'marathi', name: 'Marathi', nativeName: 'मराठी', flag: '🇮🇳' },
-    { id: 'gujarati', name: 'Gujarati', nativeName: 'ગુજરાતી', flag: '🇮🇳' },
-    { id: 'tamil', name: 'Tamil', nativeName: 'தமிழ்', flag: '🇮🇳' },
-    { id: 'bengali', name: 'Bengali', nativeName: 'বাংলা', flag: '🇮🇳' }
-  ];
+  const handleLanguageSelect = (language: string) => {
+    // Language is already changed by LanguageGrid component
+    console.log('Language selected:', language);
+  };
 
   const handleContinue = () => {
-    // Store language preference
-    localStorage.setItem('selectedLanguage', selectedLanguage);
+    // Store voice preference
     localStorage.setItem('voiceEnabled', isVoiceEnabled.toString());
     
     // Navigate to main app
-    navigate('/customer/shop');
+    setLocation('/customer/shop');
   };
 
   const handleVoiceToggle = () => {
@@ -37,51 +34,23 @@ export function WelcomeLanguageSelection() {
             <span className="material-symbols-outlined text-white text-3xl">translate</span>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Welcome to Local Trade
+            {t('welcome.title')}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 text-base leading-relaxed">
-            Choose your preferred language for voice-enabled shopping and negotiation
+            {t('welcome.description')}
           </p>
         </div>
 
         {/* Language Selection */}
         <div className="flex-1">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Select Language
+            {t('welcome.selectLanguage')}
           </h2>
-          <div className="space-y-3 mb-8">
-            {languages.map((language) => (
-              <label
-                key={language.id}
-                className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  selectedLanguage === language.id
-                    ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-300'
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="language"
-                  value={language.id}
-                  checked={selectedLanguage === language.id}
-                  onChange={(e) => setSelectedLanguage(e.target.value)}
-                  className="sr-only"
-                />
-                <span className="text-2xl mr-3">{language.flag}</span>
-                <div className="flex-1">
-                  <p className="font-semibold text-gray-900 dark:text-white">
-                    {language.name}
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {language.nativeName}
-                  </p>
-                </div>
-                {selectedLanguage === language.id && (
-                  <span className="material-symbols-outlined text-blue-600">check_circle</span>
-                )}
-              </label>
-            ))}
-          </div>
+          
+          <LanguageGrid 
+            onLanguageSelect={handleLanguageSelect}
+            className="mb-8"
+          />
 
           {/* Voice Settings */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 mb-8">
@@ -91,9 +60,9 @@ export function WelcomeLanguageSelection() {
                   <span className="material-symbols-outlined text-green-600 text-lg">mic</span>
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-900 dark:text-white">Voice Assistant</p>
+                  <p className="font-semibold text-gray-900 dark:text-white">{t('voice.settings.title')}</p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Enable voice commands and responses
+                    {t('permissions.microphone.description')}
                   </p>
                 </div>
               </div>
@@ -118,14 +87,14 @@ export function WelcomeLanguageSelection() {
           onClick={handleContinue}
           className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-600/20 hover:bg-blue-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
         >
-          <span>Continue Shopping</span>
+          <span>{t('welcome.getStarted')}</span>
           <span className="material-symbols-outlined">arrow_forward</span>
         </button>
 
         {/* Footer Info */}
         <div className="mt-6 text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-            You can change language and voice settings anytime in the app settings
+            {t('settings.general.language')} {t('common.and')} {t('voice.settings.title')} {t('common.canBeChanged')}
           </p>
         </div>
       </div>

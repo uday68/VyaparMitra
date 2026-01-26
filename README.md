@@ -4,117 +4,183 @@ VyaparMitra is a revolutionary voice-first e-commerce platform that enables seam
 
 ## 🎯 Complete User Experience Journey
 
-### 🛍️ Customer Experience
+<div align="center">
 
-#### 1. Welcome & Language Selection
-![Welcome Screen](stitch_ai_assisted_negotiation_chat/welcome_&_language_selection/screen.png)
-*Multilingual onboarding with voice-guided setup*
+### 🛍️ Customer Experience Carousel
 
-#### 2. Permissions & Voice Setup
-![Permissions Setup](stitch_ai_assisted_negotiation_chat/permissions_&_ready_to_shop/screen.png)
-*Voice permissions and accessibility configuration*
+<table>
+<tr>
+<td align="center" width="20%">
+<img src="stitch_ai_assisted_negotiation_chat/welcome_&_language_selection/screen.png" width="200" alt="Welcome Screen"/>
+<br><b>Welcome & Language Selection</b>
+<br><sub>Multilingual onboarding with voice-guided setup</sub>
+</td>
+<td align="center" width="20%">
+<img src="stitch_ai_assisted_negotiation_chat/permissions_&_ready_to_shop/screen.png" width="200" alt="Permissions Setup"/>
+<br><b>Permissions & Voice Setup</b>
+<br><sub>Voice permissions and accessibility configuration</sub>
+</td>
+<td align="center" width="20%">
+<img src="stitch_ai_assisted_negotiation_chat/customer_shop_browser_with_voice/screen.png" width="200" alt="Shop Browser"/>
+<br><b>Shop Browser with Voice Assistant</b>
+<br><sub>Voice-enabled product browsing with AI assistant</sub>
+</td>
+<td align="center" width="20%">
+<img src="stitch_ai_assisted_negotiation_chat/customer_voice_negotiation/screen.png" width="200" alt="Customer Negotiation"/>
+<br><b>Voice-Powered Negotiation</b>
+<br><sub>Real-time voice negotiations with AI assistance</sub>
+</td>
+<td align="center" width="20%">
+<img src="stitch_ai_assisted_negotiation_chat/customer_deal_confirmation/screen.png" width="200" alt="Deal Confirmation"/>
+<br><b>Deal Confirmation & Success</b>
+<br><sub>Transaction completion with voice confirmation</sub>
+</td>
+</tr>
+</table>
 
-#### 3. Shop Browser with Voice Assistant
-![Shop Browser](stitch_ai_assisted_negotiation_chat/customer_shop_browser_with_voice/screen.png)
-*Voice-enabled product browsing with AI assistant*
+### 🏪 Vendor Experience Carousel
 
-#### 4. Voice-Powered Negotiation
-![Customer Negotiation](stitch_ai_assisted_negotiation_chat/customer_voice_negotiation/screen.png)
-*Real-time voice negotiations with AI assistance*
+<table>
+<tr>
+<td align="center" width="25%">
+<img src="stitch_ai_assisted_negotiation_chat/vendor_dashboard_with_voice_ai_1/screen.png" width="200" alt="Vendor Dashboard"/>
+<br><b>Vendor Dashboard with Voice AI</b>
+<br><sub>Comprehensive vendor management with voice controls</sub>
+</td>
+<td align="center" width="25%">
+<img src="stitch_ai_assisted_negotiation_chat/ai-assisted_negotiation_chat/screen.png" width="200" alt="AI Negotiation"/>
+<br><b>AI-Assisted Negotiation Interface</b>
+<br><sub>Intelligent negotiation assistance for vendors</sub>
+</td>
+<td align="center" width="25%">
+<img src="stitch_ai_assisted_negotiation_chat/voice-enabled_add_product/screen.png" width="200" alt="Add Product"/>
+<br><b>Voice-Enabled Product Management</b>
+<br><sub>Hands-free product catalog management</sub>
+</td>
+<td align="center" width="25%">
+<img src="stitch_ai_assisted_negotiation_chat/vendor_order_history_with_voice_ai/screen.png" width="200" alt="Order History"/>
+<br><b>Order History with Voice AI</b>
+<br><sub>Voice-accessible transaction history and analytics</sub>
+</td>
+</tr>
+</table>
 
-#### 5. Deal Confirmation & Success
-![Deal Confirmation](stitch_ai_assisted_negotiation_chat/customer_deal_confirmation/screen.png)
-*Transaction completion with voice confirmation*
+### 🎙️ Advanced Voice Features Carousel
 
-### 🏪 Vendor Experience
+<table>
+<tr>
+<td align="center" width="25%">
+<img src="stitch_ai_assisted_negotiation_chat/ai_voice_customization_1/screen.png" width="200" alt="Voice Customization"/>
+<br><b>Voice Customization & AI Settings</b>
+<br><sub>Personalized AI voice configuration</sub>
+</td>
+<td align="center" width="25%">
+<img src="stitch_ai_assisted_negotiation_chat/advanced_voice_accessibility_3/screen.png" width="200" alt="Voice Accessibility"/>
+<br><b>Advanced Voice Accessibility</b>
+<br><sub>Comprehensive accessibility features for all users</sub>
+</td>
+<td align="center" width="25%">
+<img src="stitch_ai_assisted_negotiation_chat/hands-free_mode_settings_2/screen.png" width="200" alt="Hands-Free Settings"/>
+<br><b>Hands-Free Mode Settings</b>
+<br><sub>Always-on voice interaction configuration</sub>
+</td>
+<td align="center" width="25%">
+<img src="stitch_ai_assisted_negotiation_chat/voice_assistant_settings/screen.png" width="200" alt="Voice Settings"/>
+<br><b>Voice Assistant Settings</b>
+<br><sub>Detailed voice assistant customization</sub>
+</td>
+</tr>
+</table>
 
-#### 1. Vendor Dashboard with Voice AI
-![Vendor Dashboard](stitch_ai_assisted_negotiation_chat/vendor_dashboard_with_voice_ai_1/screen.png)
-*Comprehensive vendor management with voice controls*
+### 📱 Interactive Guides & Help Carousel
 
-#### 2. AI-Assisted Negotiation Interface
-![AI Negotiation](stitch_ai_assisted_negotiation_chat/ai-assisted_negotiation_chat/screen.png)
-*Intelligent negotiation assistance for vendors*
+<table>
+<tr>
+<td align="center" width="33%">
+<img src="stitch_ai_assisted_negotiation_chat/voice-first_how-to_guide/screen.png" width="200" alt="Voice Guide"/>
+<br><b>Voice-First How-To Guide</b>
+<br><sub>Interactive voice tutorials and onboarding</sub>
+</td>
+<td align="center" width="33%">
+<img src="stitch_ai_assisted_negotiation_chat/voice_commands_reference_guide/screen.png" width="200" alt="Voice Commands"/>
+<br><b>Voice Commands Reference</b>
+<br><sub>Comprehensive voice command documentation</sub>
+</td>
+<td align="center" width="33%">
+<img src="stitch_ai_assisted_negotiation_chat/interactive_voice_guide/screen.png" width="200" alt="Interactive Guide"/>
+<br><b>Interactive Voice Guide</b>
+<br><sub>Step-by-step voice interaction tutorials</sub>
+</td>
+</tr>
+</table>
 
-#### 3. Voice-Enabled Product Management
-![Add Product](stitch_ai_assisted_negotiation_chat/voice-enabled_add_product/screen.png)
-*Hands-free product catalog management*
+### 🔧 System States & Feedback Carousel
 
-#### 4. Order History with Voice AI
-![Order History](stitch_ai_assisted_negotiation_chat/vendor_order_history_with_voice_ai/screen.png)
-*Voice-accessible transaction history and analytics*
+<table>
+<tr>
+<td align="center" width="20%">
+<img src="stitch_ai_assisted_negotiation_chat/voice_transaction_active_animation/screen.png" width="200" alt="Transaction Active"/>
+<br><b>Voice Transaction Active</b>
+<br><sub>Real-time transaction processing with voice feedback</sub>
+</td>
+<td align="center" width="20%">
+<img src="stitch_ai_assisted_negotiation_chat/voice_transaction_success_state/screen.png" width="200" alt="Transaction Success"/>
+<br><b>Voice Transaction Success</b>
+<br><sub>Voice-confirmed successful transactions</sub>
+</td>
+<td align="center" width="20%">
+<img src="stitch_ai_assisted_negotiation_chat/voice_recognition_error_state/screen.png" width="200" alt="Voice Error State"/>
+<br><b>Voice Error Handling</b>
+<br><sub>Intelligent error handling with voice guidance</sub>
+</td>
+<td align="center" width="20%">
+<img src="stitch_ai_assisted_negotiation_chat/offline_voice_interaction_state/screen.png" width="200" alt="Offline State"/>
+<br><b>Offline Voice Support</b>
+<br><sub>Offline voice interaction capabilities</sub>
+</td>
+<td align="center" width="20%">
+<img src="stitch_ai_assisted_negotiation_chat/syncing_success_animation/screen.png" width="200" alt="Syncing Animation"/>
+<br><b>System Synchronization</b>
+<br><sub>Real-time data synchronization with voice feedback</sub>
+</td>
+</tr>
+</table>
 
-## 🎙️ Advanced Voice Features
+### 🏪 Business Tools & Analytics Carousel
 
-### Voice Customization & AI Settings
-![Voice Customization](stitch_ai_assisted_negotiation_chat/ai_voice_customization_1/screen.png)
-*Personalized AI voice configuration*
+<table>
+<tr>
+<td align="center" width="33%">
+<img src="stitch_ai_assisted_negotiation_chat/customer_bids_dashboard/screen.png" width="200" alt="Bids Dashboard"/>
+<br><b>Customer Bids Dashboard</b>
+<br><sub>Real-time bid tracking and management</sub>
+</td>
+<td align="center" width="33%">
+<img src="stitch_ai_assisted_negotiation_chat/shop_qr_flyer_print_preview/screen.png" width="200" alt="QR Flyer"/>
+<br><b>QR Code Integration</b>
+<br><sub>Printable QR codes for physical store integration</sub>
+</td>
+<td align="center" width="33%">
+<img src="stitch_ai_assisted_negotiation_chat/vendor_offline_status_dashboard/screen.png" width="200" alt="Vendor Status"/>
+<br><b>Vendor Status Management</b>
+<br><sub>Comprehensive vendor status and availability management</sub>
+</td>
+</tr>
+</table>
 
-### Advanced Voice Accessibility
-![Voice Accessibility](stitch_ai_assisted_negotiation_chat/advanced_voice_accessibility_3/screen.png)
-*Comprehensive accessibility features for all users*
+### ⚙️ Unified Settings & Automation
 
-### Hands-Free Mode Settings
-![Hands-Free Settings](stitch_ai_assisted_negotiation_chat/hands-free_mode_settings_2/screen.png)
-*Always-on voice interaction configuration*
+<table>
+<tr>
+<td align="center" width="100%">
+<img src="stitch_ai_assisted_negotiation_chat/unified_voice_&_automation_settings/screen.png" width="300" alt="Unified Settings"/>
+<br><b>Voice & Automation Settings</b>
+<br><sub>Centralized voice and automation configuration</sub>
+</td>
+</tr>
+</table>
 
-### Voice Assistant Settings
-![Voice Settings](stitch_ai_assisted_negotiation_chat/voice_assistant_settings/screen.png)
-*Detailed voice assistant customization*
-
-## 📱 Interactive Guides & Help
-
-### Voice-First How-To Guide
-![Voice Guide](stitch_ai_assisted_negotiation_chat/voice-first_how-to_guide/screen.png)
-*Interactive voice tutorials and onboarding*
-
-### Voice Commands Reference
-![Voice Commands](stitch_ai_assisted_negotiation_chat/voice_commands_reference_guide/screen.png)
-*Comprehensive voice command documentation*
-
-### Interactive Voice Guide
-![Interactive Guide](stitch_ai_assisted_negotiation_chat/interactive_voice_guide/screen.png)
-*Step-by-step voice interaction tutorials*
-
-## 🔧 System States & Feedback
-
-### Voice Transaction States
-![Transaction Active](stitch_ai_assisted_negotiation_chat/voice_transaction_active_animation/screen.png)
-*Real-time transaction processing with voice feedback*
-
-![Transaction Success](stitch_ai_assisted_negotiation_chat/voice_transaction_success_state/screen.png)
-*Voice-confirmed successful transactions*
-
-### Error Handling & Offline Support
-![Voice Error State](stitch_ai_assisted_negotiation_chat/voice_recognition_error_state/screen.png)
-*Intelligent error handling with voice guidance*
-
-![Offline State](stitch_ai_assisted_negotiation_chat/offline_voice_interaction_state/screen.png)
-*Offline voice interaction capabilities*
-
-### System Synchronization
-![Syncing Animation](stitch_ai_assisted_negotiation_chat/syncing_success_animation/screen.png)
-*Real-time data synchronization with voice feedback*
-
-## 🏪 Business Tools & Analytics
-
-### Customer Bids Dashboard
-![Bids Dashboard](stitch_ai_assisted_negotiation_chat/customer_bids_dashboard/screen.png)
-*Real-time bid tracking and management*
-
-### QR Code Integration
-![QR Flyer](stitch_ai_assisted_negotiation_chat/shop_qr_flyer_print_preview/screen.png)
-*Printable QR codes for physical store integration*
-
-### Vendor Status Management
-![Vendor Status](stitch_ai_assisted_negotiation_chat/vendor_offline_status_dashboard/screen.png)
-*Comprehensive vendor status and availability management*
-
-## ⚙️ Unified Settings & Automation
-
-### Voice & Automation Settings
-![Unified Settings](stitch_ai_assisted_negotiation_chat/unified_voice_&_automation_settings/screen.png)
-*Centralized voice and automation configuration*
+</div>
 
 ## 🌟 Key Features
 
