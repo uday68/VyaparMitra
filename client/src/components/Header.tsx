@@ -1,11 +1,23 @@
 import { Link } from "wouter";
+import { useTranslation } from "../hooks/useTranslation";
+import { LanguageSelector } from "./LanguageSelector";
 
 interface HeaderProps {
   title?: string;
   showBack?: boolean;
+  showLanguageSelector?: boolean;
 }
 
-export function Header({ title = "Sanjay's Fruits", showBack = false }: HeaderProps) {
+export function Header({ 
+  title, 
+  showBack = false, 
+  showLanguageSelector = true 
+}: HeaderProps) {
+  const { t } = useTranslation();
+  
+  // Use translation for default title if no title provided
+  const displayTitle = title || t('shop.title');
+
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
       <div className="flex items-center px-4 py-3 justify-between">
@@ -19,12 +31,14 @@ export function Header({ title = "Sanjay's Fruits", showBack = false }: HeaderPr
           </div>
         )}
         
-        <h1 className="text-slate-900 text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-10">
-          {title}
+        <h1 className="text-slate-900 text-lg font-bold leading-tight tracking-tight flex-1 text-center">
+          {displayTitle}
         </h1>
 
-        {!showBack && (
-           <div className="size-10" /> /* Spacer for balance */
+        {showLanguageSelector ? (
+          <LanguageSelector variant="icon-only" className="shrink-0" />
+        ) : (
+          <div className="size-10" /> /* Spacer for balance */
         )}
       </div>
     </header>

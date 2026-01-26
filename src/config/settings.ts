@@ -49,9 +49,13 @@ export const config = {
   // Security Configuration
   security: {
     jwtSecret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
+    jwtExpiry: process.env.JWT_EXPIRY || '24h',
+    refreshSecret: process.env.REFRESH_SECRET || 'your-super-secret-refresh-key-change-in-production',
+    refreshExpiry: process.env.REFRESH_EXPIRY || '7d',
     bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || '12'),
     rateLimitWindow: parseInt(process.env.RATE_LIMIT_WINDOW || '60000'), // 1 minute
     rateLimitMax: parseInt(process.env.RATE_LIMIT_MAX || '100'),
+    corsOrigins: process.env.CORS_ORIGINS?.split(',') || ['http://localhost:5173'],
   },
 
   // Business Logic Configuration
@@ -87,6 +91,20 @@ export const config = {
     allowedImageTypes: ['image/jpeg', 'image/png', 'image/webp'],
     allowedAudioTypes: ['audio/wav', 'audio/mp3', 'audio/ogg'],
     uploadPath: process.env.UPLOAD_PATH || './uploads',
+  },
+
+  // Logging Configuration
+  logging: {
+    level: process.env.LOG_LEVEL || 'info',
+    enableFileLogging: process.env.ENABLE_FILE_LOGGING !== 'false',
+    logDirectory: process.env.LOG_DIRECTORY || './logs',
+  },
+
+  // Monitoring Configuration
+  monitoring: {
+    enableMetrics: process.env.ENABLE_METRICS === 'true',
+    metricsPort: parseInt(process.env.METRICS_PORT || '9090'),
+    healthCheckInterval: parseInt(process.env.HEALTH_CHECK_INTERVAL || '30000'), // 30 seconds
   },
 };
 
