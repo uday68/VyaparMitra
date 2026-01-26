@@ -136,4 +136,29 @@ export class TTSService {
       }
     }
   }
+
+  // Health check methods
+  static async checkTacotronHealth(): Promise<boolean> {
+    try {
+      return await this.tacotron.isHealthy();
+    } catch (error) {
+      return false;
+    }
+  }
+
+  static async checkVoiceboxHealth(): Promise<boolean> {
+    try {
+      return await this.voicebox.isHealthy();
+    } catch (error) {
+      return false;
+    }
+  }
+
+  static async checkSV2TTSHealth(): Promise<boolean> {
+    try {
+      return await this.sv2tts.isHealthy();
+    } catch (error) {
+      return false;
+    }
+  }
 }

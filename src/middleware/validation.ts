@@ -208,6 +208,15 @@ export const voiceSchemas = {
       consentGiven: z.boolean(),
     }),
   },
+  
+  translate: {
+    body: z.object({
+      text: z.string().min(1, 'Text is required').max(1000),
+      sourceLanguage: commonSchemas.language,
+      targetLanguage: commonSchemas.language,
+      context: z.string().max(100).optional(),
+    }),
+  },
 };
 
 // QR Session validation schemas

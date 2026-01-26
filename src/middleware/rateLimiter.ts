@@ -149,6 +149,20 @@ export const rateLimiters = {
     legacyHeaders: false,
     store: new RedisStore('rate_limit:payment', 5 * 60 * 1000) as any,
   }),
+
+  // Translation API (moderate limits)
+  translation: rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 100, // Limit each IP to 100 translation requests per minute
+    message: {
+      success: false,
+      error: 'Too many translation requests, please try again later',
+      code: 'TRANSLATION_RATE_LIMIT_EXCEEDED',
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    store: new RedisStore('rate_limit:translation', 1 * 60 * 1000) as any,
+  }),
 };
 
 // User-specific rate limiting (requires authentication)
