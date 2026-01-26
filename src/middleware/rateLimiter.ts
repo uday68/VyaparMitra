@@ -135,6 +135,20 @@ export const rateLimiters = {
     legacyHeaders: false,
     store: new RedisStore('rate_limit:negotiation', 1 * 60 * 1000) as any,
   }),
+
+  // Payment processing (strict limits for security)
+  payment: rateLimit({
+    windowMs: 5 * 60 * 1000, // 5 minutes
+    max: 5, // Limit each IP to 5 payment attempts per 5 minutes
+    message: {
+      success: false,
+      error: 'Too many payment attempts, please try again later',
+      code: 'PAYMENT_RATE_LIMIT_EXCEEDED',
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    store: new RedisStore('rate_limit:payment', 5 * 60 * 1000) as any,
+  }),
 };
 
 // User-specific rate limiting (requires authentication)

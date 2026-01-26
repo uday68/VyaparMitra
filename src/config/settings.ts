@@ -35,27 +35,75 @@ export const config = {
     apiKey: process.env.BHASHINI_API_KEY || '',
     baseUrl: process.env.BHASHINI_BASE_URL || 'https://bhashini.gov.in/api',
     timeout: parseInt(process.env.BHASHINI_TIMEOUT || '10000'),
+    // Fallback translation service
+    fallback: {
+      enabled: process.env.TRANSLATION_FALLBACK_ENABLED === 'true',
+      service: process.env.FALLBACK_TRANSLATION_SERVICE || 'google',
+      apiKey: process.env.FALLBACK_TRANSLATION_API_KEY || '',
+    },
   },
 
   // Text-to-Speech Configuration
   tts: {
     defaultModel: process.env.TTS_MODEL || 'tacotron',
-    voiceCloning: process.env.VOICE_CLONING_ENABLED === 'true',
+    voiceCloningEnabled: process.env.VOICE_CLONING_ENABLED === 'true',
     audioFormat: process.env.AUDIO_FORMAT || 'wav',
     sampleRate: parseInt(process.env.AUDIO_SAMPLE_RATE || '22050'),
-    cacheTTL: parseInt(process.env.AUDIO_CACHE_TTL || '3600'), // 1 hour
+    audioCacheTTL: parseInt(process.env.AUDIO_CACHE_TTL || '3600'), // 1 hour
+    // Voice service endpoints
+    tacotron: {
+      endpoint: process.env.TACOTRON_ENDPOINT || 'http://localhost:8001',
+      apiKey: process.env.TACOTRON_API_KEY || '',
+    },
+    voicebox: {
+      endpoint: process.env.VOICEBOX_ENDPOINT || 'http://localhost:8002',
+      apiKey: process.env.VOICEBOX_API_KEY || '',
+    },
+    sv2tts: {
+      endpoint: process.env.SV2TTS_ENDPOINT || 'http://localhost:8003',
+      apiKey: process.env.SV2TTS_API_KEY || '',
+    },
   },
 
-  // Security Configuration
-  security: {
+  // Authentication Configuration
+  auth: {
     jwtSecret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
     jwtExpiry: process.env.JWT_EXPIRY || '24h',
     refreshSecret: process.env.REFRESH_SECRET || 'your-super-secret-refresh-key-change-in-production',
     refreshExpiry: process.env.REFRESH_EXPIRY || '7d',
     bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || '12'),
+  },
+
+  // Payment Configuration
+  payment: {
+    razorpay: {
+      keyId: process.env.RAZORPAY_KEY_ID || '',
+      keySecret: process.env.RAZORPAY_KEY_SECRET || '',
+      webhookSecret: process.env.RAZORPAY_WEBHOOK_SECRET || '',
+    },
+    upi: {
+      enabled: process.env.UPI_ENABLED === 'true',
+      vpa: process.env.UPI_VPA || 'merchant@upi',
+    },
+    currency: process.env.PAYMENT_CURRENCY || 'INR',
+    timeout: parseInt(process.env.PAYMENT_TIMEOUT || '300000'), // 5 minutes
+  },
+
+  // Security Configuration
+  security: {
     rateLimitWindow: parseInt(process.env.RATE_LIMIT_WINDOW || '60000'), // 1 minute
     rateLimitMax: parseInt(process.env.RATE_LIMIT_MAX || '100'),
     corsOrigins: process.env.CORS_ORIGINS?.split(',') || ['http://localhost:5173'],
+    trustedProxies: process.env.TRUSTED_PROXIES?.split(',') || [],
+    sessionSecret: process.env.SESSION_SECRET || 'your-session-secret-change-in-production',
+  },
+
+  // Application Configuration
+  app: {
+    baseUrl: process.env.APP_BASE_URL || 'http://localhost:4000',
+    frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
+    supportEmail: process.env.SUPPORT_EMAIL || 'support@vyaparmitra.com',
+    companyName: process.env.COMPANY_NAME || 'VyaparMitra',
   },
 
   // Business Logic Configuration
