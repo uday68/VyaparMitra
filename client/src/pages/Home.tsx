@@ -26,6 +26,17 @@ export default function Home() {
     }
   };
 
+  const handleVoiceCommand = (command: string) => {
+    // Simple voice command processing
+    if (command.toLowerCase().includes('shop') || command.toLowerCase().includes('browse')) {
+      setLocation('/customer/shop');
+    } else if (command.toLowerCase().includes('settings')) {
+      setLocation('/voice-settings-page');
+    } else if (command.toLowerCase().includes('help')) {
+      setLocation('/voice-commands');
+    }
+  };
+
   const filteredProducts = products?.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
@@ -38,9 +49,25 @@ export default function Home() {
           <div className="text-primary flex size-10 shrink-0 items-center justify-center">
             <span className="material-symbols-outlined text-3xl">translate</span>
           </div>
-          <h1 className="text-[#111418] text-xl font-bold leading-tight tracking-tight flex-1 text-center pr-10">
-            Sanjay's Fruits
+          <h1 className="text-[#111418] text-xl font-bold leading-tight tracking-tight flex-1 text-center">
+            Local Trade
           </h1>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setLocation('/voice-commands')}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Voice Commands Guide"
+            >
+              <span className="material-symbols-outlined text-primary">help</span>
+            </button>
+            <button 
+              onClick={() => setLocation('/voice-settings-page')}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Voice Settings"
+            >
+              <span className="material-symbols-outlined text-primary">settings</span>
+            </button>
+          </div>
         </div>
 
         {/* Search Bar */}
@@ -60,6 +87,40 @@ export default function Home() {
           </label>
         </div>
       </header>
+
+      {/* Quick Actions */}
+      <div className="px-4 py-3">
+        <div className="flex gap-3 overflow-x-auto pb-2">
+          <button
+            onClick={() => setLocation('/customer/shop')}
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-full whitespace-nowrap font-medium hover:bg-primary/90 transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm">storefront</span>
+            Browse Shop
+          </button>
+          <button
+            onClick={() => setLocation('/welcome')}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full whitespace-nowrap font-medium hover:bg-gray-200 transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm">translate</span>
+            Language
+          </button>
+          <button
+            onClick={() => setLocation('/vendor/qr-code')}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full whitespace-nowrap font-medium hover:bg-gray-200 transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm">qr_code</span>
+            QR Code
+          </button>
+          <button
+            onClick={() => setLocation('/offline')}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full whitespace-nowrap font-medium hover:bg-gray-200 transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm">offline_bolt</span>
+            Offline Mode
+          </button>
+        </div>
+      </div>
 
       {/* Product List */}
       <main className="flex-1 overflow-y-auto pb-44 px-4 pt-4 space-y-4">
@@ -96,11 +157,11 @@ export default function Home() {
               <div className="flex-1">
                 <p className="text-primary text-sm font-semibold">Voice Assistant</p>
                 <p className="text-[#111418] text-sm font-medium leading-snug">
-                  Say "Bid 170 for 5kg Apples" to start negotiating
+                  Say "Browse shop" or "Voice settings" to get started
                 </p>
               </div>
               <button 
-                className="text-primary/60"
+                className="text-primary/60 hover:text-primary"
                 onClick={() => setShowVoiceAssistant(false)}
               >
                 <span className="material-symbols-outlined">close</span>

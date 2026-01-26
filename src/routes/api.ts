@@ -5,83 +5,131 @@ import { QRSessionService } from '../services/qr_session';
 import { TTSService } from '../voice/tts_service';
 import { VoiceIntentService } from '../services/voice_intent';
 import { TranslationService } from '../services/translation_service';
+import { ImageStorageService } from '../services/image_storage';
 import { HealthService } from '../utils/health';
+import { authenticateToken, requireUserType, optionalAuth, AuthenticatedRequest } from '../middleware/auth';
+import { validateRequest, productSchemas, negotiationSchemas, voiceSchemas, qrSchemas } from '../middleware/validation';
+import { rateLimiters, burstProtection, dynamicRateLimit } from '../middleware/rateLimiter';
+import { logHelpers, PerformanceMonitor } from '../utils/logger';
 
 const router = express.Router();
 
 // Products API
-router.get('/products', async (req, res) => {
-  try {
-    const { vendorId, category, search, inStock, minPrice, maxPrice } = req.query;
-    
-    const filter = {
-      vendorId: vendorId as string,
-      category: category as string,
-      search: search as string,
-      inStock: inStock === 'true',
-      minPrice: minPrice ? parseFloat(minPrice as string) : undefined,
-      maxPrice: maxPrice ? parseFloat(maxPrice as string) : undefined,
-    };
+router.get('/products', 
+  optionalAuth,
+  validateRequest(productSchemas.list),
+  async (req: AuthenticatedRequest, res) => {
+    try {
+      const { vendorId, category, search, inStock, minPrice, maxPrice, page, limit } = req.query as any;
+      
+      const filter = {
+        vendorId: vendorId as string,
+        category: category as string,
+        search: search as string,
+        inStock: inStock === 'true',
+        minPrice: minPrice ? parseFloat(minPrice as string) : undefined,
+        maxPrice: maxPrice ? parseFloat(maxPrice as string) : undefined,
+      };
 
-    const products = await InventoryService.searchProducts(filter);
-    res.json({ success: true, data: products });
-  } catch (error) {
-    console.error('Failed to fetch products:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch products' });
+      const products = await PerformanceMonitor.measure(
+        'products_search',
+        () => InventoryService.searchProducts(filter, { page, limit }),
+        { filter, userId: req.user?.id }
+      );
+
+      res.json({ success: true, data: products });
+    } catch (error) {
+      logHelpers.databaseError('products_fetch', error, { userId: req.user?.id });
+      console.error('Failed to fetch products:', error);
+      res.status(500).json({ success: false, error: 'Failed to fetch products' });
+    }
   }
-});
+);
 
-router.get('/products/:id', async (req, res) => {
-  try {
-    const product = await InventoryService.getProductById(req.params.id);
-    res.json({ success: true, data: product });
-  } catch (error) {
-    console.error('Failed to fetch product:', error);
-    res.status(404).json({ success: false, error: 'Product not found' });
+router.get('/products/:id', 
+  optionalAuth,
+  validateRequest(productSchemas.get),
+  async (req: AuthenticatedRequest, res) => {
+    try {
+      const product = await InventoryService.getProductById(req.params.id);
+      if (!product) {
+        return res.status(404).json({ success: false, error: 'Product not found' });
+      }
+      res.json({ success: true, data: product });
+    } catch (error) {
+      console.error('Failed to fetch product:', error);
+      res.status(404).json({ success: false, error: 'Product not found' });
+    }
   }
-});
+);
 
-router.post('/products', async (req, res) => {
-  try {
-    const { vendorId, name, description, basePrice, stock, category, images } = req.body;
-    
-    const productData = {
-      name,
-      description,
-      basePrice,
-      stock,
-      category,
-      images,
-    };
+router.post('/products', 
+  authenticateToken,
+  requireUserType('vendor'),
+  burstProtection.productCreation,
+  validateRequest(productSchemas.create),
+  async (req: AuthenticatedRequest, res) => {
+    try {
+      const vendorId = req.user!.id;
+      const { name, description, basePrice, stock, category, images } = req.body;
+      
+      const productData = {
+        name,
+        description,
+        basePrice,
+        stock,
+        category,
+        images,
+      };
 
-    const product = await InventoryService.addProduct(vendorId, productData);
-    res.status(201).json({ success: true, data: product });
-  } catch (error) {
-    console.error('Failed to create product:', error);
-    res.status(400).json({ success: false, error: 'Failed to create product' });
+      const product = await InventoryService.addProduct(vendorId, productData);
+      
+      logHelpers.businessEvent('product_created', {
+        productId: product._id,
+        vendorId,
+        name,
+        basePrice,
+      });
+
+      res.status(201).json({ success: true, data: product });
+    } catch (error) {
+      logHelpers.databaseError('product_creation', error, { vendorId: req.user!.id });
+      console.error('Failed to create product:', error);
+      res.status(400).json({ success: false, error: 'Failed to create product' });
+    }
   }
-});
+);
 
-router.patch('/products/:id', async (req, res) => {
-  try {
-    const updates = req.body;
-    const product = await InventoryService.updateProduct(req.params.id, updates);
-    res.json({ success: true, data: product });
-  } catch (error) {
-    console.error('Failed to update product:', error);
-    res.status(400).json({ success: false, error: 'Failed to update product' });
+router.patch('/products/:id', 
+  authenticateToken,
+  requireUserType('vendor'),
+  validateRequest(productSchemas.update),
+  async (req: AuthenticatedRequest, res) => {
+    try {
+      const updates = req.body;
+      const product = await InventoryService.updateProduct(req.params.id, updates, req.user!.id);
+      res.json({ success: true, data: product });
+    } catch (error) {
+      console.error('Failed to update product:', error);
+      res.status(400).json({ success: false, error: 'Failed to update product' });
+    }
   }
-});
+);
 
-router.delete('/products/:id', async (req, res) => {
-  try {
-    await InventoryService.deleteProduct(req.params.id);
-    res.json({ success: true, message: 'Product deleted successfully' });
-  } catch (error) {
-    console.error('Failed to delete product:', error);
-    res.status(400).json({ success: false, error: 'Failed to delete product' });
+router.delete('/products/:id', 
+  authenticateToken,
+  requireUserType('vendor'),
+  validateRequest(productSchemas.get),
+  async (req: AuthenticatedRequest, res) => {
+    try {
+      await InventoryService.deleteProduct(req.params.id, req.user!.id);
+      res.json({ success: true, message: 'Product deleted successfully' });
+    } catch (error) {
+      console.error('Failed to delete product:', error);
+      res.status(400).json({ success: false, error: 'Failed to delete product' });
+    }
   }
-});
+);
 
 // Negotiations API
 router.post('/negotiations', async (req, res) => {

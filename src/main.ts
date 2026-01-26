@@ -1,183 +1,277 @@
-import 'reflect-metadata';
 import express from 'express';
-import { ApolloServer } from 'apollo-server-express';
-import { buildSchema } from 'type-graphql';
-import { createServer } from 'http';
-import { WebSocketServer } from 'ws';
-import { useServer } from 'graphql-ws/lib/use/ws';
-import dotenv from 'dotenv';
 import cors from 'cors';
-import multer from 'multer';
-import cron from 'node-cron';
-
-import { connectMongoDB } from './db/mongo';
-import { connectPostgreSQL } from './db/postgres';
-import { connectRedis } from './db/redis';
-import { VendorResolver } from './graphql/resolvers/VendorResolver';
-import { ProductResolver } from './graphql/resolvers/ProductResolver';
-import { NegotiationResolver } from './graphql/resolvers/NegotiationResolver';
+import helmet from 'helmet';
+import compression from 'compression';
+import { createServer } from 'http';
 import { config, validateConfig } from './config/settings';
-import apiRoutes from './routes/api';
+import { connectMongoDB } from './db/mongo';
+import { connectRedis } from './db/redis';
+import { connectPostgreSQL } from './db/postgres';
+import { ImageStorageService } from './services/image_storage';
+import { HealthService } from './utils/health';
+import { logger, requestLogger } from './utils/logger';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
-import { StockLockService } from './services/stock_lock_service';
-import { NegotiationService } from './services/negotiation_service';
-import { QRService } from './utils/qr';
+import { rateLimiters } from './middleware/rateLimiter';
 
-dotenv.config();
+// Import routes
+import authRoutes from './routes/auth';
+import apiRoutes from './routes/api';
 
-// Validate configuration
-validateConfig();
-
-// Configure multer for file uploads
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: config.upload.maxFileSize,
-  },
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = [...config.upload.allowedImageTypes, ...config.upload.allowedAudioTypes];
-    if (allowedTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type'));
-    }
-  },
-});
-
-async function startServer() {
+async function createApp(): Promise<express.Application> {
   const app = express();
-  const httpServer = createServer(app);
-  
-  // Middleware
-  app.use(cors());
+
+  // Security middleware
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'none'"],
+      },
+    },
+    crossOriginEmbedderPolicy: false,
+  }));
+
+  // CORS configuration
+  app.use(cors({
+    origin: config.security.corsOrigins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  }));
+
+  // Compression middleware
+  app.use(compression());
+
+  // Request logging
+  app.use(requestLogger);
+
+  // Body parsing middleware
   app.use(express.json({ limit: '10mb' }));
-  app.use(express.urlencoded({ extended: true }));
-  app.use('/uploads', express.static('uploads'));
-  app.use('/public', express.static('public'));
+  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-  // Database connections
-  await connectMongoDB();
-  await connectPostgreSQL();
-  await connectRedis();
+  // General rate limiting
+  app.use(rateLimiters.general);
 
-  // GraphQL Schema
-  const schema = await buildSchema({
-    resolvers: [VendorResolver, ProductResolver, NegotiationResolver],
-    validate: false,
+  // Static file serving for uploads
+  app.use('/uploads', express.static(config.upload.uploadPath));
+
+  // Health check endpoint (no auth required)
+  app.get('/health', async (req, res) => {
+    try {
+      const health = await HealthService.checkHealth();
+      const statusCode = health.status === 'healthy' ? 200 : 503;
+      res.status(statusCode).json(health);
+    } catch (error) {
+      logger.error('Health check failed', { error: error.message });
+      res.status(503).json({
+        status: 'unhealthy',
+        timestamp: new Date().toISOString(),
+        error: 'Health check failed',
+      });
+    }
   });
 
-  // Apollo Server
-  const server = new ApolloServer({
-    schema,
-    context: ({ req }) => ({ req }),
+  // Detailed health check (for monitoring systems)
+  app.get('/health/detailed', async (req, res) => {
+    try {
+      const health = await HealthService.getDetailedHealth();
+      const statusCode = health.status === 'healthy' ? 200 : 503;
+      res.status(statusCode).json(health);
+    } catch (error) {
+      logger.error('Detailed health check failed', { error: error.message });
+      res.status(503).json({
+        status: 'unhealthy',
+        timestamp: new Date().toISOString(),
+        error: 'Detailed health check failed',
+      });
+    }
   });
 
-  await server.start();
-  server.applyMiddleware({ app });
-
-  // REST API Routes
+  // API routes
+  app.use('/api/auth', authRoutes);
   app.use('/api', apiRoutes);
 
-  // File upload routes
-  app.post('/api/upload/audio', upload.single('audio'), (req, res) => {
-    if (!req.file) {
-      return res.status(400).json({ success: false, error: 'No file uploaded' });
-    }
-    
-    res.json({ 
-      success: true, 
-      data: { 
-        filename: req.file.filename,
-        size: req.file.size,
-        mimetype: req.file.mimetype 
-      } 
+  // API documentation endpoint
+  app.get('/api/docs', (req, res) => {
+    res.json({
+      title: 'VyaparMitra API',
+      version: '1.0.0',
+      description: 'Real-Time Linguistic Bridge for Local Trade',
+      endpoints: {
+        auth: {
+          'POST /api/auth/register': 'Register new user (vendor or customer)',
+          'POST /api/auth/login': 'Login user',
+          'POST /api/auth/refresh': 'Refresh access token',
+          'GET /api/auth/profile': 'Get user profile',
+          'PATCH /api/auth/profile': 'Update user profile',
+          'POST /api/auth/logout': 'Logout user',
+        },
+        products: {
+          'GET /api/products': 'List products with filtering',
+          'GET /api/products/:id': 'Get product by ID',
+          'POST /api/products': 'Create new product (vendors only)',
+          'PATCH /api/products/:id': 'Update product (vendors only)',
+          'DELETE /api/products/:id': 'Delete product (vendors only)',
+        },
+        negotiations: {
+          'POST /api/negotiations': 'Create new negotiation',
+          'GET /api/negotiations': 'List user negotiations',
+          'GET /api/negotiations/:id': 'Get negotiation details',
+          'PATCH /api/negotiations/:id/status': 'Update negotiation status',
+          'POST /api/negotiations/:id/bids': 'Create new bid',
+          'POST /api/negotiations/:id/bids/:bidId/accept': 'Accept bid',
+          'POST /api/negotiations/:id/bids/:bidId/reject': 'Reject bid',
+        },
+        voice: {
+          'POST /api/voice/intent': 'Process voice intent',
+          'POST /api/voice/tts': 'Generate text-to-speech',
+          'POST /api/voice/profile': 'Create voice profile',
+          'GET /api/voice/profile/:userId': 'Get voice profile',
+          'DELETE /api/voice/profile/:userId': 'Delete voice profile',
+        },
+        qr: {
+          'POST /api/qr/session': 'Create QR session',
+          'GET /api/qr/session/:sessionId': 'Validate QR session',
+        },
+        translation: {
+          'POST /api/translate': 'Translate text',
+        },
+        health: {
+          'GET /health': 'Basic health check',
+          'GET /health/detailed': 'Detailed health check with metrics',
+        },
+      },
+      authentication: {
+        type: 'Bearer Token',
+        header: 'Authorization: Bearer <token>',
+        endpoints: {
+          register: 'POST /api/auth/register',
+          login: 'POST /api/auth/login',
+          refresh: 'POST /api/auth/refresh',
+        },
+      },
+      rateLimit: {
+        general: '1000 requests per 15 minutes per IP',
+        auth: '10 requests per 15 minutes per IP',
+        voice: '30 requests per minute per IP',
+        upload: '20 requests per 5 minutes per IP',
+      },
     });
   });
 
-  app.post('/api/upload/image', upload.single('image'), (req, res) => {
-    if (!req.file) {
-      return res.status(400).json({ success: false, error: 'No file uploaded' });
-    }
-    
-    res.json({ 
-      success: true, 
-      data: { 
-        filename: req.file.filename,
-        size: req.file.size,
-        mimetype: req.file.mimetype 
-      } 
-    });
-  });
-
-  // WebSocket Server for subscriptions
-  const wsServer = new WebSocketServer({
-    server: httpServer,
-    path: '/graphql',
-  });
-
-  useServer({ schema }, wsServer);
+  // 404 handler
+  app.use(notFoundHandler);
 
   // Error handling middleware (must be last)
-  app.use(notFoundHandler);
   app.use(errorHandler);
 
-  // Scheduled tasks
-  setupCronJobs();
-
-  const PORT = config.server.port;
-  
-  httpServer.listen(PORT, () => {
-    console.log(`🚀 VyaparMitra Server ready at http://localhost:${PORT}`);
-    console.log(`📊 GraphQL Playground: http://localhost:${PORT}${server.graphqlPath}`);
-    console.log(`🔊 WebSocket Subscriptions: ws://localhost:${PORT}/graphql`);
-    console.log(`🌐 REST API: http://localhost:${PORT}/api`);
-    console.log(`📱 Environment: ${config.server.nodeEnv}`);
-  });
+  return app;
 }
 
-function setupCronJobs() {
-  // Clean up expired stock locks every 5 minutes
-  cron.schedule('*/5 * * * *', async () => {
-    try {
-      await StockLockService.cleanupExpiredLocks();
-    } catch (error) {
-      console.error('Failed to cleanup expired locks:', error);
-    }
-  });
+async function initializeServices(): Promise<void> {
+  logger.info('Initializing services...');
 
-  // Clean up expired negotiations every hour
-  cron.schedule('0 * * * *', async () => {
-    try {
-      await NegotiationService.expireOldNegotiations();
-    } catch (error) {
-      console.error('Failed to expire old negotiations:', error);
-    }
-  });
+  try {
+    // Validate configuration
+    validateConfig();
 
-  // Clean up expired QR codes every 30 minutes
-  cron.schedule('*/30 * * * *', async () => {
-    try {
-      await QRService.cleanupExpiredQRs();
-    } catch (error) {
-      console.error('Failed to cleanup expired QRs:', error);
-    }
-  });
+    // Initialize database connections
+    await connectMongoDB();
+    await connectRedis();
+    await connectPostgreSQL();
 
-  console.log('✅ Scheduled tasks configured');
+    // Initialize image storage
+    await ImageStorageService.initialize();
+
+    // Initialize health monitoring
+    await HealthService.initialize();
+
+    logger.info('All services initialized successfully');
+  } catch (error) {
+    logger.error('Service initialization failed', { error: error.message });
+    throw error;
+  }
 }
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received, shutting down gracefully');
-  process.exit(0);
-});
+async function startServer(): Promise<void> {
+  try {
+    // Initialize services first
+    await initializeServices();
 
-process.on('SIGINT', () => {
-  console.log('SIGINT received, shutting down gracefully');
-  process.exit(0);
-});
+    // Create Express app
+    const app = await createApp();
 
-startServer().catch(error => {
-  console.error('Failed to start server:', error);
-  process.exit(1);
-});
+    // Create HTTP server
+    const server = createServer(app);
+
+    // Start server
+    const port = config.server.port;
+    server.listen(port, () => {
+      logger.info('Server started successfully', {
+        port,
+        environment: process.env.NODE_ENV || 'development',
+        version: process.env.npm_package_version || '1.0.0',
+      });
+    });
+
+    // Graceful shutdown handling
+    const gracefulShutdown = (signal: string) => {
+      logger.info(`Received ${signal}, starting graceful shutdown...`);
+      
+      server.close(() => {
+        logger.info('HTTP server closed');
+        
+        // Cleanup services
+        HealthService.cleanup();
+        
+        // Close database connections
+        // MongoDB will close automatically
+        // PostgreSQL pool will close automatically
+        // Redis client will close automatically
+        
+        logger.info('Graceful shutdown completed');
+        process.exit(0);
+      });
+
+      // Force shutdown after 30 seconds
+      setTimeout(() => {
+        logger.error('Forced shutdown after timeout');
+        process.exit(1);
+      }, 30000);
+    };
+
+    // Handle shutdown signals
+    process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+    process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+    // Handle uncaught exceptions
+    process.on('uncaughtException', (error) => {
+      logger.error('Uncaught exception', { error: error.message, stack: error.stack });
+      gracefulShutdown('uncaughtException');
+    });
+
+    // Handle unhandled promise rejections
+    process.on('unhandledRejection', (reason, promise) => {
+      logger.error('Unhandled promise rejection', { reason, promise });
+      gracefulShutdown('unhandledRejection');
+    });
+
+  } catch (error) {
+    logger.error('Server startup failed', { error: error.message });
+    process.exit(1);
+  }
+}
+
+// Start the server
+if (require.main === module) {
+  startServer();
+}
+
+export { createApp, startServer };
