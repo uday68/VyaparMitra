@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vendor Dashboard - Sanjay's Fruit Shop</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1c74e9",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111821",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .voice-glow {
+            box-shadow: 0 0 0 4px rgba(28, 116, 233, 0.2), 0 0 0 8px rgba(28, 116, 233, 0.1);
+        }
+        body {
+            font-family: "Work Sans", sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col pb-24">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-20 bg-white dark:bg-background-dark border-b border-gray-100 dark:border-gray-800">
+<div class="flex items-center p-4 justify-between max-w-md mx-auto">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8" data-alt="Vendor profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBF1rfxKIwKKdzWbKDHC3b1XjfNA4ozR53Pg0ruPIRElqdG9cUvUxh3KojcnWKNqvC4hPmh2GKSD2ccEsoubuLr0BfSsPQTXlBFCt533GwsrrYD_LdY_t6qK8p7GiXzlQr-Kmi4NBm-rw4UQYkbGclUWLVvc9rnPt85LnU92wrxd77vYXrA44o4ZqArifPwgzaOLmqGesXTsHXPV_GnA0CQSSrc4JolqYWnEgSIlzPuBJCydNCqHGw0TfL46baPxKN7B-3cN4Jn");'>
+</div>
+</div>
+<h2 class="text-[#111418] dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 ml-3">Sanjay's Fruit Shop</h2>
+<div class="flex items-center gap-2">
+<span class="text-primary text-sm font-bold px-2 py-1 bg-primary/10 rounded-lg">Hindi</span>
+</div>
+</div>
+</header>
+<main class="max-w-md mx-auto w-full px-4">
+<!-- Live Negotiation Section -->
+<div class="mt-6">
+<h3 class="text-[#111418] dark:text-white text-lg font-bold mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">record_voice_over</span>
+                Live Negotiation
+            </h3>
+<div class="bg-white dark:bg-gray-800 border border-primary/30 rounded-xl p-4 shadow-sm">
+<div class="flex justify-between items-start mb-3">
+<div>
+<p class="text-xs font-bold text-primary uppercase tracking-wider mb-1">Incoming Offer</p>
+<h4 class="text-base font-bold text-[#111418] dark:text-white">Tourist (English)</h4>
+</div>
+<span class="text-[10px] bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded-full font-bold">LIVE TRANSLATION</span>
+</div>
+<p class="text-sm text-[#637388] dark:text-gray-400 mb-4">
+                    "I want <span class="text-[#111418] dark:text-white font-semibold">5kg Apples</span> for <span class="text-[#111418] dark:text-white font-semibold">₹180/kg</span>. Is that possible?"
+                </p>
+<div class="grid grid-cols-3 gap-2">
+<button class="bg-primary text-white text-xs font-bold py-2 rounded-lg flex items-center justify-center gap-1">
+                        Accept
+                    </button>
+<button class="bg-[#f0f2f4] dark:bg-gray-700 text-[#111418] dark:text-white text-xs font-bold py-2 rounded-lg">
+                        Counter
+                    </button>
+<button class="border border-[#d1d5db] dark:border-gray-600 text-[#637388] dark:text-gray-400 text-xs font-bold py-2 rounded-lg">
+                        Reject
+                    </button>
+</div>
+</div>
+</div>
+<!-- Products Section Header -->
+<div class="flex items-center justify-between mt-8 mb-4">
+<h2 class="text-[#111418] dark:text-white text-[22px] font-bold leading-tight">Products</h2>
+<button class="flex items-center justify-center rounded-lg h-9 px-3 bg-[#f0f2f4] dark:bg-gray-800 text-[#111418] dark:text-white gap-1 text-sm font-bold">
+<span class="material-symbols-outlined text-sm">add</span>
+<span>Add New</span>
+</button>
+</div>
+<!-- Product Cards -->
+<div class="flex flex-col gap-3">
+<!-- Apples -->
+<div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-4 rounded-xl">
+<div class="flex items-stretch justify-between gap-4">
+<div class="flex flex-col gap-1 flex-[2_2_0px]">
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 text-[10px] font-bold rounded">3 ACTIVE BIDS</span>
+</div>
+<p class="text-[#111418] dark:text-white text-base font-bold leading-tight">Apples (Kashmiri)</p>
+<p class="text-[#637388] dark:text-gray-400 text-sm font-normal">Stock: 50kg • Price: ₹200/kg</p>
+</div>
+<div class="w-24 h-20 bg-center bg-no-repeat bg-cover rounded-lg" data-alt="Fresh red Kashmiri apples" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC7Li4zGgRlmTZ1VMzIu7smbgaWTWCsjK2uF_IM1GReuLTDhjgxKCJhI_mquE0B2-fQLyllKbARpzmDsSZrFUzcvLwGEDDPo3urwzm5ihZQS0PyMzb_AGyCrQPmlGBNjV8QkooYAv6qbvOWezn5ax6vRGlDU2fqixUjrbE5nf8JyYlf2huEEqw2iNRjeYeDskP-CgWj7zOqmnre-sD3Ls6I_OmhC0VUuoYLKbBnUKnaSRdqF82A8F3zsiJtLUSVrgJKPrd37lRr");'>
+</div>
+</div>
+</div>
+<!-- Bananas -->
+<div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-4 rounded-xl">
+<div class="flex items-stretch justify-between gap-4">
+<div class="flex flex-col gap-1 flex-[2_2_0px]">
+<p class="text-[#111418] dark:text-white text-base font-bold leading-tight">Bananas (Robusta)</p>
+<p class="text-[#637388] dark:text-gray-400 text-sm font-normal">Stock: 20 doz • Price: ₹60/doz</p>
+</div>
+<div class="w-24 h-20 bg-center bg-no-repeat bg-cover rounded-lg" data-alt="Bunch of yellow bananas" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC7BHJK3JrYhuDvAT4R_z2gJWPkyOIZcZCIsn8yzCNBCSOh_--HuIbTOa9vCvcPEFXgGIoU6rhdsDcseZEkLS9RotW4Bc57b1P2gqPGjU7PefQnUIFM985yn5ERzNJZu3BW4rfST2sYjJlIMV03_Sy_picNLOLREJjz6G0w93z2J-YxdF8UmTan5krDp5sB1RUe9BwVZA_Q2QeFBqki_RemgXwAeIYB6olNbFaI04AigXLKqRI80OTV-3ztaboIu0QYVBmx6tYJ");'>
+</div>
+</div>
+</div>
+<!-- Mangoes (Extra for UI richness) -->
+<div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-4 rounded-xl">
+<div class="flex items-stretch justify-between gap-4">
+<div class="flex flex-col gap-1 flex-[2_2_0px]">
+<p class="text-[#111418] dark:text-white text-base font-bold leading-tight">Alphonso Mangoes</p>
+<p class="text-[#637388] dark:text-gray-400 text-sm font-normal">Stock: 15 doz • Price: ₹800/doz</p>
+</div>
+<div class="w-24 h-20 bg-center bg-no-repeat bg-cover rounded-lg" data-alt="Golden ripe alphonso mangoes" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBBsvXPWwaZXa904hM-1fqegV3jZbh9dxES28XiIv-cSzeRPO1KQLJLRtCCL5MnzHMMjwNYYku8ApcXOqW-ez51ApLEc8oi26mS14yEF9nKUQAAcund0Q-XeYodENGKLkBIjkp6H6hTKLl3DsIjhnfw1nRyJhiNoHMcWXylBmsGBVM9SnkGSBmlO461c5XNyY-fVKvWhkXv1oZrIlZAjPpogGqiw0zxd9IGa7EYG8OPaRGReKSFPdVG7bjqY28uel4WB77ESS1_");'>
+</div>
+</div>
+</div>
+</div>
+<!-- Shop QR Code Area -->
+<div class="mt-8 mb-8 flex flex-col items-center justify-center p-6 bg-white dark:bg-gray-800 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700">
+<div class="w-32 h-32 bg-white p-2 rounded-lg shadow-inner mb-3">
+<div class="w-full h-full bg-center bg-no-repeat bg-contain" data-alt="Shop payment and identity QR code" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAgmhSkUvfO1GxWPpVrBYnHgrBTyv5ak-2FpXN3U0_-gwrQSylgI8eJ3SzuNGVakT8JPkX42MtVZ1nIL8x7wzgvM37n1Ye4s9-em-yKdPkXPIR7_G9VCHIMrRzhal5rCx7Drl9W3QH5vQ-M1-IQPmP2ntmngpcCTkOYlPypnr1u9AnmLtz_MtIbgCZe-AFMD85NfJpgW9kOsR3-gBJ8J-jmmQQnQmO7YzeGpEuln7c7z0byb43a4yjZyZNP2tXnm3bmkPBe5cEw");'>
+</div>
+</div>
+<p class="text-sm font-bold text-[#111418] dark:text-white">Shop QR Code</p>
+<p class="text-xs text-[#637388] dark:text-gray-400">Share with customers to start chatting</p>
+</div>
+</main>
+<!-- Floating Action Button (Voice AI) -->
+<div class="fixed bottom-24 right-6 z-50">
+<button class="voice-glow flex size-16 items-center justify-center rounded-full bg-primary text-white shadow-xl">
+<span class="material-symbols-outlined text-3xl">mic</span>
+</button>
+</div>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-t border-gray-100 dark:border-gray-800">
+<div class="max-w-md mx-auto flex justify-around py-3 px-6">
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-2xl">inventory_2</span>
+<span class="text-[10px] font-bold">Products</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-[#637388] dark:text-gray-400">
+<div class="relative">
+<span class="material-symbols-outlined text-2xl">chat_bubble</span>
+<div class="absolute -top-1 -right-1 size-2.5 bg-red-500 rounded-full border-2 border-white dark:border-background-dark"></div>
+</div>
+<span class="text-[10px] font-medium">Chats</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-[#637388] dark:text-gray-400">
+<span class="material-symbols-outlined text-2xl">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</div>
+</div>
+</nav>
+</body></html>

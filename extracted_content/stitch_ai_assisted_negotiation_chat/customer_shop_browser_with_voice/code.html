@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sanjay's Fruits - Local Trade</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1c74e9",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111821",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: "Work Sans", sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-[#111418] dark:text-white min-h-screen flex flex-col">
+<!-- Header Section -->
+<header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-gray-100 dark:border-gray-800">
+<div class="flex items-center p-4 pb-2 justify-between">
+<div class="text-primary flex size-10 shrink-0 items-center justify-center">
+<span class="material-symbols-outlined text-3xl">translate</span>
+</div>
+<h1 class="text-[#111418] dark:text-white text-xl font-bold leading-tight tracking-tight flex-1 text-center pr-10">Sanjay's Fruits</h1>
+</div>
+<!-- Search Bar Component -->
+<div class="px-4 py-3">
+<label class="flex flex-col min-w-40 h-12 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-xl h-full shadow-sm border border-gray-100 dark:border-gray-700">
+<div class="text-[#637388] flex bg-white dark:bg-slate-800 items-center justify-center pl-4 rounded-l-xl">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-xl text-[#111418] dark:text-white focus:outline-0 focus:ring-0 border-none bg-white dark:bg-slate-800 h-full placeholder:text-[#637388] px-4 pl-2 text-base font-normal leading-normal" placeholder="Search for fruits..." value=""/>
+</div>
+</label>
+</div>
+</header>
+<!-- Product List -->
+<main class="flex-1 overflow-y-auto pb-44 px-4 pt-4 space-y-4">
+<!-- Apple Card -->
+<div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-gray-800 rounded-xl overflow-hidden shadow-sm">
+<div class="p-4 flex items-stretch justify-between gap-4">
+<div class="flex flex-[2_2_0px] flex-col justify-between">
+<div class="flex flex-col gap-1">
+<p class="text-[#111418] dark:text-white text-lg font-bold leading-tight">Fresh Shimla Apples</p>
+<p class="text-primary text-base font-semibold leading-normal">₹180/kg</p>
+<p class="text-[#637388] dark:text-gray-400 text-sm font-normal line-clamp-2">Crisp, sweet and directly sourced from Shimla orchards.</p>
+</div>
+<button class="flex mt-3 min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-white text-sm font-bold leading-normal w-fit">
+<span>Place Bid</span>
+</button>
+</div>
+<div class="w-28 h-28 bg-center bg-no-repeat bg-cover rounded-lg flex-shrink-0" data-alt="Close up of red fresh Shimla apples" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAyHZvzLRpjfWHlF0c-8fq41z6CBNTTqriEDEx0GSB3yaIeeQ9TTbFNSY3TF1UdLcDSgefPTxLRQZvR0dzxpXrABHXUhhbHQTdGoeNwxgRniDV5T50qwwAhjmVPNLw9xBuPBdQdgikbjPcou_F76dF0nmHuJlzgZDmf9Vz99L0VqgzH4AJsNKUKJTK4urFFwFmY5Ex2ovyMQQJNjqXix8VvV2fcxwjx-P6kaaiUpcyGN0BgGfQCPvAxKUsRvasfadBuMHj6OOuk");'></div>
+</div>
+</div>
+<!-- Banana Card -->
+<div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-gray-800 rounded-xl overflow-hidden shadow-sm">
+<div class="p-4 flex items-stretch justify-between gap-4">
+<div class="flex flex-[2_2_0px] flex-col justify-between">
+<div class="flex flex-col gap-1">
+<p class="text-[#111418] dark:text-white text-lg font-bold leading-tight">Robusta Bananas</p>
+<p class="text-primary text-base font-semibold leading-normal">₹60/dozen</p>
+<p class="text-[#637388] dark:text-gray-400 text-sm font-normal line-clamp-2">Naturally ripened, rich in potassium and energy.</p>
+</div>
+<button class="flex mt-3 min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-white text-sm font-bold leading-normal w-fit">
+<span>Place Bid</span>
+</button>
+</div>
+<div class="w-28 h-28 bg-center bg-no-repeat bg-cover rounded-lg flex-shrink-0" data-alt="Bunch of ripe yellow Robusta bananas" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBdk80wcbIO7OSie5Mc-WQOv2AIYXuoC1lXnOYtlfjxnO2cIfS9mbwtcuvIFqET06UcQw1v8YTsWuc5r3SO2K0mgbco_JZae91U2Q8iyLufjuz4UgamRv_d_Pdxc6yLzkWUTwqvJgwXKodeyT6J3sDr_OFEBO1X4IfkcRivtkIyXD1p9HWecRJ71YVcdnrUhLg8hZCKCVyAt3dNzC80TfbRy4mzDX_YRisuW2QP0n9UmwV8ZFuT_u653VKUu93oqdbuzYNEkIB1");'></div>
+</div>
+</div>
+<!-- Mango Card -->
+<div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-gray-800 rounded-xl overflow-hidden shadow-sm">
+<div class="p-4 flex items-stretch justify-between gap-4">
+<div class="flex flex-[2_2_0px] flex-col justify-between">
+<div class="flex flex-col gap-1">
+<p class="text-[#111418] dark:text-white text-lg font-bold leading-tight">Ratnagiri Alphonso</p>
+<p class="text-primary text-base font-semibold leading-normal">₹800/dozen</p>
+<p class="text-[#637388] dark:text-gray-400 text-sm font-normal line-clamp-2">The King of Mangoes, premium quality from Ratnagiri.</p>
+</div>
+<button class="flex mt-3 min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-white text-sm font-bold leading-normal w-fit">
+<span>Place Bid</span>
+</button>
+</div>
+<div class="w-28 h-28 bg-center bg-no-repeat bg-cover rounded-lg flex-shrink-0" data-alt="Premium golden yellow Ratnagiri Alphonso mangoes" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCMi3RZJtKti_wXF3cUwDCqNLS-PtsyMr2V_U8J8QzMNuA0Ki14aQ4Et0ULJ8CLHRTZZJ_76T5yDTX_NNcDFLczcHJvvoglR73bGrMLHztzDmsi-pPvtl-w2pCdR31GKuNPzjIO9jza7Wh2yuAIxh7P6Wh98E6BIJBPLETRhJMXBDBpHybsRO07HDb_DvccqkixBBYsT1HwFcfim-VZpAk-11s81pqBOJn4Eb4G-D21zaAtPwLZszKDw-zjXK_9k_q-rz7hoUXs");'></div>
+</div>
+</div>
+</main>
+<!-- Voice Assistant & Navigation Overlay -->
+<div class="fixed bottom-0 left-0 right-0 z-50">
+<!-- Voice Assistant Banner -->
+<div class="px-4 mb-4">
+<div class="bg-primary/10 dark:bg-primary/20 backdrop-blur-md border border-primary/20 rounded-2xl p-4 flex items-center gap-4 shadow-lg ring-1 ring-primary/10">
+<div class="relative flex items-center justify-center">
+<div class="absolute inset-0 bg-primary/30 rounded-full animate-ping opacity-75"></div>
+<div class="bg-primary text-white size-12 rounded-full flex items-center justify-center relative z-10">
+<span class="material-symbols-outlined">mic</span>
+</div>
+</div>
+<div class="flex-1">
+<p class="text-primary text-sm font-semibold">Voice Assistant</p>
+<p class="text-[#111418] dark:text-white text-sm font-medium leading-snug">
+                        Say "Bid 170 for 5kg Apples" to start negotiating
+                    </p>
+</div>
+<button class="text-primary/60">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<nav class="bg-white dark:bg-background-dark border-t border-gray-100 dark:border-gray-800 flex justify-around items-center pt-2 pb-8">
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined font-bold">storefront</span>
+<span class="text-xs font-bold">Shop</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-[#637388] dark:text-gray-400">
+<span class="material-symbols-outlined">gavel</span>
+<span class="text-xs font-medium">My Bids</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-[#637388] dark:text-gray-400">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-xs font-medium">Account</span>
+</div>
+</nav>
+</div>
+</body></html>

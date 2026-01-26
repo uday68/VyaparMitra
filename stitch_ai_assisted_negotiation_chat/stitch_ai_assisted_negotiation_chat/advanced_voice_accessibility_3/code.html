@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Advanced Voice Accessibility 3</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#8743f4",
+                "background-light": "#f7f5f8",
+                "background-dark": "#171022",
+              },
+              fontFamily: {
+                "display": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-voice {
+            border: 3px solid #8743f4;
+            background-color: rgba(135, 67, 244, 0.05);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col pb-24">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#dfdbe6] dark:border-gray-800">
+<div class="flex items-center px-4 py-4 justify-between max-w-md mx-auto">
+<div class="flex items-center gap-3">
+<div class="text-[#141118] dark:text-white flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h1 class="text-[#141118] dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">Voice Settings</h1>
+</div>
+<div class="text-primary cursor-pointer font-semibold">Reset</div>
+</div>
+</header>
+<main class="flex-1 w-full max-w-md mx-auto overflow-y-auto">
+<!-- Assistant Voice Section -->
+<section class="py-4">
+<h2 class="text-[#141118] dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-2">Assistant Voice</h2>
+<div class="px-4 space-y-3">
+<!-- Large Selection Cards for Accessibility -->
+<div class="flex h-16 items-center justify-between rounded-xl bg-white dark:bg-[#251b36] border-2 border-primary p-4 shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">person</span>
+<span class="text-[#141118] dark:text-white font-bold text-lg">Male</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#70608a] cursor-pointer">play_circle</span>
+<div class="w-6 h-6 rounded-full border-4 border-primary bg-primary flex items-center justify-center">
+<div class="w-2 h-2 rounded-full bg-white"></div>
+</div>
+</div>
+</div>
+<div class="flex h-16 items-center justify-between rounded-xl bg-white dark:bg-[#251b36] border border-[#dfdbe6] dark:border-gray-700 p-4 shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#70608a]">person_2</span>
+<span class="text-[#141118] dark:text-white font-bold text-lg">Female</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#70608a] cursor-pointer">play_circle</span>
+<div class="w-6 h-6 rounded-full border-2 border-[#dfdbe6]"></div>
+</div>
+</div>
+<div class="flex h-16 items-center justify-between rounded-xl bg-white dark:bg-[#251b36] border border-[#dfdbe6] dark:border-gray-700 p-4 shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#70608a]">face</span>
+<span class="text-[#141118] dark:text-white font-bold text-lg">Neutral</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#70608a] cursor-pointer">play_circle</span>
+<div class="w-6 h-6 rounded-full border-2 border-[#dfdbe6]"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Visual Feedback Section -->
+<section class="py-4">
+<h2 class="text-[#141118] dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3">Visual Feedback</h2>
+<div class="p-4 pt-0">
+<div class="flex flex-1 flex-col items-start justify-between gap-4 rounded-xl border border-[#dfdbe6] dark:border-gray-700 bg-white dark:bg-[#251b36] p-5">
+<div class="flex w-full justify-between items-center">
+<div class="flex flex-col gap-1">
+<p class="text-[#141118] dark:text-white text-lg font-bold leading-tight">High-Contrast Waveform</p>
+<p class="text-[#70608a] dark:text-gray-400 text-sm font-normal leading-normal">Show movement when AI talks</p>
+</div>
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-[#f2f0f5] dark:bg-gray-700 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-[#8743f4]">
+<div class="h-full w-[27px] rounded-full bg-white shadow-md"></div>
+<input checked="" class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+<!-- Live Waveform Preview -->
+<div class="w-full h-24 bg-[#f2f0f5] dark:bg-background-dark rounded-lg flex items-center justify-center gap-1 overflow-hidden">
+<div class="w-2 bg-primary/40 h-8 rounded-full"></div>
+<div class="w-2 bg-primary/60 h-12 rounded-full"></div>
+<div class="w-2 bg-primary h-16 rounded-full"></div>
+<div class="w-2 bg-primary/80 h-14 rounded-full"></div>
+<div class="w-2 bg-primary h-18 rounded-full"></div>
+<div class="w-2 bg-primary/80 h-14 rounded-full"></div>
+<div class="w-2 bg-primary h-10 rounded-full"></div>
+<div class="w-2 bg-primary/40 h-6 rounded-full"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Voice Command Shortcuts -->
+<section class="py-4">
+<div class="flex justify-between items-center px-4 pb-3">
+<h2 class="text-[#141118] dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">Voice Shortcuts</h2>
+<button class="text-primary font-bold flex items-center gap-1 text-sm">
+<span class="material-symbols-outlined text-sm">add</span> Add New
+                </button>
+</div>
+<div class="px-4 space-y-2">
+<!-- Shortcut Item 1 -->
+<div class="flex items-center justify-between p-4 bg-white dark:bg-[#251b36] border border-[#dfdbe6] dark:border-gray-700 rounded-xl">
+<div class="flex flex-col">
+<span class="text-[#141118] dark:text-white font-bold">"Check current stock"</span>
+<span class="text-[#70608a] dark:text-gray-400 text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">mic</span> Recorded
+                        </span>
+</div>
+<button class="bg-[#f2f0f5] dark:bg-gray-700 text-[#141118] dark:text-white px-4 py-2 rounded-lg font-bold text-sm">Update</button>
+</div>
+<!-- Shortcut Item 2 -->
+<div class="flex items-center justify-between p-4 bg-white dark:bg-[#251b36] border border-[#dfdbe6] dark:border-gray-700 rounded-xl">
+<div class="flex flex-col">
+<span class="text-[#141118] dark:text-white font-bold">"Open my shop"</span>
+<span class="text-primary text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">warning</span> No tag recorded
+                        </span>
+</div>
+<button class="bg-primary text-white px-4 py-2 rounded-lg font-bold text-sm">Record</button>
+</div>
+<!-- Shortcut Item 3 -->
+<div class="flex items-center justify-between p-4 bg-white dark:bg-[#251b36] border border-[#dfdbe6] dark:border-gray-700 rounded-xl">
+<div class="flex flex-col">
+<span class="text-[#141118] dark:text-white font-bold">"Customer support"</span>
+<span class="text-[#70608a] dark:text-gray-400 text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">mic</span> Recorded
+                        </span>
+</div>
+<button class="bg-[#f2f0f5] dark:bg-gray-700 text-[#141118] dark:text-white px-4 py-2 rounded-lg font-bold text-sm">Update</button>
+</div>
+</div>
+</section>
+<!-- Save Button -->
+<div class="px-4 py-6">
+<button class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 text-lg">Save Voice Settings</button>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#1c1429] border-t border-[#dfdbe6] dark:border-gray-800 px-6 py-2">
+<div class="flex justify-between items-center max-w-md mx-auto">
+<div class="flex flex-col items-center gap-1 text-[#70608a] dark:text-gray-400">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined">settings_voice</span>
+<span class="text-[10px] font-bold">Voice</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-[#70608a] dark:text-gray-400">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="text-[10px] font-medium">Analytics</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-[#70608a] dark:text-gray-400">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-[10px] font-medium">Profile</span>
+</div>
+</div>
+</nav>
+</body></html>

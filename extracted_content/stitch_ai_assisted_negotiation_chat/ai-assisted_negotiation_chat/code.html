@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI-Assisted Negotiation Chat</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1c74e9",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111821",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Work Sans', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-[#111418] dark:text-white">
+<div class="relative flex h-screen max-w-[430px] mx-auto flex-col bg-white dark:bg-background-dark overflow-hidden border-x border-gray-100 dark:border-gray-800 shadow-2xl">
+<!-- TopAppBar -->
+<div class="flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between border-b border-gray-100 dark:border-gray-800 sticky top-0 z-10">
+<div class="text-[#111418] dark:text-white flex size-10 shrink-0 items-center justify-start">
+<span class="material-symbols-outlined">arrow_back_ios</span>
+</div>
+<div class="flex flex-col items-center flex-1">
+<h2 class="text-[#111418] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Sarah (Tourist)</h2>
+<div class="flex items-center gap-1">
+<span class="size-2 rounded-full bg-green-500"></span>
+<p class="text-[#637388] dark:text-gray-400 text-xs font-medium">Online</p>
+</div>
+</div>
+<div class="flex w-12 items-center justify-end">
+<p class="text-primary text-sm font-bold leading-normal tracking-[0.015em] shrink-0 px-2 py-1 bg-primary/10 rounded-lg">English</p>
+</div>
+</div>
+<!-- Summary Card -->
+<div class="p-4 bg-white dark:bg-background-dark border-b border-gray-100 dark:border-gray-800">
+<div class="flex items-center justify-between gap-4 p-3 rounded-xl bg-background-light dark:bg-gray-800/50">
+<div class="flex flex-col gap-1 flex-1">
+<p class="text-[#111418] dark:text-white text-base font-bold leading-tight">Apples • 5 kg • ₹180 offer</p>
+<p class="text-[#637388] dark:text-gray-400 text-xs font-normal leading-normal uppercase tracking-wider">Current Negotiation</p>
+</div>
+<div class="w-16 h-16 bg-center bg-no-repeat bg-cover rounded-lg" data-alt="Fresh red apples in a wooden crate" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD0PRA7KmGGAHbaIc4VTp-npQ5Bl2y8ln9z0I3VjFHPncAp9zvAiUR9b1hR7pk90UiwBC2R6Owmd8-GsVnqvw98lg5LJ_GgjXuSnS9KO7C4Tq5uDvKlmItDWZzdY9kE60CuR91GXY6szSL1seNXd_mVmi0A0Ewp_WmVjxEsL1-JONQCimOog808hCpHR0KNZU94by4BpfipMhDjqSzENp7yJwITJGOnTFXWInluPJBKZtzcFTweckF5_X2vT0PhBNZ8Um-cEEY6");'></div>
+</div>
+</div>
+<!-- Chat History -->
+<div class="flex-1 overflow-y-auto p-4 space-y-4 bg-background-light dark:bg-background-dark">
+<!-- Sarah Message -->
+<div class="flex items-end gap-3 justify-start max-w-[85%]">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-8 shrink-0 border border-gray-200" data-alt="Sarah's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBTlme1GUNANCgUpJkp27GNHs8wICmcftvy36ceMjMdou-FhdEQe50Ve0sizN-55Ar7fVXL0-JdlKCQ8lWIFtGueygQAmA8CEiQk6suiZlUSBcJ7hx4sN934hwxqMYOhYnYzJ-WaLy1hhBWhfGsKEhX_n3jNqg3zVEtSVgyAGD50-5zh_plPQucFQhhDmX6Zt353a1243aLKewvacFG0w6jjNOhb5vuT_yJBkaCvVtNt49y8l67rSfL7XouB2HzaqRjThBwxxTv");'></div>
+<div class="flex flex-col gap-1 items-start">
+<p class="text-[#637388] dark:text-gray-400 text-[11px] font-medium ml-1">Sarah</p>
+<div class="relative">
+<p class="text-[15px] font-normal leading-normal rounded-2xl rounded-bl-none px-4 py-3 bg-white dark:bg-gray-800 text-[#111418] dark:text-white shadow-sm">
+                            It's a bit expensive.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Vendor Message -->
+<div class="flex items-end gap-3 justify-end ml-auto max-w-[85%]">
+<div class="flex flex-col gap-1 items-end">
+<p class="text-[#637388] dark:text-gray-400 text-[11px] font-medium mr-1">Vendor (You)</p>
+<p class="text-[15px] font-normal leading-normal rounded-2xl rounded-br-none px-4 py-3 bg-primary text-white shadow-md">
+                        Fresh organic apples from my farm.
+                    </p>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-8 shrink-0 bg-primary/20 flex items-center justify-center border border-primary/30" data-alt="Shop vendor profile icon">
+<span class="material-symbols-outlined text-primary text-lg">storefront</span>
+</div>
+</div>
+<!-- Sarah Message - Final Offer -->
+<div class="flex items-end gap-3 justify-start max-w-[85%]">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-8 shrink-0 border border-gray-200" data-alt="Sarah's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCXkFqLAeEzgkS_0agFsf8vH6FnQDKDBbcgwqBXmE3O-zcWMC1mJk6VV0H_EYrJsnR-7-fxOCBG-2PoIROC8g05Gl6Bj6teEx8cRzEb9D3ZGc8aqOiU_oteeZ4b6wx5r5FDMQIdwNkrmidyxhtDv9Zp0cZH0Ylswnw5r1t2MPU9nvvntOmcA9LjKWSdBbpPm4G5Rk3-rfOtBeeRw7O0y3npA9ZXukmtqu0pCmPwtAOCGGrgyrTbnYOvYjo1MMyJbLLIwo8IPLsm");'></div>
+<div class="flex flex-col gap-1 items-start">
+<p class="text-[#637388] dark:text-gray-400 text-[11px] font-medium ml-1">Sarah</p>
+<div class="relative group">
+<p class="text-[15px] font-normal leading-normal rounded-2xl rounded-bl-none px-4 py-3 bg-white dark:bg-gray-800 text-[#111418] dark:text-white shadow-sm">
+                            ₹175? Final offer?
+                        </p>
+<div class="mt-1 flex items-center gap-1 text-[10px] text-primary/70 italic">
+<span class="material-symbols-outlined text-[12px]">translate</span>
+<span>Translated from English</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Voice Assistant Panel -->
+<div class="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 px-4 pt-6 pb-8 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] rounded-t-3xl">
+<div class="flex flex-col gap-4">
+<div class="flex items-start gap-3 bg-primary/5 dark:bg-primary/10 p-4 rounded-2xl border border-primary/10">
+<div class="bg-primary text-white p-2 rounded-full">
+<span class="material-symbols-outlined text-sm">smart_toy</span>
+</div>
+<div class="flex-1">
+<p class="text-[#111418] dark:text-white text-[15px] font-medium leading-snug">
+                            Sarah says: <span class="text-primary font-bold">"₹175? Final offer?"</span>
+</p>
+<p class="text-[#637388] dark:text-gray-400 text-sm mt-1">
+                            Say <span class="font-bold text-green-600 dark:text-green-400">"Accept"</span> or <span class="font-bold text-primary">"Counter with 178"</span>
+</p>
+</div>
+</div>
+<!-- Quick Action Buttons -->
+<div class="flex gap-3">
+<button class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">check_circle</span>
+                        Accept
+                    </button>
+<button class="flex-1 bg-white dark:bg-gray-800 border border-primary/30 text-primary font-bold py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">edit</span>
+                        Counter
+                    </button>
+</div>
+<!-- Active Voice Button -->
+<div class="flex items-center justify-center mt-2">
+<div class="relative flex items-center justify-center">
+<div class="absolute w-16 h-16 bg-primary/20 rounded-full animate-ping"></div>
+<button class="relative bg-primary text-white size-16 rounded-full flex items-center justify-center shadow-lg shadow-primary/30 z-20">
+<span class="material-symbols-outlined text-3xl">mic</span>
+</button>
+<div class="absolute -bottom-6 text-[10px] font-bold text-primary uppercase tracking-[2px]">Listening...</div>
+</div>
+</div>
+</div>
+</div>
+<!-- iOS Home Indicator -->
+<div class="flex justify-center pb-2 bg-white dark:bg-gray-900">
+<div class="w-32 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+</div>
+</div>
+</body></html>

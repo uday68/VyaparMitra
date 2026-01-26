@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Voice-Enabled Add Product</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1c74e9",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111821",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-underline {
+            border-bottom: 2px solid #e5e7eb;
+            transition: border-color 0.2s;
+        }
+        .material-underline:focus-within {
+            border-bottom-color: #1c74e9;
+        }
+        .waveform-bar {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { height: 8px; }
+            50% { height: 24px; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111418] dark:text-white min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-20 bg-white/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
+<div class="flex items-center p-4 justify-between max-w-[480px] mx-auto">
+<div class="flex size-12 shrink-0 items-center justify-start cursor-pointer">
+<span class="material-symbols-outlined text-[#111418] dark:text-white">arrow_back_ios</span>
+</div>
+<h2 class="text-[#111418] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Add Product</h2>
+<div class="flex w-12 items-center justify-end">
+<p class="text-primary text-base font-bold leading-normal tracking-[0.015em] cursor-pointer">Save</p>
+</div>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto pb-64 max-w-[480px] mx-auto w-full">
+<!-- Add Photo Section -->
+<section class="px-4 py-4">
+<p class="text-[#111418] dark:text-white text-base font-medium leading-normal pb-3">Product Photos</p>
+<div class="flex gap-3">
+<button class="flex flex-col items-center justify-center flex-1 h-32 bg-[#f0f2f4] dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:bg-gray-200 transition-colors">
+<span class="material-symbols-outlined text-primary text-3xl mb-1">add_a_photo</span>
+<span class="text-xs font-semibold text-[#637388] dark:text-gray-400">Camera</span>
+</button>
+<button class="flex flex-col items-center justify-center flex-1 h-32 bg-[#f0f2f4] dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:bg-gray-200 transition-colors">
+<span class="material-symbols-outlined text-primary text-3xl mb-1">file_upload</span>
+<span class="text-xs font-semibold text-[#637388] dark:text-gray-400">Upload</span>
+</button>
+</div>
+</section>
+<!-- Product Name Input -->
+<div class="px-4 py-3">
+<label class="flex flex-col w-full material-underline group">
+<p class="text-[#637388] dark:text-gray-400 text-sm font-medium pb-1 group-focus-within:text-primary transition-colors">Product Name</p>
+<input class="w-full bg-transparent border-none p-0 pb-2 text-[#111418] dark:text-white text-lg focus:ring-0 placeholder:text-gray-300 dark:placeholder:text-gray-600" placeholder="e.g. Red Apples"/>
+</label>
+</div>
+<!-- Price and Unit -->
+<div class="flex gap-4 px-4 py-3">
+<label class="flex flex-col flex-[2] material-underline group">
+<p class="text-[#637388] dark:text-gray-400 text-sm font-medium pb-1 group-focus-within:text-primary transition-colors">Price per unit</p>
+<div class="flex items-center">
+<span class="text-[#111418] dark:text-white pr-1">₹</span>
+<input class="w-full bg-transparent border-none p-0 pb-2 text-[#111418] dark:text-white text-lg focus:ring-0 placeholder:text-gray-300 dark:placeholder:text-gray-600" placeholder="0.00" type="number"/>
+</div>
+</label>
+<label class="flex flex-col flex-1 material-underline group">
+<p class="text-[#637388] dark:text-gray-400 text-sm font-medium pb-1 group-focus-within:text-primary transition-colors">Unit</p>
+<select class="w-full bg-transparent border-none p-0 pb-2 text-[#111418] dark:text-white text-lg focus:ring-0 cursor-pointer">
+<option value="kg">kg</option>
+<option value="pcs">pcs</option>
+<option value="ltr">ltr</option>
+<option value="box">box</option>
+</select>
+</label>
+</div>
+<!-- Stock Available -->
+<div class="px-4 py-3">
+<label class="flex flex-col w-full material-underline group">
+<p class="text-[#637388] dark:text-gray-400 text-sm font-medium pb-1 group-focus-within:text-primary transition-colors">Stock Available</p>
+<input class="w-full bg-transparent border-none p-0 pb-2 text-[#111418] dark:text-white text-lg focus:ring-0 placeholder:text-gray-300 dark:placeholder:text-gray-600" placeholder="e.g. 50" type="number"/>
+</label>
+</div>
+<!-- Description -->
+<div class="px-4 py-3">
+<label class="flex flex-col w-full material-underline group">
+<p class="text-[#637388] dark:text-gray-400 text-sm font-medium pb-1 group-focus-within:text-primary transition-colors">Description</p>
+<textarea class="w-full bg-transparent border-none p-0 pb-2 text-[#111418] dark:text-white text-base focus:ring-0 placeholder:text-gray-300 dark:placeholder:text-gray-600 resize-none min-h-[80px]" placeholder="Fresh organic apples from the farm..."></textarea>
+</label>
+</div>
+<!-- Category Selection -->
+<section class="px-4 py-4">
+<p class="text-[#111418] dark:text-white text-base font-medium leading-normal pb-3">Category</p>
+<div class="grid grid-cols-2 gap-3">
+<label class="flex items-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-primary">
+<input checked="" class="rounded border-gray-300 text-primary focus:ring-primary mr-3" type="checkbox"/>
+<span class="text-sm font-medium text-[#111418] dark:text-white">Fruits</span>
+</label>
+<label class="flex items-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-primary">
+<input class="rounded border-gray-300 text-primary focus:ring-primary mr-3" type="checkbox"/>
+<span class="text-sm font-medium text-[#111418] dark:text-white">Vegetables</span>
+</label>
+<label class="flex items-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-primary">
+<input class="rounded border-gray-300 text-primary focus:ring-primary mr-3" type="checkbox"/>
+<span class="text-sm font-medium text-[#111418] dark:text-white">Dairy</span>
+</label>
+<label class="flex items-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-primary">
+<input class="rounded border-gray-300 text-primary focus:ring-primary mr-3" type="checkbox"/>
+<span class="text-sm font-medium text-[#111418] dark:text-white">Grains</span>
+</label>
+</div>
+</section>
+</main>
+<!-- Voice AI Overlay (Fixed Bottom) -->
+<div class="fixed bottom-0 left-0 right-0 z-50 pointer-events-none flex flex-col items-center">
+<!-- Floating Assistant Bubble -->
+<div class="w-full max-w-[480px] px-4 pb-8 pointer-events-auto">
+<div class="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl border border-gray-200 dark:border-gray-700 p-6 flex flex-col items-center gap-4">
+<!-- Listening State -->
+<div class="flex items-center gap-1 h-10">
+<div class="waveform-bar w-1 bg-primary rounded-full" style="animation-delay: 0.1s"></div>
+<div class="waveform-bar w-1 bg-primary/80 rounded-full" style="animation-delay: 0.2s"></div>
+<div class="waveform-bar w-1 bg-primary/60 rounded-full" style="animation-delay: 0.3s"></div>
+<div class="waveform-bar w-1 bg-primary/40 rounded-full" style="animation-delay: 0.4s"></div>
+<div class="waveform-bar w-1 bg-primary/60 rounded-full" style="animation-delay: 0.5s"></div>
+<div class="waveform-bar w-1 bg-primary/80 rounded-full" style="animation-delay: 0.6s"></div>
+<div class="waveform-bar w-1 bg-primary rounded-full" style="animation-delay: 0.7s"></div>
+</div>
+<div class="text-center">
+<p class="text-primary text-sm font-bold uppercase tracking-widest mb-1">I'm listening...</p>
+<p class="text-gray-500 dark:text-gray-400 text-base italic leading-relaxed">
+                        "Add 50kg Apples at 200 rupees per kg"
+                    </p>
+</div>
+<!-- Mic Toggle Button -->
+<button class="size-16 bg-primary text-white rounded-full flex items-center justify-center shadow-lg shadow-primary/30 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-3xl">mic</span>
+</button>
+</div>
+</div>
+<!-- Safe Area Spacer for iOS -->
+<div class="h-8 w-full bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800"></div>
+</div>
+</body></html>
