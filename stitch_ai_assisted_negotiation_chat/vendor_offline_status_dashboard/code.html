@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vendor Offline Status Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#dc2b1e",
+                        "warning": "#f29900",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#211211",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Work Sans', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display">
+<!-- Top Navigation Bar (iOS Style) -->
+<div class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-gray-100 dark:border-gray-800">
+<div class="flex items-center p-4 pb-2 justify-between">
+<div class="flex size-12 shrink-0 items-center">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8" data-alt="Vendor profile picture close up" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBnkwht8paws_QV0rxI9UDFWayrDQBfZI4Om6CcTINaEBzACkk6TTsSanVmI2EsVN8T3cAnLH6XV93cwvH0cBiuXPg8q13bwIHI_zyNoTAgKMKk4mFK2V1mYPRanWjnoPC57TD9PpUT3uy9nFevOa9IQtW45Ed09sYUWQYFhvn8EQIZGB6ymjPpismuZM2mxegRIxGAFEBQJFvnYMifX25oKTujtxQmTBt8Hjnw8cvpJcoAYyLeZodcFVx6iN8vkQo7pVVtdusS");'>
+</div>
+</div>
+<h2 class="text-[#171211] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Dashboard</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="flex cursor-pointer items-center justify-center rounded-lg h-12 bg-transparent text-[#171211] dark:text-white">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Offline Status Banner (Material 3 Style Warning) -->
+<div class="p-4 bg-white dark:bg-background-dark">
+<div class="flex flex-1 flex-col items-start justify-between gap-4 rounded-xl border border-warning/30 bg-[#FFF9EB] dark:bg-warning/10 p-4 @[480px]:flex-row @[480px]:items-center">
+<div class="flex items-center gap-3">
+<div class="bg-warning text-white p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">cloud_off</span>
+</div>
+<div class="flex flex-col gap-0.5">
+<p class="text-[#171211] dark:text-white text-sm font-bold leading-tight">Offline - Syncing later</p>
+<p class="text-[#876664] dark:text-gray-400 text-xs font-normal leading-normal">Cloud connection lost</p>
+</div>
+</div>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-warning text-white text-xs font-bold leading-normal">
+<span class="truncate">Details</span>
+</button>
+</div>
+</div>
+<!-- Inventory Section Header -->
+<div class="px-4 py-2 flex items-center justify-between">
+<h3 class="text-[#171211] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Current Inventory</h3>
+<span class="text-xs font-medium text-warning bg-warning/10 px-2 py-1 rounded">2 Pending</span>
+</div>
+<!-- Product Grid -->
+<div class="grid grid-cols-2 gap-4 p-4">
+<!-- Item 1 -->
+<div class="flex flex-col gap-3 pb-3 bg-white dark:bg-gray-900 rounded-xl p-3 shadow-sm border border-gray-100 dark:border-gray-800">
+<div class="relative w-full bg-center bg-no-repeat aspect-square bg-cover rounded-lg" data-alt="Fresh red apples in a wooden crate" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCxjdJIGGTjalzLWfiyPLzCnrx9_WdeozJ-Xap7ywcDqNBEiL0ahGfSEQK2_vH_x5dGs0sndZK5RqCAuLDtYemfWlJGZGv7sLunkmsCagP-FFN2WctljVPpjqobNJvoCuyISPxT1qX8BoO9AM8TwbuYgeDFWMaDx0Ve75DWRttAvlJ5tIFpHW082YTXPMWUc1YvCuxecNQkNNuC9Ya6-sm9QgVsmi9Bw5WsrRhU3ZlGp-4cMBoIAanHSAuTZzfxALxfBPWFZlsL");'>
+<div class="absolute top-2 right-2 bg-warning text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[12px]">sync</span>
+</div>
+</div>
+<div>
+<p class="text-[#171211] dark:text-white text-sm font-bold leading-normal">Red Apples</p>
+<p class="text-[#876664] dark:text-gray-400 text-xs font-normal leading-normal">Stock: 45 units</p>
+<div class="flex items-center gap-1 mt-1 text-warning">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Sync Pending</p>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex flex-col gap-3 pb-3 bg-white dark:bg-gray-900 rounded-xl p-3 shadow-sm border border-gray-100 dark:border-gray-800">
+<div class="relative w-full bg-center bg-no-repeat aspect-square bg-cover rounded-lg" data-alt="Bunch of ripe yellow bananas" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAgAXQqDqSdS7AwYO9P1whDQO200OGHgO3MAzSgPA6HRU_8aaWpGmHCNqnN98jJcufl1MTEJNW5HA6ZeYRt9zc9IYRIzmMLOj1LfY3SjK7AVHxLcUCCbCkWq0H8U4MZ6pVzab7E_J6pi7FHCEYVP-IcZ0o82BjsL4dIgC-7JLQSZYDOdee3UsStdnI51yWuCuBK5jFLdLBU84ZR48itwoJ_VeEDtwsMIVX819k4__UcD0dHdm4JGd8lfkEbeioH3H0teWkb3K6p");'>
+<div class="absolute top-2 right-2 bg-warning text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[12px]">sync</span>
+</div>
+</div>
+<div>
+<p class="text-[#171211] dark:text-white text-sm font-bold leading-normal">Bananas</p>
+<p class="text-[#876664] dark:text-gray-400 text-xs font-normal leading-normal">Stock: 12 bunches</p>
+<div class="flex items-center gap-1 mt-1 text-warning">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Sync Pending</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty/Instructional State Snackbar -->
+<div class="mt-auto px-4 pb-4">
+<div class="flex flex-col items-center gap-4 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 p-6">
+<div class="flex flex-col items-center gap-2">
+<div class="bg-primary/10 p-3 rounded-full mb-2">
+<span class="material-symbols-outlined text-primary">mic</span>
+</div>
+<p class="text-[#171211] dark:text-white text-md font-bold leading-tight tracking-[-0.015em] text-center">Offline Mode Active</p>
+<p class="text-[#171211]/70 dark:text-white/70 text-xs font-normal leading-relaxed text-center max-w-[280px]">
+                    You can still use voice commands to add stock. Changes will sync once you are back online.
+                </p>
+</div>
+<button class="flex min-w-[120px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-xs font-bold uppercase tracking-widest">
+<span class="truncate">Got it</span>
+</button>
+</div>
+</div>
+<!-- Voice Assistant FAB (Floating Action Button) -->
+<div class="fixed bottom-24 right-6 z-40">
+<div class="relative">
+<button class="size-14 bg-primary text-white rounded-full shadow-lg shadow-primary/30 flex items-center justify-center ring-4 ring-white dark:ring-background-dark">
+<span class="material-symbols-outlined text-3xl">mic</span>
+</button>
+<!-- Local Only Indicator Badge -->
+<div class="absolute -top-1 -right-1 bg-warning size-5 rounded-full border-2 border-white dark:border-background-dark flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] text-white font-bold">bolt</span>
+</div>
+</div>
+</div>
+<!-- iOS Style Bottom Navigation -->
+<div class="sticky bottom-0 w-full bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-t border-gray-100 dark:border-gray-800 px-6 py-3 flex justify-between items-center z-50">
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-[10px] font-medium">Sales</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-[10px] font-medium">Inventory</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="text-[10px] font-medium">Analytics</span>
+</div>
+</div>
+<!-- Safe area spacing for iOS -->
+<div class="h-6 bg-white dark:bg-background-dark"></div>
+</body></html>

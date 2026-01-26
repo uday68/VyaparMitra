@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Offline Voice Interaction State</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#f9bc06",
+              "background-light": "#f8f8f5",
+              "background-dark": "#231e0f",
+            },
+            fontFamily: {
+              "display": ["Work Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .waveform-bar {
+            width: 4px;
+            border-radius: 2px;
+            background-color: #f9bc06;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col transition-colors duration-300">
+<!-- Top Navigation Bar -->
+<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between">
+<div class="text-[#181611] dark:text-white flex size-12 shrink-0 items-center">
+<span class="material-symbols-outlined text-2xl">close</span>
+</div>
+<h2 class="text-[#181611] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Voice Assistant</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 bg-transparent text-[#181611] dark:text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0">
+<span class="material-symbols-outlined text-2xl">help_outline</span>
+</button>
+</div>
+</div>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col items-center justify-center px-4 space-y-8">
+<!-- Animated Waveform Visualizer (Mockup) -->
+<div class="w-full max-w-sm aspect-video flex items-center justify-center gap-1.5 h-32">
+<div class="waveform-bar h-12 bg-primary"></div>
+<div class="waveform-bar h-20 bg-primary/80"></div>
+<div class="waveform-bar h-28 bg-primary"></div>
+<div class="waveform-bar h-32 bg-primary"></div>
+<div class="waveform-bar h-24 bg-primary/60"></div>
+<div class="waveform-bar h-16 bg-primary"></div>
+<div class="waveform-bar h-20 bg-primary/90"></div>
+<div class="waveform-bar h-12 bg-primary"></div>
+<div class="waveform-bar h-16 bg-primary"></div>
+<div class="waveform-bar h-24 bg-primary/70"></div>
+</div>
+<!-- Headline Status -->
+<div class="w-full">
+<div class="flex items-center justify-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-xl">cloud_off</span>
+<span class="text-xs font-bold uppercase tracking-widest text-[#8c805f] dark:text-primary/70">Offline Mode</span>
+</div>
+<h3 class="text-[#181611] dark:text-white tracking-light text-2xl font-bold leading-tight text-center pb-2">Basic commands only</h3>
+</div>
+<!-- Transcript Display -->
+<div class="w-full max-w-md bg-white dark:bg-[#2d281a] p-6 rounded-xl border border-[#e6e3db] dark:border-[#3d382b] shadow-sm">
+<p class="text-[#8c805f] dark:text-gray-400 text-sm font-medium uppercase tracking-wider mb-2">Transcript</p>
+<p class="text-[#181611] dark:text-white text-xl font-normal leading-normal italic">
+                "Add 10kg Apples"
+            </p>
+<div class="mt-4 pt-4 border-t border-[#f0eee8] dark:border-[#3d382b] flex items-center gap-2 text-[#8c805f] dark:text-primary/60">
+<span class="material-symbols-outlined text-lg">sync_problem</span>
+<p class="text-sm font-normal">Will sync when online.</p>
+</div>
+</div>
+</div>
+<!-- Footer Action Panel -->
+<div class="p-4 @container w-full max-w-2xl mx-auto">
+<div class="flex flex-1 flex-col items-start justify-between gap-4 rounded-xl border border-[#e6e3db] dark:border-[#3d382b] bg-white dark:bg-[#2d281a] p-5 @[480px]:flex-row @[480px]:items-center shadow-lg">
+<div class="flex gap-4">
+<div class="text-primary mt-1">
+<span class="material-symbols-outlined">info</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-[#181611] dark:text-white text-base font-bold leading-tight">Limited Functionality</p>
+<p class="text-[#8c805f] dark:text-gray-400 text-sm font-normal leading-normal">Live negotiations and tourist currency conversion are unavailable offline.</p>
+</div>
+</div>
+<button class="flex min-w-[100px] w-full @[480px]:w-auto cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-5 bg-primary text-[#181611] text-sm font-bold leading-normal transition-transform active:scale-95">
+<span class="truncate">Got it</span>
+</button>
+</div>
+</div>
+<!-- Placeholder for bottom home indicator spacing on iOS -->
+<div class="h-8"></div>
+</body></html>

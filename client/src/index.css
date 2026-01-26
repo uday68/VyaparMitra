@@ -5,8 +5,8 @@
 @tailwind utilities;
 
 :root {
-  /* Brand Colors - Fresh & Trustworthy */
-  --primary: 214 84% 51%; /* #1c74e9 - Bright Trust Blue */
+  /* Stitch Design Colors */
+  --primary: 214 84% 51%; /* #1c74e9 - Primary Blue */
   --primary-foreground: 0 0% 100%;
   
   --secondary: 145 63% 42%; /* #27ae60 - Fresh Green */
@@ -46,12 +46,13 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-foreground font-sans antialiased;
+    @apply bg-background-light text-[#111418] font-display antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    min-height: max(884px, 100dvh);
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold tracking-tight text-slate-900;
+    @apply font-bold tracking-tight text-[#111418];
   }
 }
 
