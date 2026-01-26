@@ -1,0 +1,12 @@
+{
+  "name": "Lint and Format Before Commit",
+  "version": "1.0.0", 
+  "description": "Run ESLint and Prettier checks before commits to ensure code quality and consistent formatting",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "I'm about to commit code changes. Please run the following quality checks and fix any issues:\n\n1. **Linting**: Run `npm run lint` to check for code quality issues\n2. **Formatting**: Run `npm run lint:fix` to auto-fix formatting issues\n3. **TypeScript**: Run `npm run build` to check for compilation errors\n4. **Tests**: Run `npm run test` to ensure all tests pass\n\nFor any issues found:\n- Auto-fix what can be automatically resolved\n- Provide specific guidance for manual fixes needed\n- Highlight any breaking changes or potential issues\n- Suggest improvements for code quality\n\nFocus on VyaparMitra-specific patterns:\n- Service layer error handling\n- Proper logging with context\n- Zod validation schemas\n- Voice commerce patterns\n- i18n translation keys\n- Payment processing security\n\nProvide a summary of all checks and confirm the code is ready for commit."
+  }
+}

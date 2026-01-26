@@ -1,0 +1,13 @@
+{
+  "name": "Run Tests on File Save",
+  "version": "1.0.0",
+  "description": "Automatically run relevant tests when TypeScript files are saved to catch issues early in development",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["src/**/*.ts", "client/src/**/*.ts", "client/src/**/*.tsx"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A TypeScript file has been modified. Please run the relevant tests for this file and any dependent modules. If this is a service file, run the corresponding unit tests. If this is a route file, run the integration tests. If there are any test failures, analyze the issues and suggest fixes. Focus on:\n\n1. Running tests related to the modified file\n2. Checking for TypeScript compilation errors\n3. Validating that existing functionality still works\n4. Suggesting fixes for any failing tests\n\nUse the following commands as appropriate:\n- `npm run test` for all tests\n- `npm run test:coverage` for coverage analysis\n- `npm run lint` for code quality checks\n- `npm run build` for TypeScript compilation\n\nProvide a summary of test results and any actions needed."
+  }
+}
