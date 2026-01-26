@@ -11,6 +11,16 @@ export { default as HandsFreeSettings } from './HandsFreeSettings';
 export { default as OrderHistory } from './OrderHistory';
 export { default as NotFound } from './not-found';
 
+// Authentication pages
+export { Login } from './Login';
+export { SignUp } from './SignUp';
+export { Profile } from './Profile';
+
+// Role-specific pages
+export { CustomerOrderHistory } from './CustomerOrderHistory';
+export { VendorOrderHistory } from './VendorOrderHistory';
+export { CustomerDashboard } from './CustomerDashboard';
+
 // New voice-enabled pages
 export { CustomerShop } from './CustomerShop';
 export { CustomerVoiceNegotiation } from './CustomerVoiceNegotiation';
@@ -22,3 +32,4 @@ export { VoiceTransactionSuccess } from './VoiceTransactionSuccess';
 export { VoiceRecognitionError } from './VoiceRecognitionError';
 export { VoiceTransactionActive } from './VoiceTransactionActive';
 export { OfflineVoiceState } from './OfflineVoiceState';
+export { PermissionsReadyToShop } from './PermissionsReadyToShop';

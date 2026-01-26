@@ -10,6 +10,7 @@ import { chatStorage } from "./replit_integrations/chat/storage";
 import authRoutes from "../src/routes/auth";
 import apiRoutes from "../src/routes/api";
 import paymentRoutes from "../src/routes/payment";
+import analyticsRoutes from "../src/routes/analytics";
 
 // Import database initialization
 import { connectMongoDB } from "../src/db/mongo";
@@ -44,6 +45,7 @@ export async function registerRoutes(
   // === MAIN API ROUTES (from src/routes) ===
   app.use('/api/auth', authRoutes);
   app.use('/api/payment', paymentRoutes);
+  app.use('/api/analytics', analyticsRoutes);
   app.use('/api', apiRoutes);
 
   // Health check endpoints

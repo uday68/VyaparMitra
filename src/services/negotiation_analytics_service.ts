@@ -1,87 +1,46 @@
 import { logger } from '../utils/logger';
-import { pool } from '../db/postgres';
-import { getRedisClient } from '../db/redis';
+import { getPool, pool } from '../db/postgres';
+import { getRedisClient, RedisService } from '../db/redis';
 
 interface NegotiationAnalytics {
   totalNegotiations: number;
   successRate: number;
   averageNegotiationTime: number; // in minutes
   averageDiscount: number; // percentage
-  totalRevenue: number;
-  conversionRate: number;
   topPerformingCategories: Array<{
     category: string;
     successRate: number;
     averageDiscount: number;
-    totalNegotiations: number;
+    totalVolume: number;
   }>;
   negotiationPatterns: {
     peakHours: Array<{ hour: number; count: number }>;
-    averageBidsPerNegotiation: number;
-    mostCommonOutcome: 'accepted' | 'rejected' | 'counter_offered';
+    preferredLanguages: Array<{ language: string; count: number; successRate: number }>;
+    voiceVsText: {
+      voice: { count: number; successRate: number; avgTime: number };
+      text: { count: number; successRate: number; avgTime: number };
+    };
   };
   customerBehavior: {
-    averageInitialOffer: number; // percentage of asking price
-    priceFlexibility: number; // how much customers typically move from initial offer
-    negotiationStyle: 'aggressive' | 'moderate' | 'conservative';
+    averageBidsPerNegotiation: number;
+    mostCommonStartingDiscount: number;
+    acceptanceThreshold: number;
   };
   vendorPerformance: {
-    responseTime: number; // average response time in minutes
-    acceptanceRate: number;
-    profitMargin: number;
+    averageResponseTime: number;
+    counterOfferRate: number;
+    finalAcceptanceRate: number;
   };
 }
 
 interface NegotiationInsight {
-  type: 'success_factor' | 'improvement_opportunity' | 'market_trend' | 'customer_preference';
+  type: 'success_factor' | 'improvement_opportunity' | 'market_trend' | 'behavioral_pattern';
   title: string;
   description: string;
   impact: 'high' | 'medium' | 'low';
   actionable: boolean;
-  recommendation: string;
+  recommendation?: string;
   metrics: Record<string, number>;
-}
-
-interface VoiceNegotiationAnalytics {
-  voiceUsageRate: number;
-  voiceSuccessRate: number;
-  averageVoiceNegotiationTime: number;
-  languagePreferences: Array<{
-    language: string;
-    usage: number;
-    successRate: number;
-  }>;
-  voiceCommandEffectiveness: Array<{
-    command: string;
-    frequency: number;
-    successRate: number;
-  }>;
-  speechPatternAnalysis: {
-    averageWordsPerMessage: number;
-    sentimentDistribution: {
-      positive: number;
-      neutral: number;
-      negative: number;
-    };
-    urgencyIndicators: Array<{
-      indicator: string;
-      frequency: number;
-      impact: number;
-    }>;
-  };
-}
-
-interface NegotiationForecast {
-  timeframe: '7d' | '30d' | '90d';
-  predictedNegotiations: number;
-  expectedSuccessRate: number;
-  projectedRevenue: number;
-  seasonalFactors: Array<{
-    factor: string;
-    impact: number;
-    description: string;
-  }>;
-  recommendations: string[];
 }
 
 export class NegotiationAnalyticsService {
@@ -89,17 +48,21 @@ export class NegotiationAnalyticsService {
   private static readonly ANALYSIS_PERIOD_DAYS = 90;
 
   /**
-   * Get comprehensive negotiation analytics for a vendor
+   * Get comprehensive negotiation analytics
    */
-  static async getNegotiationAnalytics(vendorId: string, period: number = 90): Promise<NegotiationAnalytics> {
+  static async getNegotiationAnalytics(
+    vendorId?: string,
+    customerId?: string,
+    category?: string
+  ): Promise<NegotiationAnalytics> {
     try {
-      const cacheKey = `negotiation_analytics:${vendorId}:${period}`;
+      const cacheKey = `negotiation_analytics:${vendorId || 'all'}:${customerId || 'all'}:${category || 'all'}`;
       const redis = getRedisClient();
       
       // Check cache first
-      const cached = await redis.get(cacheKey);
+      const cached = await RedisService.get(cacheKey);
       if (cached) {
-        logger.info('Negotiation analytics served from cache', { vendorId });
+        logger.info('Negotiation analytics served from cache', { vendorId, customerId, category });
         return JSON.parse(cached);
       }
 
@@ -110,11 +73,11 @@ export class NegotiationAnalyticsService {
         customerBehavior,
         vendorPerformance
       ] = await Promise.all([
-        this.getBasicNegotiationStats(vendorId, period),
-        this.getCategoryPerformance(vendorId, period),
-        this.getNegotiationPatterns(vendorId, period),
-        this.getCustomerBehavior(vendorId, period),
-        this.getVendorPerformance(vendorId, period)
+        this.getBasicNegotiationStats(vendorId, customerId, category),
+        this.getCategoryPerformance(vendorId, customerId, category),
+        this.getNegotiationPatterns(vendorId, customerId, category),
+        this.getCustomerBehavior(vendorId, customerId, category),
+        this.getVendorPerformance(vendorId, customerId, category)
       ]);
 
       const analytics: NegotiationAnalytics = {
@@ -126,17 +89,19 @@ export class NegotiationAnalyticsService {
       };
 
       // Cache the result
-      await redis.setex(cacheKey, this.CACHE_TTL, JSON.stringify(analytics));
+      await RedisService.setWithTTL(cacheKey, JSON.stringify(analytics), this.CACHE_TTL);
       
       logger.info('Negotiation analytics generated', {
         vendorId,
+        customerId,
+        category,
         totalNegotiations: analytics.totalNegotiations,
         successRate: analytics.successRate
       });
 
       return analytics;
     } catch (error) {
-      logger.error('Negotiation analytics generation failed', { error, vendorId });
+      logger.error('Negotiation analytics generation failed', { error, vendorId, customerId, category });
       throw new Error('Failed to generate negotiation analytics');
     }
   }
@@ -144,65 +109,64 @@ export class NegotiationAnalyticsService {
   /**
    * Get basic negotiation statistics
    */
-  private static async getBasicNegotiationStats(vendorId: string, period: number): Promise<{
+  private static async getBasicNegotiationStats(
+    vendorId?: string,
+    customerId?: string,
+    category?: string
+  ): Promise<{
     totalNegotiations: number;
     successRate: number;
     averageNegotiationTime: number;
     averageDiscount: number;
-    totalRevenue: number;
-    conversionRate: number;
   }> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
+      let whereClause = `WHERE n.created_at >= NOW() - INTERVAL '${this.ANALYSIS_PERIOD_DAYS} days'`;
+      const params: any[] = [];
+      let paramIndex = 1;
+
+      if (vendorId) {
+        whereClause += ` AND p.vendor_id = $${paramIndex}`;
+        params.push(vendorId);
+        paramIndex++;
+      }
+
+      if (customerId) {
+        whereClause += ` AND n.user_id = $${paramIndex}`;
+        params.push(customerId);
+        paramIndex++;
+      }
+
+      if (category) {
+        whereClause += ` AND n.product_category = $${paramIndex}`;
+        params.push(category);
+        paramIndex++;
+      }
+
       const query = `
         SELECT 
           COUNT(*) as total_negotiations,
           COUNT(CASE WHEN n.status = 'completed' THEN 1 END) as successful_negotiations,
-          AVG(EXTRACT(EPOCH FROM (n.updated_at - n.created_at)) / 60) as avg_negotiation_time,
-          AVG(CASE 
-            WHEN n.status = 'completed' AND p.price > 0 
-            THEN ((p.price - n.final_price) / p.price) * 100 
-            ELSE 0 
-          END) as avg_discount,
-          SUM(CASE WHEN n.status = 'completed' THEN n.final_price ELSE 0 END) as total_revenue,
-          COUNT(CASE WHEN n.status = 'completed' THEN 1 END) * 100.0 / NULLIF(COUNT(*), 0) as success_rate
+          AVG(CASE WHEN n.status = 'completed' THEN EXTRACT(EPOCH FROM (n.updated_at - n.created_at))/60 END) as avg_time_minutes,
+          AVG(CASE WHEN n.status = 'completed' THEN ((p.price - n.final_price) / p.price * 100) END) as avg_discount_percent
         FROM negotiations n
         JOIN products p ON n.product_id = p.id
-        WHERE p.vendor_id = $1
-        AND n.created_at >= NOW() - INTERVAL '${period} days'
+        ${whereClause}
       `;
       
-      const result = await client.query(query, [vendorId]);
+      const result = await client.query(query, params);
       const row = result.rows[0];
       
-      // Get conversion rate (negotiations to actual orders)
-      const conversionQuery = `
-        SELECT 
-          COUNT(DISTINCT n.id) as negotiations_with_orders,
-          COUNT(DISTINCT o.id) as total_orders
-        FROM negotiations n
-        JOIN products p ON n.product_id = p.id
-        LEFT JOIN orders o ON n.id = o.negotiation_id
-        WHERE p.vendor_id = $1
-        AND n.created_at >= NOW() - INTERVAL '${period} days'
-        AND n.status = 'completed'
-      `;
-      
-      const conversionResult = await client.query(conversionQuery, [vendorId]);
-      const conversionRow = conversionResult.rows[0];
-      
-      const conversionRate = conversionRow.negotiations_with_orders > 0 
-        ? (conversionRow.total_orders / conversionRow.negotiations_with_orders) * 100 
-        : 0;
+      const totalNegotiations = parseInt(row.total_negotiations || '0');
+      const successfulNegotiations = parseInt(row.successful_negotiations || '0');
       
       return {
-        totalNegotiations: parseInt(row.total_negotiations || '0'),
-        successRate: parseFloat(row.success_rate || '0'),
-        averageNegotiationTime: parseFloat(row.avg_negotiation_time || '0'),
-        averageDiscount: parseFloat(row.avg_discount || '0'),
-        totalRevenue: parseFloat(row.total_revenue || '0'),
-        conversionRate: parseFloat(conversionRate.toFixed(2))
+        totalNegotiations,
+        successRate: totalNegotiations > 0 ? (successfulNegotiations / totalNegotiations) * 100 : 0,
+        averageNegotiationTime: parseFloat(row.avg_time_minutes || '0'),
+        averageDiscount: parseFloat(row.avg_discount_percent || '0')
       };
     } finally {
       client.release();
@@ -210,43 +174,65 @@ export class NegotiationAnalyticsService {
   }
 
   /**
-   * Get category-wise performance
+   * Get category performance analysis
    */
-  private static async getCategoryPerformance(vendorId: string, period: number): Promise<Array<{
+  private static async getCategoryPerformance(
+    vendorId?: string,
+    customerId?: string,
+    category?: string
+  ): Promise<Array<{
     category: string;
     successRate: number;
     averageDiscount: number;
-    totalNegotiations: number;
+    totalVolume: number;
   }>> {
     const client = await pool.connect();
     
     try {
+      let whereClause = `WHERE n.created_at >= NOW() - INTERVAL '${this.ANALYSIS_PERIOD_DAYS} days'`;
+      const params: any[] = [];
+      let paramIndex = 1;
+
+      if (vendorId) {
+        whereClause += ` AND p.vendor_id = $${paramIndex}`;
+        params.push(vendorId);
+        paramIndex++;
+      }
+
+      if (customerId) {
+        whereClause += ` AND n.user_id = $${paramIndex}`;
+        params.push(customerId);
+        paramIndex++;
+      }
+
+      if (category) {
+        whereClause += ` AND n.product_category = $${paramIndex}`;
+        params.push(category);
+        paramIndex++;
+      }
+
       const query = `
         SELECT 
-          p.category,
-          COUNT(*) as total_negotiations,
-          COUNT(CASE WHEN n.status = 'completed' THEN 1 END) * 100.0 / COUNT(*) as success_rate,
-          AVG(CASE 
-            WHEN n.status = 'completed' AND p.price > 0 
-            THEN ((p.price - n.final_price) / p.price) * 100 
-            ELSE 0 
-          END) as avg_discount
+          n.product_category as category,
+          COUNT(*) as total_volume,
+          COUNT(CASE WHEN n.status = 'completed' THEN 1 END) as successful_count,
+          AVG(CASE WHEN n.status = 'completed' THEN ((p.price - n.final_price) / p.price * 100) END) as avg_discount
         FROM negotiations n
         JOIN products p ON n.product_id = p.id
-        WHERE p.vendor_id = $1
-        AND n.created_at >= NOW() - INTERVAL '${period} days'
-        GROUP BY p.category
-        HAVING COUNT(*) >= 3
-        ORDER BY success_rate DESC
+        ${whereClause}
+        GROUP BY n.product_category
+        HAVING COUNT(*) >= 5
+        ORDER BY successful_count DESC
+        LIMIT 10
       `;
       
-      const result = await client.query(query, [vendorId]);
+      const result = await client.query(query, params);
       
       return result.rows.map(row => ({
         category: row.category,
-        successRate: parseFloat(row.success_rate || '0'),
+        successRate: (parseInt(row.successful_count) / parseInt(row.total_volume)) * 100,
         averageDiscount: parseFloat(row.avg_discount || '0'),
-        totalNegotiations: parseInt(row.total_negotiations)
+        totalVolume: parseInt(row.total_volume)
       }));
     } finally {
       client.release();
@@ -256,14 +242,43 @@ export class NegotiationAnalyticsService {
   /**
    * Analyze negotiation patterns
    */
-  private static async getNegotiationPatterns(vendorId: string, period: number): Promise<{
+  private static async getNegotiationPatterns(
+    vendorId?: string,
+    customerId?: string,
+    category?: string
+  ): Promise<{
     peakHours: Array<{ hour: number; count: number }>;
-    averageBidsPerNegotiation: number;
-    mostCommonOutcome: 'accepted' | 'rejected' | 'counter_offered';
+    preferredLanguages: Array<{ language: string; count: number; successRate: number }>;
+    voiceVsText: {
+      voice: { count: number; successRate: number; avgTime: number };
+      text: { count: number; successRate: number; avgTime: number };
+    };
   }> {
     const client = await pool.connect();
     
     try {
+      let whereClause = `WHERE n.created_at >= NOW() - INTERVAL '${this.ANALYSIS_PERIOD_DAYS} days'`;
+      const params: any[] = [];
+      let paramIndex = 1;
+
+      if (vendorId) {
+        whereClause += ` AND p.vendor_id = $${paramIndex}`;
+        params.push(vendorId);
+        paramIndex++;
+      }
+
+      if (customerId) {
+        whereClause += ` AND n.user_id = $${paramIndex}`;
+        params.push(customerId);
+        paramIndex++;
+      }
+
+      if (category) {
+        whereClause += ` AND n.product_category = $${paramIndex}`;
+        params.push(category);
+        paramIndex++;
+      }
+
       // Peak hours analysis
       const peakHoursQuery = `
         SELECT 
@@ -271,59 +286,74 @@ export class NegotiationAnalyticsService {
           COUNT(*) as count
         FROM negotiations n
         JOIN products p ON n.product_id = p.id
-        WHERE p.vendor_id = $1
-        AND n.created_at >= NOW() - INTERVAL '${period} days'
+        ${whereClause}
         GROUP BY EXTRACT(HOUR FROM n.created_at)
         ORDER BY hour
       `;
       
-      const peakHoursResult = await client.query(peakHoursQuery, [vendorId]);
+      const peakHoursResult = await client.query(peakHoursQuery, params);
       const peakHours = peakHoursResult.rows.map(row => ({
         hour: parseInt(row.hour),
         count: parseInt(row.count)
       }));
-      
-      // Average bids per negotiation
-      const bidsQuery = `
+
+      // Language preferences analysis
+      const languageQuery = `
         SELECT 
-          AVG(bid_count) as avg_bids
-        FROM (
-          SELECT 
-            n.id,
-            COUNT(b.id) as bid_count
-          FROM negotiations n
-          JOIN products p ON n.product_id = p.id
-          LEFT JOIN bids b ON n.id = b.negotiation_id
-          WHERE p.vendor_id = $1
-          AND n.created_at >= NOW() - INTERVAL '${period} days'
-          GROUP BY n.id
-        ) bid_counts
-      `;
-      
-      const bidsResult = await client.query(bidsQuery, [vendorId]);
-      const averageBidsPerNegotiation = parseFloat(bidsResult.rows[0]?.avg_bids || '0');
-      
-      // Most common outcome
-      const outcomeQuery = `
-        SELECT 
-          n.status,
-          COUNT(*) as count
+          COALESCE(n.language, 'en') as language,
+          COUNT(*) as count,
+          COUNT(CASE WHEN n.status = 'completed' THEN 1 END) as successful_count
         FROM negotiations n
         JOIN products p ON n.product_id = p.id
-        WHERE p.vendor_id = $1
-        AND n.created_at >= NOW() - INTERVAL '${period} days'
-        GROUP BY n.status
+        ${whereClause}
+        GROUP BY COALESCE(n.language, 'en')
         ORDER BY count DESC
-        LIMIT 1
       `;
       
-      const outcomeResult = await client.query(outcomeQuery, [vendorId]);
-      const mostCommonOutcome = outcomeResult.rows[0]?.status || 'rejected';
+      const languageResult = await client.query(languageQuery, params);
+      const preferredLanguages = languageResult.rows.map(row => ({
+        language: row.language,
+        count: parseInt(row.count),
+        successRate: (parseInt(row.successful_count) / parseInt(row.count)) * 100
+      }));
+
+      // Voice vs Text analysis
+      const voiceTextQuery = `
+        SELECT 
+          CASE WHEN n.is_voice_enabled = true THEN 'voice' ELSE 'text' END as interaction_type,
+          COUNT(*) as count,
+          COUNT(CASE WHEN n.status = 'completed' THEN 1 END) as successful_count,
+          AVG(CASE WHEN n.status = 'completed' THEN EXTRACT(EPOCH FROM (n.updated_at - n.created_at))/60 END) as avg_time
+        FROM negotiations n
+        JOIN products p ON n.product_id = p.id
+        ${whereClause}
+        GROUP BY CASE WHEN n.is_voice_enabled = true THEN 'voice' ELSE 'text' END
+      `;
       
+      const voiceTextResult = await client.query(voiceTextQuery, params);
+      
+      const voiceData = voiceTextResult.rows.find(row => row.interaction_type === 'voice') || 
+        { count: '0', successful_count: '0', avg_time: '0' };
+      const textData = voiceTextResult.rows.find(row => row.interaction_type === 'text') || 
+        { count: '0', successful_count: '0', avg_time: '0' };
+
+      const voiceVsText = {
+        voice: {
+          count: parseInt(voiceData.count),
+          successRate: parseInt(voiceData.count) > 0 ? (parseInt(voiceData.successful_count) / parseInt(voiceData.count)) * 100 : 0,
+          avgTime: parseFloat(voiceData.avg_time || '0')
+        },
+        text: {
+          count: parseInt(textData.count),
+          successRate: parseInt(textData.count) > 0 ? (parseInt(textData.successful_count) / parseInt(textData.count)) * 100 : 0,
+          avgTime: parseFloat(textData.avg_time || '0')
+        }
+      };
+
       return {
         peakHours,
-        averageBidsPerNegotiation,
-        mostCommonOutcome: mostCommonOutcome as 'accepted' | 'rejected' | 'counter_offered'
+        preferredLanguages,
+        voiceVsText
       };
     } finally {
       client.release();
@@ -333,101 +363,68 @@ export class NegotiationAnalyticsService {
   /**
    * Analyze customer behavior patterns
    */
-  private static async getCustomerBehavior(vendorId: string, period: number): Promise<{
-    averageInitialOffer: number;
-    priceFlexibility: number;
-    negotiationStyle: 'aggressive' | 'moderate' | 'conservative';
+  private static async getCustomerBehavior(
+    vendorId?: string,
+    customerId?: string,
+    category?: string
+  ): Promise<{
+    averageBidsPerNegotiation: number;
+    mostCommonStartingDiscount: number;
+    acceptanceThreshold: number;
   }> {
     const client = await pool.connect();
     
     try {
-      const query = `
-        SELECT 
-          AVG(CASE 
-            WHEN p.price > 0 AND b.amount > 0 
-            THEN (b.amount / p.price) * 100 
-            ELSE 0 
-          END) as avg_initial_offer_percent,
-          AVG(CASE 
-            WHEN n.status = 'completed' AND b.amount > 0 AND n.final_price > 0
-            THEN ABS(n.final_price - b.amount) / b.amount * 100
-            ELSE 0
-          END) as avg_price_flexibility
-        FROM negotiations n
-        JOIN products p ON n.product_id = p.id
-        JOIN bids b ON n.id = b.negotiation_id
-        WHERE p.vendor_id = $1
-        AND n.created_at >= NOW() - INTERVAL '${period} days'
-        AND b.bid_order = 1  -- First bid only
-      `;
-      
-      const result = await client.query(query, [vendorId]);
-      const row = result.rows[0];
-      
-      const averageInitialOffer = parseFloat(row.avg_initial_offer_percent || '0');
-      const priceFlexibility = parseFloat(row.avg_price_flexibility || '0');
-      
-      // Determine negotiation style based on initial offer percentage
-      let negotiationStyle: 'aggressive' | 'moderate' | 'conservative';
-      if (averageInitialOffer < 70) {
-        negotiationStyle = 'aggressive';
-      } else if (averageInitialOffer < 85) {
-        negotiationStyle = 'moderate';
-      } else {
-        negotiationStyle = 'conservative';
-      }
-      
-      return {
-        averageInitialOffer,
-        priceFlexibility,
-        negotiationStyle
-      };
-    } finally {
-      client.release();
-    }
-  }
+      let whereClause = `WHERE n.created_at >= NOW() - INTERVAL '${this.ANALYSIS_PERIOD_DAYS} days'`;
+      const params: any[] = [];
+      let paramIndex = 1;
 
-  /**
-   * Analyze vendor performance metrics
-   */
-  private static async getVendorPerformance(vendorId: string, period: number): Promise<{
-    responseTime: number;
-    acceptanceRate: number;
-    profitMargin: number;
-  }> {
-    const client = await pool.connect();
-    
-    try {
+      if (vendorId) {
+        whereClause += ` AND p.vendor_id = $${paramIndex}`;
+        params.push(vendorId);
+        paramIndex++;
+      }
+
+      if (customerId) {
+        whereClause += ` AND n.user_id = $${paramIndex}`;
+        params.push(customerId);
+        paramIndex++;
+      }
+
+      if (category) {
+        whereClause += ` AND n.product_category = $${paramIndex}`;
+        params.push(category);
+        paramIndex++;
+      }
+
       const query = `
         SELECT 
-          AVG(EXTRACT(EPOCH FROM (vendor_response_time)) / 60) as avg_response_time,
-          COUNT(CASE WHEN n.status = 'completed' THEN 1 END) * 100.0 / COUNT(*) as acceptance_rate,
-          AVG(CASE 
-            WHEN n.status = 'completed' AND p.cost_price > 0 
-            THEN ((n.final_price - p.cost_price) / n.final_price) * 100 
-            ELSE 0 
-          END) as avg_profit_margin
-        FROM negotiations n
-        JOIN products p ON n.product_id = p.id
-        LEFT JOIN (
+          AVG(bid_count) as avg_bids_per_negotiation,
+          AVG(starting_discount) as avg_starting_discount,
+          AVG(CASE WHEN n.status = 'completed' THEN final_discount END) as avg_acceptance_threshold
+        FROM (
           SELECT 
-            negotiation_id,
-            MIN(created_at) as vendor_response_time
-          FROM bids
-          WHERE bid_type = 'vendor'
-          GROUP BY negotiation_id
-        ) vr ON n.id = vr.negotiation_id
-        WHERE p.vendor_id = $1
-        AND n.created_at >= NOW() - INTERVAL '${period} days'
+            n.id,
+            n.status,
+            COUNT(b.id) as bid_count,
+            ((p.price - b.amount) / p.price * 100) as starting_discount,
+            CASE WHEN n.status = 'completed' THEN ((p.price - n.final_price) / p.price * 100) END as final_discount
+          FROM negotiations n
+          JOIN products p ON n.product_id = p.id
+          LEFT JOIN bids b ON n.id = b.negotiation_id
+          ${whereClause}
+          GROUP BY n.id, n.status, p.price, n.final_price
+          HAVING COUNT(b.id) > 0
+        ) negotiation_stats
       `;
       
-      const result = await client.query(query, [vendorId]);
+      const result = await client.query(query, params);
       const row = result.rows[0];
       
       return {
-        responseTime: parseFloat(row.avg_response_time || '0'),
-        acceptanceRate: parseFloat(row.acceptance_rate || '0'),
-        profitMargin: parseFloat(row.avg_profit_margin || '0')
+        averageBidsPerNegotiation: parseFloat(row.avg_bids_per_negotiation || '0'),
+        mostCommonStartingDiscount: parseFloat(row.avg_starting_discount || '0'),
+        acceptanceThreshold: parseFloat(row.avg_acceptance_threshold || '0')
       };
     } finally {
       client.release();
@@ -435,398 +432,133 @@ export class NegotiationAnalyticsService {
   }
 
   /**
-   * Generate actionable negotiation insights
+   * Analyze vendor performance patterns
    */
-  static async getNegotiationInsights(vendorId: string): Promise<NegotiationInsight[]> {
+  private static async getVendorPerformance(
+    vendorId?: string,
+    customerId?: string,
+    category?: string
+  ): Promise<{
+    averageResponseTime: number;
+    counterOfferRate: number;
+    finalAcceptanceRate: number;
+  }> {
+    const client = await pool.connect();
+    
     try {
-      const analytics = await this.getNegotiationAnalytics(vendorId);
+      let whereClause = `WHERE n.created_at >= NOW() - INTERVAL '${this.ANALYSIS_PERIOD_DAYS} days'`;
+      const params: any[] = [];
+      let paramIndex = 1;
+
+      if (vendorId) {
+        whereClause += ` AND p.vendor_id = $${paramIndex}`;
+        params.push(vendorId);
+        paramIndex++;
+      }
+
+      if (customerId) {
+        whereClause += ` AND n.user_id = $${paramIndex}`;
+        params.push(customerId);
+        paramIndex++;
+      }
+
+      if (category) {
+        whereClause += ` AND n.product_category = $${paramIndex}`;
+        params.push(category);
+        paramIndex++;
+      }
+
+      const query = `
+        SELECT 
+          AVG(EXTRACT(EPOCH FROM (first_vendor_response - n.created_at))/60) as avg_response_time_minutes,
+          COUNT(CASE WHEN vendor_counter_offers > 0 THEN 1 END) * 100.0 / COUNT(*) as counter_offer_rate,
+          COUNT(CASE WHEN n.status = 'completed' THEN 1 END) * 100.0 / COUNT(*) as final_acceptance_rate
+        FROM (
+          SELECT 
+            n.id,
+            n.created_at,
+            n.status,
+            MIN(CASE WHEN b.bid_type = 'vendor_counter' THEN b.created_at END) as first_vendor_response,
+            COUNT(CASE WHEN b.bid_type = 'vendor_counter' THEN 1 END) as vendor_counter_offers
+          FROM negotiations n
+          JOIN products p ON n.product_id = p.id
+          LEFT JOIN bids b ON n.id = b.negotiation_id
+          ${whereClause}
+          GROUP BY n.id, n.created_at, n.status
+        ) vendor_stats
+      `;
+      
+      const result = await client.query(query, params);
+      const row = result.rows[0];
+      
+      return {
+        averageResponseTime: parseFloat(row.avg_response_time_minutes || '0'),
+        counterOfferRate: parseFloat(row.counter_offer_rate || '0'),
+        finalAcceptanceRate: parseFloat(row.final_acceptance_rate || '0')
+      };
+    } finally {
+      client.release();
+    }
+  }
+
+  /**
+   * Generate negotiation insights based on analytics
+   */
+  static async generateNegotiationInsights(
+    vendorId?: string,
+    customerId?: string,
+    category?: string
+  ): Promise<NegotiationInsight[]> {
+    try {
+      const analytics = await this.getNegotiationAnalytics(vendorId, customerId, category);
       const insights: NegotiationInsight[] = [];
-      
+
       // Success rate insights
-      if (analytics.successRate < 50) {
-        insights.push({
-          type: 'improvement_opportunity',
-          title: 'Low Negotiation Success Rate',
-          description: `Your success rate of ${analytics.successRate.toFixed(1)}% is below average`,
-          impact: 'high',
-          actionable: true,
-          recommendation: 'Consider being more flexible with pricing or improving product descriptions',
-          metrics: { currentRate: analytics.successRate, targetRate: 70 }
-        });
-      }
-      
-      // Response time insights
-      if (analytics.vendorPerformance.responseTime > 60) {
-        insights.push({
-          type: 'improvement_opportunity',
-          title: 'Slow Response Time',
-          description: `Average response time of ${analytics.vendorPerformance.responseTime.toFixed(1)} minutes may be affecting negotiations`,
-          impact: 'medium',
-          actionable: true,
-          recommendation: 'Aim to respond to negotiations within 30 minutes for better success rates',
-          metrics: { currentTime: analytics.vendorPerformance.responseTime, targetTime: 30 }
-        });
-      }
-      
-      // Discount insights
-      if (analytics.averageDiscount > 20) {
-        insights.push({
-          type: 'market_trend',
-          title: 'High Discount Rate',
-          description: `Average discount of ${analytics.averageDiscount.toFixed(1)}% suggests pricing may be too high`,
-          impact: 'medium',
-          actionable: true,
-          recommendation: 'Review your initial pricing strategy to reduce negotiation discounts',
-          metrics: { currentDiscount: analytics.averageDiscount, recommendedDiscount: 15 }
-        });
-      }
-      
-      // Category performance insights
-      const topCategory = analytics.topPerformingCategories[0];
-      if (topCategory && topCategory.successRate > 80) {
+      if (analytics.successRate > 80) {
         insights.push({
           type: 'success_factor',
-          title: 'Strong Category Performance',
-          description: `${topCategory.category} category shows excellent ${topCategory.successRate.toFixed(1)}% success rate`,
+          title: 'High Success Rate',
+          description: `Your negotiation success rate of ${analytics.successRate.toFixed(1)}% is excellent`,
           impact: 'high',
           actionable: true,
-          recommendation: 'Consider expanding inventory in this high-performing category',
-          metrics: { successRate: topCategory.successRate, negotiations: topCategory.totalNegotiations }
+          recommendation: 'Maintain current negotiation strategies and consider sharing best practices',
+          metrics: { successRate: analytics.successRate }
         });
-      }
-      
-      // Customer behavior insights
-      if (analytics.customerBehavior.negotiationStyle === 'aggressive') {
+      } else if (analytics.successRate < 50) {
         insights.push({
-          type: 'customer_preference',
-          title: 'Aggressive Customer Negotiation Style',
-          description: 'Customers typically start with low offers, indicating price sensitivity',
-          impact: 'medium',
+          type: 'improvement_opportunity',
+          title: 'Low Success Rate',
+          description: `Your negotiation success rate of ${analytics.successRate.toFixed(1)}% needs improvement`,
+          impact: 'high',
           actionable: true,
-          recommendation: 'Consider starting with competitive pricing to reduce negotiation friction',
-          metrics: { initialOfferPercent: analytics.customerBehavior.averageInitialOffer }
+          recommendation: 'Review pricing strategy and consider more flexible negotiation approaches',
+          metrics: { successRate: analytics.successRate }
         });
       }
-      
+
+      // Voice vs Text insights
+      const { voice, text } = analytics.negotiationPatterns.voiceVsText;
+      if (voice.count > 0 && text.count > 0) {
+        if (voice.successRate > text.successRate + 10) {
+          insights.push({
+            type: 'behavioral_pattern',
+            title: 'Voice Negotiations More Successful',
+            description: `Voice negotiations have ${voice.successRate.toFixed(1)}% success rate vs ${text.successRate.toFixed(1)}% for text`,
+            impact: 'medium',
+            actionable: true,
+            recommendation: 'Encourage customers to use voice features for better outcomes',
+            metrics: { voiceSuccessRate: voice.successRate, textSuccessRate: text.successRate }
+          });
+        }
+      }
+
       return insights.sort((a, b) => {
         const impactOrder = { high: 3, medium: 2, low: 1 };
         return impactOrder[b.impact] - impactOrder[a.impact];
       });
     } catch (error) {
-      logger.error('Negotiation insights generation failed', { error, vendorId });
+      logger.error('Negotiation insights generation failed', { error, vendorId, customerId, category });
       throw new Error('Failed to generate negotiation insights');
-    }
-  }
-
-  /**
-   * Get voice-specific negotiation analytics
-   */
-  static async getVoiceNegotiationAnalytics(vendorId: string): Promise<VoiceNegotiationAnalytics> {
-    const client = await pool.connect();
-    
-    try {
-      // Voice usage rate
-      const voiceUsageQuery = `
-        SELECT 
-          COUNT(CASE WHEN n.is_voice_enabled = true THEN 1 END) * 100.0 / COUNT(*) as voice_usage_rate,
-          COUNT(CASE WHEN n.is_voice_enabled = true AND n.status = 'completed' THEN 1 END) * 100.0 / 
-            NULLIF(COUNT(CASE WHEN n.is_voice_enabled = true THEN 1 END), 0) as voice_success_rate,
-          AVG(CASE 
-            WHEN n.is_voice_enabled = true 
-            THEN EXTRACT(EPOCH FROM (n.updated_at - n.created_at)) / 60 
-            ELSE NULL 
-          END) as avg_voice_negotiation_time
-        FROM negotiations n
-        JOIN products p ON n.product_id = p.id
-        WHERE p.vendor_id = $1
-        AND n.created_at >= NOW() - INTERVAL '90 days'
-      `;
-      
-      const voiceUsageResult = await client.query(voiceUsageQuery, [vendorId]);
-      const voiceUsageRow = voiceUsageResult.rows[0];
-      
-      // Language preferences
-      const languageQuery = `
-        SELECT 
-          n.language,
-          COUNT(*) as usage_count,
-          COUNT(CASE WHEN n.status = 'completed' THEN 1 END) * 100.0 / COUNT(*) as success_rate
-        FROM negotiations n
-        JOIN products p ON n.product_id = p.id
-        WHERE p.vendor_id = $1
-        AND n.is_voice_enabled = true
-        AND n.created_at >= NOW() - INTERVAL '90 days'
-        GROUP BY n.language
-        ORDER BY usage_count DESC
-      `;
-      
-      const languageResult = await client.query(languageQuery, [vendorId]);
-      const languagePreferences = languageResult.rows.map(row => ({
-        language: row.language,
-        usage: parseInt(row.usage_count),
-        successRate: parseFloat(row.success_rate || '0')
-      }));
-      
-      // Mock voice command effectiveness (in production, analyze actual voice commands)
-      const voiceCommandEffectiveness = [
-        { command: 'accept_bid', frequency: 45, successRate: 95 },
-        { command: 'counter_offer', frequency: 30, successRate: 70 },
-        { command: 'reject_bid', frequency: 15, successRate: 100 },
-        { command: 'request_details', frequency: 25, successRate: 85 }
-      ];
-      
-      // Mock speech pattern analysis
-      const speechPatternAnalysis = {
-        averageWordsPerMessage: 12,
-        sentimentDistribution: {
-          positive: 60,
-          neutral: 30,
-          negative: 10
-        },
-        urgencyIndicators: [
-          { indicator: 'quick_response', frequency: 20, impact: 15 },
-          { indicator: 'price_emphasis', frequency: 35, impact: 25 },
-          { indicator: 'time_pressure', frequency: 10, impact: 30 }
-        ]
-      };
-      
-      return {
-        voiceUsageRate: parseFloat(voiceUsageRow.voice_usage_rate || '0'),
-        voiceSuccessRate: parseFloat(voiceUsageRow.voice_success_rate || '0'),
-        averageVoiceNegotiationTime: parseFloat(voiceUsageRow.avg_voice_negotiation_time || '0'),
-        languagePreferences,
-        voiceCommandEffectiveness,
-        speechPatternAnalysis
-      };
-    } finally {
-      client.release();
-    }
-  }
-
-  /**
-   * Generate negotiation forecast
-   */
-  static async getNegotiationForecast(
-    vendorId: string, 
-    timeframe: '7d' | '30d' | '90d' = '30d'
-  ): Promise<NegotiationForecast> {
-    const client = await pool.connect();
-    
-    try {
-      const days = timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90;
-      const historicalPeriod = days * 2; // Look back twice as far for trend analysis
-      
-      // Get historical data
-      const historicalQuery = `
-        SELECT 
-          DATE(n.created_at) as date,
-          COUNT(*) as negotiation_count,
-          COUNT(CASE WHEN n.status = 'completed' THEN 1 END) as successful_count,
-          SUM(CASE WHEN n.status = 'completed' THEN n.final_price ELSE 0 END) as revenue
-        FROM negotiations n
-        JOIN products p ON n.product_id = p.id
-        WHERE p.vendor_id = $1
-        AND n.created_at >= NOW() - INTERVAL '${historicalPeriod} days'
-        GROUP BY DATE(n.created_at)
-        ORDER BY date ASC
-      `;
-      
-      const historicalResult = await client.query(historicalQuery, [vendorId]);
-      const historicalData = historicalResult.rows;
-      
-      if (historicalData.length < 7) {
-        // Not enough data for meaningful forecast
-        return {
-          timeframe,
-          predictedNegotiations: 0,
-          expectedSuccessRate: 0,
-          projectedRevenue: 0,
-          seasonalFactors: [],
-          recommendations: ['Insufficient historical data for accurate forecasting']
-        };
-      }
-      
-      // Calculate trends
-      const recentData = historicalData.slice(-days);
-      const avgNegotiations = recentData.reduce((sum, day) => sum + parseInt(day.negotiation_count), 0) / recentData.length;
-      const avgSuccessRate = recentData.reduce((sum, day) => {
-        const daySuccessRate = parseInt(day.successful_count) / Math.max(parseInt(day.negotiation_count), 1);
-        return sum + daySuccessRate;
-      }, 0) / recentData.length * 100;
-      const avgDailyRevenue = recentData.reduce((sum, day) => sum + parseFloat(day.revenue), 0) / recentData.length;
-      
-      // Simple forecast (in production, use more sophisticated models)
-      const predictedNegotiations = Math.round(avgNegotiations * days);
-      const expectedSuccessRate = avgSuccessRate;
-      const projectedRevenue = avgDailyRevenue * days;
-      
-      // Seasonal factors (simplified)
-      const seasonalFactors = [
-        { factor: 'Weekend Effect', impact: 0.8, description: 'Lower activity on weekends' },
-        { factor: 'Month End', impact: 1.2, description: 'Increased activity at month end' },
-        { factor: 'Festival Season', impact: 1.5, description: 'Higher demand during festivals' }
-      ];
-      
-      // Generate recommendations
-      const recommendations = [];
-      if (predictedNegotiations < avgNegotiations * days * 0.8) {
-        recommendations.push('Consider promotional activities to boost negotiation volume');
-      }
-      if (expectedSuccessRate < 60) {
-        recommendations.push('Focus on improving negotiation success rate through better pricing');
-      }
-      if (projectedRevenue < avgDailyRevenue * days * 0.9) {
-        recommendations.push('Review pricing strategy to maintain revenue growth');
-      }
-      
-      return {
-        timeframe,
-        predictedNegotiations,
-        expectedSuccessRate: Math.round(expectedSuccessRate * 100) / 100,
-        projectedRevenue: Math.round(projectedRevenue * 100) / 100,
-        seasonalFactors,
-        recommendations
-      };
-    } finally {
-      client.release();
-    }
-  }
-
-  /**
-   * Compare negotiation performance with market benchmarks
-   */
-  static async getBenchmarkComparison(vendorId: string, category: string): Promise<{
-    yourPerformance: {
-      successRate: number;
-      averageDiscount: number;
-      responseTime: number;
-    };
-    marketBenchmark: {
-      successRate: number;
-      averageDiscount: number;
-      responseTime: number;
-    };
-    ranking: {
-      position: number;
-      totalVendors: number;
-      percentile: number;
-    };
-    recommendations: string[];
-  }> {
-    const client = await pool.connect();
-    
-    try {
-      // Get vendor's performance
-      const vendorQuery = `
-        SELECT 
-          COUNT(CASE WHEN n.status = 'completed' THEN 1 END) * 100.0 / COUNT(*) as success_rate,
-          AVG(CASE 
-            WHEN n.status = 'completed' AND p.price > 0 
-            THEN ((p.price - n.final_price) / p.price) * 100 
-            ELSE 0 
-          END) as avg_discount,
-          AVG(EXTRACT(EPOCH FROM (n.updated_at - n.created_at)) / 60) as avg_response_time
-        FROM negotiations n
-        JOIN products p ON n.product_id = p.id
-        WHERE p.vendor_id = $1
-        AND p.category = $2
-        AND n.created_at >= NOW() - INTERVAL '90 days'
-      `;
-      
-      const vendorResult = await client.query(vendorQuery, [vendorId, category]);
-      const vendorData = vendorResult.rows[0];
-      
-      // Get market benchmark
-      const benchmarkQuery = `
-        SELECT 
-          AVG(vendor_success_rate) as market_success_rate,
-          AVG(vendor_avg_discount) as market_avg_discount,
-          AVG(vendor_response_time) as market_response_time,
-          COUNT(*) as total_vendors
-        FROM (
-          SELECT 
-            p.vendor_id,
-            COUNT(CASE WHEN n.status = 'completed' THEN 1 END) * 100.0 / COUNT(*) as vendor_success_rate,
-            AVG(CASE 
-              WHEN n.status = 'completed' AND p.price > 0 
-              THEN ((p.price - n.final_price) / p.price) * 100 
-              ELSE 0 
-            END) as vendor_avg_discount,
-            AVG(EXTRACT(EPOCH FROM (n.updated_at - n.created_at)) / 60) as vendor_response_time
-          FROM negotiations n
-          JOIN products p ON n.product_id = p.id
-          WHERE p.category = $1
-          AND n.created_at >= NOW() - INTERVAL '90 days'
-          GROUP BY p.vendor_id
-          HAVING COUNT(*) >= 5
-        ) vendor_stats
-      `;
-      
-      const benchmarkResult = await client.query(benchmarkQuery, [category]);
-      const benchmarkData = benchmarkResult.rows[0];
-      
-      // Calculate ranking
-      const rankingQuery = `
-        SELECT 
-          vendor_id,
-          vendor_success_rate,
-          ROW_NUMBER() OVER (ORDER BY vendor_success_rate DESC) as rank
-        FROM (
-          SELECT 
-            p.vendor_id,
-            COUNT(CASE WHEN n.status = 'completed' THEN 1 END) * 100.0 / COUNT(*) as vendor_success_rate
-          FROM negotiations n
-          JOIN products p ON n.product_id = p.id
-          WHERE p.category = $1
-          AND n.created_at >= NOW() - INTERVAL '90 days'
-          GROUP BY p.vendor_id
-          HAVING COUNT(*) >= 5
-        ) vendor_rankings
-      `;
-      
-      const rankingResult = await client.query(rankingQuery, [category]);
-      const vendorRank = rankingResult.rows.find(row => row.vendor_id === vendorId);
-      
-      const yourPerformance = {
-        successRate: parseFloat(vendorData.success_rate || '0'),
-        averageDiscount: parseFloat(vendorData.avg_discount || '0'),
-        responseTime: parseFloat(vendorData.avg_response_time || '0')
-      };
-      
-      const marketBenchmark = {
-        successRate: parseFloat(benchmarkData.market_success_rate || '0'),
-        averageDiscount: parseFloat(benchmarkData.market_avg_discount || '0'),
-        responseTime: parseFloat(benchmarkData.market_response_time || '0')
-      };
-      
-      const totalVendors = parseInt(benchmarkData.total_vendors || '0');
-      const position = vendorRank ? parseInt(vendorRank.rank) : totalVendors;
-      const percentile = totalVendors > 0 ? Math.round(((totalVendors - position + 1) / totalVendors) * 100) : 0;
-      
-      // Generate recommendations
-      const recommendations = [];
-      if (yourPerformance.successRate < marketBenchmark.successRate) {
-        recommendations.push(`Improve success rate - you're ${(marketBenchmark.successRate - yourPerformance.successRate).toFixed(1)}% below market average`);
-      }
-      if (yourPerformance.responseTime > marketBenchmark.responseTime) {
-        recommendations.push(`Reduce response time - market average is ${marketBenchmark.responseTime.toFixed(1)} minutes`);
-      }
-      if (yourPerformance.averageDiscount > marketBenchmark.averageDiscount + 5) {
-        recommendations.push('Consider adjusting initial pricing to reduce negotiation discounts');
-      }
-      
-      return {
-        yourPerformance,
-        marketBenchmark,
-        ranking: {
-          position,
-          totalVendors,
-          percentile
-        },
-        recommendations
-      };
-    } finally {
-      client.release();
     }
   }
 }

@@ -1,81 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
-:root {
-  /* Stitch Design Colors */
-  --primary: 214 84% 51%; /* #1c74e9 - Primary Blue */
-  --primary-foreground: 0 0% 100%;
-  
-  --secondary: 145 63% 42%; /* #27ae60 - Fresh Green */
-  --secondary-foreground: 0 0% 100%;
-
-  --accent: 214 84% 96%; /* Very light blue for backgrounds */
-  --accent-foreground: 214 84% 51%;
-
-  --background: 0 0% 100%;
-  --foreground: 215 19% 35%; /* #4a5568 */
-
-  --card: 0 0% 100%;
-  --card-foreground: 215 19% 35%;
-
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
-
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 214 84% 51%;
-
-  --radius: 0.75rem;
-
-  --font-sans: 'Work Sans', sans-serif;
+@theme {
+  --font-family-sans: 'Work Sans', sans-serif;
+  --color-primary: #1c74e9;
+  --color-background-light: #f6f7f8;
+  --color-background-dark: #111821;
 }
 
-.dark {
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
-  --card: 222 47% 11%;
-  --card-foreground: 210 40% 98%;
-  --muted: 217 33% 17%;
-  --muted-foreground: 215 20% 65%;
-  --border: 217 33% 17%;
-  --input: 217 33% 17%;
-}
-
-@layer base {
-  body {
-    @apply bg-background-light text-[#111418] font-display antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
-    min-height: max(884px, 100dvh);
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-bold tracking-tight text-[#111418];
-  }
-}
-
-@layer utilities {
-  .material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    @apply align-middle select-none;
-  }
-  
-  .glass-panel {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-lg;
-  }
-  
-  .safe-area-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  @apply bg-transparent;
-}
-::-webkit-scrollbar-thumb {
-  @apply bg-slate-200 rounded-full hover:bg-slate-300;
+body {
+  font-family: var(--font-family-sans);
+  background-color: var(--color-background-light);
+  color: #111418;
 }

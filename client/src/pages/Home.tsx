@@ -1,21 +1,34 @@
-import { useProducts } from "@/hooks/use-products";
-import { useCreateNegotiation } from "@/hooks/use-negotiations";
-import { ProductCard } from "@/components/ProductCard";
-import { BottomNav } from "@/components/BottomNav";
-import { Header } from "@/components/Header";
+import { useProducts } from "../hooks/use-products";
+import { useCreateNegotiation } from "../hooks/use-negotiations";
+import { ProductCard } from "../components/ProductCard";
+import { BottomNav } from "../components/BottomNav";
+import { Header } from "../components/Header";
 import { Product } from "@shared/schema";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useState, useEffect } from "react";
+import { useTranslation } from "../hooks/useTranslation";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Home() {
   const { data: products, isLoading } = useProducts();
   const createNegotiation = useCreateNegotiation();
   const [, setLocation] = useLocation();
   const { t } = useTranslation();
+  const { user, isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [showVoiceAssistant, setShowVoiceAssistant] = useState(true);
+
+  // Redirect users to appropriate dashboards based on their type
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.type === 'vendor') {
+        setLocation('/vendor');
+      } else {
+        setLocation('/customer/dashboard');
+      }
+    }
+  }, [isAuthenticated, user, setLocation]);
 
   const handleBid = async (product: Product) => {
     try {
@@ -43,6 +56,15 @@ export default function Home() {
   const filteredProducts = products?.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
+
+  // Show loading while redirecting
+  if (isAuthenticated && user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-background-light min-h-screen flex flex-col">

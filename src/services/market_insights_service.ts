@@ -1,6 +1,6 @@
 import { logger } from '../utils/logger';
-import { pool } from '../db/postgres';
-import { getRedisClient } from '../db/redis';
+import { getPool } from '../db/postgres';
+import { getRedisClient, RedisService } from '../db/redis';
 
 interface MarketInsight {
   category: string;
@@ -83,10 +83,10 @@ export class MarketInsightsService {
   static async getMarketInsights(category: string, vendorId?: string): Promise<MarketInsight> {
     try {
       const cacheKey = `market_insights:${category}:${vendorId || 'all'}`;
-      const redis = getRedisClient();
+      // Redis handled by RedisService
       
       // Check cache first
-      const cached = await redis.get(cacheKey);
+      const cached = await RedisService.get(cacheKey);
       if (cached) {
         logger.info('Market insights served from cache', { category });
         return JSON.parse(cached);
@@ -123,7 +123,7 @@ export class MarketInsightsService {
       };
 
       // Cache the result
-      await redis.setex(cacheKey, this.CACHE_TTL, JSON.stringify(insight));
+      await RedisService.setWithTTL(cacheKey, this.CACHE_TTL, JSON.stringify(insight));
       
       logger.info('Market insights generated', {
         category,
@@ -147,6 +147,7 @@ export class MarketInsightsService {
     averagePrice: number;
     totalTransactions: number;
   }> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -215,6 +216,7 @@ export class MarketInsightsService {
     demandLevel: 'high' | 'medium' | 'low';
     supplyLevel: 'high' | 'medium' | 'low';
   }> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -271,6 +273,7 @@ export class MarketInsightsService {
     marketShare: number;
     averageRating: number;
   }>> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -318,6 +321,7 @@ export class MarketInsightsService {
     currentFactor: number;
     seasonalPatterns: Array<{ month: number; factor: number }>;
   }> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -407,6 +411,7 @@ export class MarketInsightsService {
    * Get market alerts for vendors
    */
   static async getMarketAlerts(vendorId: string, categories?: string[]): Promise<MarketAlert[]> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -451,6 +456,7 @@ export class MarketInsightsService {
    * Check for price spike alerts
    */
   private static async checkPriceSpike(category: string): Promise<MarketAlert | null> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -498,6 +504,7 @@ export class MarketInsightsService {
    * Check for demand surge alerts
    */
   private static async checkDemandSurge(category: string): Promise<MarketAlert | null> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -545,6 +552,7 @@ export class MarketInsightsService {
    * Check for supply shortage alerts
    */
   private static async checkSupplyShortage(category: string): Promise<MarketAlert | null> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -592,6 +600,7 @@ export class MarketInsightsService {
    * Get competitor analysis for a vendor
    */
   static async getCompetitorAnalysis(vendorId: string, category: string): Promise<CompetitorAnalysis> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -772,6 +781,7 @@ export class MarketInsightsService {
    * Get demand forecast for a category
    */
   static async getDemandForecast(category: string, timeframe: '7d' | '30d' | '90d' = '30d'): Promise<DemandForecast> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {

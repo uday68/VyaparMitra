@@ -1,226 +1,482 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'wouter';
+import { motion } from 'framer-motion';
+import { useTranslation } from '../hooks/useTranslation';
+import { useAuth } from '../hooks/useAuth';
+import { Header } from '../components/Header';
+import { BottomNav } from '../components/BottomNav';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { 
+  Clock, 
+  TrendingUp, 
+  TrendingDown, 
+  CheckCircle, 
+  XCircle, 
+  AlertCircle,
+  DollarSign,
+  MessageCircle,
+  Mic,
+  Eye
+} from 'lucide-react';
+
+interface CustomerBid {
+  id: string;
+  productName: string;
+  vendorName: string;
+  vendorLocation: string;
+  originalPrice: number;
+  bidAmount: number;
+  currentPrice: number;
+  status: 'pending' | 'accepted' | 'rejected' | 'countered' | 'expired';
+  createdAt: string;
+  expiresAt: string;
+  lastActivity: string;
+  negotiationCount: number;
+  savingsAmount: number;
+  savingsPercentage: number;
+  isVoiceBid: boolean;
+  productImage: string;
+}
 
 export function CustomerBidsDashboard() {
-  const navigate = useNavigate();
-  const [activeFilter, setActiveFilter] = useState<'active' | 'completed'>('active');
+  const [, setLocation] = useLocation();
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState('active');
 
-  const mockBids = [
+  // Mock data - in real app, this would come from API
+  const [bids] = useState<CustomerBid[]>([
     {
-      id: 1,
-      shopName: "Sanjay's Fruit Shop",
-      product: "Apples (Fresh Himachal)",
-      currentBid: "₹180",
-      marketAvg: "₹195",
-      status: "waiting",
-      timeAgo: "2h ago",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCbNfu0qTvjnnsAr_GASt8B9ZniphrEqVdfAijzUu1E8TEELAKU0SSxb7bkLMmV8oOOTIoB_k82Ah3TWHLRbbxChQMS2LOQ58-ibHaCxvDsVssX8YVBtaXOfj9ET2GSmSQuYaraXaS8JOyrYN05zESwfqfjwhjIYrC9pDPV6MCkhLUA62lhk_MZpcuekkjscvk2LU7kW-VbrbRjUXWbFRLtiIknhnqrnVh7Qckl89v1p9FniTwAKVDtJJN53exLwZlkBTgypWla"
+      id: 'bid_001',
+      productName: 'Premium Shimla Apples',
+      vendorName: 'Fresh Fruit Paradise',
+      vendorLocation: 'Sector 18, Noida',
+      originalPrice: 200,
+      bidAmount: 150,
+      currentPrice: 175,
+      status: 'countered',
+      createdAt: '2024-01-26T10:30:00Z',
+      expiresAt: '2024-01-26T18:30:00Z',
+      lastActivity: '2024-01-26T14:15:00Z',
+      negotiationCount: 3,
+      savingsAmount: 25,
+      savingsPercentage: 12.5,
+      isVoiceBid: true,
+      productImage: '/images/apples.jpg'
     },
     {
-      id: 2,
-      shopName: "Gopal's Veggies",
-      product: "Carrots (Organic Ooty)",
-      currentBid: "₹40",
-      vendorPrice: "₹45",
-      status: "counter-offer",
-      timeAgo: "5m ago",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDb77obUcnv5Y50kIFCeZQ1gbJCxg_VVwbmaINlCmD51qE8ua6QmnvKD_zmoutXC74ZVk8wfPk1zqv8JZgHbueLXZq1kCQUugSux7rs_VfGA4VO3CSubgMxNNd22U-29lW4qS0kyhcmnf5mojiG52sIVgpAg4GZJMH5DdRaSvOhA660sNqC461NTXi2IeWnqLfmmaYe2gOeg8LeP2E_nC27j0nXOZwRKpc60JWTPLq2TZ6hKIbxk8C8DZhcEZch8PIcl5_i6oSV"
+      id: 'bid_002',
+      productName: 'Organic Tomatoes',
+      vendorName: 'Green Vegetables Hub',
+      vendorLocation: 'Central Market, Delhi',
+      originalPrice: 80,
+      bidAmount: 60,
+      currentPrice: 70,
+      status: 'pending',
+      createdAt: '2024-01-26T09:15:00Z',
+      expiresAt: '2024-01-26T17:15:00Z',
+      lastActivity: '2024-01-26T09:15:00Z',
+      negotiationCount: 1,
+      savingsAmount: 10,
+      savingsPercentage: 12.5,
+      isVoiceBid: false,
+      productImage: '/images/tomatoes.jpg'
+    },
+    {
+      id: 'bid_003',
+      productName: 'Alphonso Mangoes',
+      vendorName: 'Mango King',
+      vendorLocation: 'Fruit Market, Mumbai',
+      originalPrice: 800,
+      bidAmount: 650,
+      currentPrice: 650,
+      status: 'accepted',
+      createdAt: '2024-01-25T16:20:00Z',
+      expiresAt: '2024-01-25T20:20:00Z',
+      lastActivity: '2024-01-25T18:45:00Z',
+      negotiationCount: 2,
+      savingsAmount: 150,
+      savingsPercentage: 18.75,
+      isVoiceBid: true,
+      productImage: '/images/mangoes.jpg'
     }
-  ];
+  ]);
 
-  const handleChat = (bidId: number) => {
-    navigate(`/chat/${bidId}`);
-  };
-
-  const handleUpdateBid = (bidId: number) => {
-    // Handle bid update
-    console.log('Update bid:', bidId);
-  };
-
-  const handleAcceptOffer = (bidId: number) => {
-    navigate(`/transaction-active/${bidId}`);
-  };
-
-  const handleVoiceCommand = (command: string) => {
-    if (command.toLowerCase().includes('status') && command.toLowerCase().includes('apple')) {
-      // Show apple bid status
-      console.log('Showing apple bid status');
-    } else if (command.toLowerCase().includes('increase') && command.toLowerCase().includes('carrot')) {
-      // Increase carrot bid
-      handleUpdateBid(2);
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'accepted': return 'bg-green-100 text-green-800 border-green-200';
+      case 'rejected': return 'bg-red-100 text-red-800 border-red-200';
+      case 'countered': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'expired': return 'bg-gray-100 text-gray-800 border-gray-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'accepted': return <CheckCircle className="h-4 w-4" />;
+      case 'rejected': return <XCircle className="h-4 w-4" />;
+      case 'countered': return <MessageCircle className="h-4 w-4" />;
+      case 'pending': return <Clock className="h-4 w-4" />;
+      case 'expired': return <AlertCircle className="h-4 w-4" />;
+      default: return <Clock className="h-4 w-4" />;
+    }
+  };
+
+  const filterBids = (status: string) => {
+    switch (status) {
+      case 'active':
+        return bids.filter(bid => ['pending', 'countered'].includes(bid.status));
+      case 'completed':
+        return bids.filter(bid => ['accepted', 'rejected'].includes(bid.status));
+      case 'expired':
+        return bids.filter(bid => bid.status === 'expired');
+      default:
+        return bids;
+    }
+  };
+
+  const handleBidAction = (bidId: string, action: 'accept' | 'counter' | 'view') => {
+    const bid = bids.find(b => b.id === bidId);
+    if (!bid) return;
+
+    switch (action) {
+      case 'accept':
+        // Navigate to deal confirmation
+        setLocation(`/customer/deal-confirmation/${bidId}`);
+        break;
+      case 'counter':
+        // Navigate to negotiation
+        setLocation(`/customer/negotiation/${bid.id}`);
+        break;
+      case 'view':
+        // Navigate to bid details
+        setLocation(`/customer/bid/${bidId}`);
+        break;
+    }
+  };
+
+  const formatTimeRemaining = (expiresAt: string) => {
+    const now = new Date();
+    const expires = new Date(expiresAt);
+    const diff = expires.getTime() - now.getTime();
+    
+    if (diff <= 0) return 'Expired';
+    
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (hours > 0) {
+      return `${hours}h ${minutes}m left`;
+    }
+    return `${minutes}m left`;
+  };
+
+  const activeBids = filterBids('active');
+  const completedBids = filterBids('completed');
+  const expiredBids = filterBids('expired');
+
+  const totalSavings = bids
+    .filter(bid => bid.status === 'accepted')
+    .reduce((sum, bid) => sum + bid.savingsAmount, 0);
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex flex-col">
-      {/* Top App Bar */}
-      <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
-        <div className="flex items-center p-4 justify-between">
-          <div className="flex size-10 items-center justify-center cursor-pointer" onClick={() => navigate(-1)}>
-            <span className="material-symbols-outlined text-gray-900 dark:text-white">arrow_back_ios</span>
-          </div>
-          <h1 className="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">
-            My Bids
-          </h1>
-          <div className="size-10"></div>
-        </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <Header 
+        title={t('bids.dashboard.title')}
+        showBack={true}
+      />
 
-        {/* Segmented Buttons */}
-        <div className="px-4 pb-4">
-          <div className="flex h-11 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 p-1">
-            <button
-              onClick={() => setActiveFilter('active')}
-              className={`flex cursor-pointer h-full grow items-center justify-center rounded-lg px-2 text-sm font-medium transition-all ${
-                activeFilter === 'active'
-                  ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white'
-                  : 'text-gray-600 dark:text-gray-400'
-              }`}
-            >
-              Active
-            </button>
-            <button
-              onClick={() => setActiveFilter('completed')}
-              className={`flex cursor-pointer h-full grow items-center justify-center rounded-lg px-2 text-sm font-medium transition-all ${
-                activeFilter === 'completed'
-                  ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white'
-                  : 'text-gray-600 dark:text-gray-400'
-              }`}
-            >
-              Completed
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto pb-40">
-        {mockBids.map((bid) => (
-          <div key={bid.id} className="p-4">
-            <div className={`flex flex-col items-stretch justify-start rounded-xl shadow-sm bg-white dark:bg-gray-900 border ${
-              bid.status === 'counter-offer' 
-                ? 'border-blue-200 dark:border-blue-800 shadow-blue-100 dark:shadow-blue-900/20' 
-                : 'border-gray-100 dark:border-gray-800'
-            }`}>
-              <div 
-                className="w-full bg-center bg-no-repeat aspect-[16/9] bg-cover rounded-t-xl" 
-                style={{backgroundImage: `url("${bid.image}")`}}
-              />
-              <div className="flex w-full flex-col gap-3 p-4">
-                <div className="flex items-center justify-between">
-                  {bid.status === 'waiting' ? (
-                    <p className="text-blue-600 text-xs font-bold uppercase tracking-wider">Waiting for Vendor</p>
-                  ) : (
-                    <div className="flex items-center gap-1.5">
-                      <span className="flex size-2 rounded-full bg-orange-500 animate-pulse"></span>
-                      <p className="text-orange-500 text-xs font-bold uppercase tracking-wider">Counter-offer received</p>
-                    </div>
-                  )}
-                  <span className="text-xs text-gray-400">{bid.timeAgo}</span>
-                </div>
-                
-                <div>
-                  <p className="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">
-                    {bid.shopName}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">{bid.product}</p>
-                </div>
-
-                {bid.status === 'waiting' ? (
-                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-3 flex items-center justify-between">
-                    <div>
-                      <p className="text-gray-600 dark:text-gray-400 text-xs font-medium">Your Current Bid</p>
-                      <p className="text-gray-900 dark:text-white text-xl font-bold">{bid.currentBid}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-gray-600 dark:text-gray-400 text-xs font-medium">Market Avg</p>
-                      <p className="text-gray-900 dark:text-white text-base">{bid.marketAvg}</p>
-                    </div>
+      <div className="pb-20">
+        {/* Summary Cards */}
+        <div className="p-4">
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <MessageCircle className="h-5 w-5 text-blue-600" />
+                  <div>
+                    <p className="text-sm text-gray-600">{t('bids.dashboard.activeBids')}</p>
+                    <p className="text-2xl font-bold text-gray-900">{activeBids.length}</p>
                   </div>
-                ) : (
-                  <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/50 rounded-lg p-3 flex items-center justify-between">
-                    <div>
-                      <p className="text-orange-600 dark:text-orange-400 text-xs font-medium">Vendor's Price</p>
-                      <p className="text-orange-700 dark:text-orange-300 text-xl font-bold">{bid.vendorPrice}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-gray-600 dark:text-gray-400 text-xs font-medium">Your Bid</p>
-                      <p className="text-gray-900 dark:text-white text-base line-through opacity-50">{bid.currentBid}</p>
-                    </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-5 w-5 text-green-600" />
+                  <div>
+                    <p className="text-sm text-gray-600">{t('bids.dashboard.totalSavings')}</p>
+                    <p className="text-2xl font-bold text-green-600">₹{totalSavings}</p>
                   </div>
-                )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-                <div className="flex items-center gap-3 pt-2">
-                  <button 
-                    onClick={() => handleChat(bid.id)}
-                    className="flex-1 h-10 px-4 rounded-xl border border-gray-200 dark:border-gray-700 flex items-center justify-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          {/* Tabs */}
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="active">
+                {t('bids.dashboard.tabs.active')} ({activeBids.length})
+              </TabsTrigger>
+              <TabsTrigger value="completed">
+                {t('bids.dashboard.tabs.completed')} ({completedBids.length})
+              </TabsTrigger>
+              <TabsTrigger value="expired">
+                {t('bids.dashboard.tabs.expired')} ({expiredBids.length})
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="active" className="mt-4">
+              <div className="space-y-3">
+                {activeBids.map((bid, index) => (
+                  <motion.div
+                    key={bid.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
                   >
-                    <span className="material-symbols-outlined text-[20px]">chat</span>
-                    <span>Chat</span>
-                  </button>
-                  {bid.status === 'waiting' ? (
-                    <button 
-                      onClick={() => handleUpdateBid(bid.id)}
-                      className="flex-[1.5] h-10 px-4 rounded-xl bg-blue-600 text-white text-sm font-bold shadow-md shadow-blue-600/20 hover:bg-blue-700 transition-colors"
-                    >
-                      Update Bid
-                    </button>
-                  ) : (
-                    <button 
-                      onClick={() => handleAcceptOffer(bid.id)}
-                      className="flex-[1.5] h-10 px-4 rounded-xl bg-blue-600 text-white text-sm font-bold shadow-md shadow-blue-600/20 hover:bg-blue-700 transition-colors"
-                    >
-                      Accept {bid.vendorPrice}
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </main>
+                    <Card className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex gap-3">
+                          <div className="w-16 h-16 bg-gray-200 rounded-lg flex-shrink-0">
+                            <img
+                              src={bid.productImage}
+                              alt={bid.productName}
+                              className="w-full h-full object-cover rounded-lg"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/images/placeholder.jpg';
+                              }}
+                            />
+                          </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <h3 className="font-medium text-gray-900 truncate">
+                                  {bid.productName}
+                                </h3>
+                                <p className="text-sm text-gray-600">{bid.vendorName}</p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {bid.isVoiceBid && (
+                                  <Mic className="h-4 w-4 text-blue-600" />
+                                )}
+                                <Badge className={getStatusColor(bid.status)}>
+                                  {getStatusIcon(bid.status)}
+                                  <span className="ml-1">{t(`bids.status.${bid.status}`)}</span>
+                                </Badge>
+                              </div>
+                            </div>
 
-      {/* Fixed Bottom AI Voice Bar */}
-      <div className="fixed bottom-[72px] left-0 right-0 px-4 pb-2 z-40">
-        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 shadow-2xl rounded-2xl p-3 flex items-center gap-3">
-          <div className="size-10 rounded-full bg-blue-600 flex items-center justify-center text-white flex-shrink-0 shadow-lg shadow-blue-600/30">
-            <span className="material-symbols-outlined">mic</span>
-          </div>
-          <div className="flex-1">
-            <p className="text-gray-600 dark:text-gray-300 text-[13px] leading-tight italic">
-              Say "What is the status of my apple bid?" or "Increase my bid for carrots to 45"
-            </p>
-          </div>
+                            <div className="grid grid-cols-2 gap-4 mb-3">
+                              <div>
+                                <p className="text-xs text-gray-500">{t('bids.originalPrice')}</p>
+                                <p className="text-sm font-medium line-through text-gray-500">
+                                  ₹{bid.originalPrice}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-gray-500">{t('bids.currentOffer')}</p>
+                                <p className="text-sm font-bold text-green-600">
+                                  ₹{bid.currentPrice}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-4">
+                                <span className="text-xs text-gray-500">
+                                  {formatTimeRemaining(bid.expiresAt)}
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  {bid.negotiationCount} {t('bids.rounds')}
+                                </span>
+                              </div>
+                              
+                              <div className="flex gap-2">
+                                {bid.status === 'countered' && (
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleBidAction(bid.id, 'accept')}
+                                    className="text-xs"
+                                  >
+                                    {t('bids.actions.accept')}
+                                  </Button>
+                                )}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleBidAction(bid.id, 'counter')}
+                                  className="text-xs"
+                                >
+                                  {bid.status === 'pending' ? t('bids.actions.negotiate') : t('bids.actions.counter')}
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+                
+                {activeBids.length === 0 && (
+                  <Card>
+                    <CardContent className="p-8 text-center">
+                      <MessageCircle className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-600 mb-4">{t('bids.dashboard.noActiveBids')}</p>
+                      <Button onClick={() => setLocation('/customer/shop')}>
+                        {t('bids.dashboard.startShopping')}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="completed" className="mt-4">
+              <div className="space-y-3">
+                {completedBids.map((bid, index) => (
+                  <motion.div
+                    key={bid.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex gap-3">
+                          <div className="w-16 h-16 bg-gray-200 rounded-lg flex-shrink-0">
+                            <img
+                              src={bid.productImage}
+                              alt={bid.productName}
+                              className="w-full h-full object-cover rounded-lg"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/images/placeholder.jpg';
+                              }}
+                            />
+                          </div>
+                          
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <h3 className="font-medium text-gray-900">{bid.productName}</h3>
+                                <p className="text-sm text-gray-600">{bid.vendorName}</p>
+                              </div>
+                              <Badge className={getStatusColor(bid.status)}>
+                                {getStatusIcon(bid.status)}
+                                <span className="ml-1">{t(`bids.status.${bid.status}`)}</span>
+                              </Badge>
+                            </div>
+
+                            {bid.status === 'accepted' && (
+                              <div className="flex items-center gap-2 mb-2">
+                                <TrendingDown className="h-4 w-4 text-green-600" />
+                                <span className="text-sm text-green-600 font-medium">
+                                  {t('bids.saved')} ₹{bid.savingsAmount} ({bid.savingsPercentage}%)
+                                </span>
+                              </div>
+                            )}
+
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-500">
+                                {new Date(bid.lastActivity).toLocaleDateString()}
+                              </span>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleBidAction(bid.id, 'view')}
+                              >
+                                <Eye className="h-4 w-4 mr-1" />
+                                {t('bids.actions.viewDetails')}
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="expired" className="mt-4">
+              <div className="space-y-3">
+                {expiredBids.map((bid, index) => (
+                  <motion.div
+                    key={bid.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Card className="opacity-75">
+                      <CardContent className="p-4">
+                        <div className="flex gap-3">
+                          <div className="w-16 h-16 bg-gray-200 rounded-lg flex-shrink-0">
+                            <img
+                              src={bid.productImage}
+                              alt={bid.productName}
+                              className="w-full h-full object-cover rounded-lg grayscale"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/images/placeholder.jpg';
+                              }}
+                            />
+                          </div>
+                          
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <h3 className="font-medium text-gray-700">{bid.productName}</h3>
+                                <p className="text-sm text-gray-500">{bid.vendorName}</p>
+                              </div>
+                              <Badge className={getStatusColor(bid.status)}>
+                                {getStatusIcon(bid.status)}
+                                <span className="ml-1">{t(`bids.status.${bid.status}`)}</span>
+                              </Badge>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-500">
+                                {t('bids.expiredOn')} {new Date(bid.expiresAt).toLocaleDateString()}
+                              </span>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setLocation(`/customer/shop?product=${bid.productName}`)}
+                              >
+                                {t('bids.actions.bidAgain')}
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+                
+                {expiredBids.length === 0 && (
+                  <Card>
+                    <CardContent className="p-8 text-center">
+                      <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-600">{t('bids.dashboard.noExpiredBids')}</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
 
-      {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 px-6 pb-6 pt-3 z-50">
-        <div className="flex items-center justify-between max-w-md mx-auto">
-          <button 
-            onClick={() => navigate('/customer/shop')}
-            className="flex flex-col items-center gap-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-          >
-            <span className="material-symbols-outlined">storefront</span>
-            <span className="text-[10px] font-medium">Shop</span>
-          </button>
-          <div className="flex flex-col items-center gap-1 text-blue-600">
-            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>gavel</span>
-            <span className="text-[10px] font-bold">My Bids</span>
-          </div>
-          <div className="flex flex-col items-center gap-1 text-gray-400 dark:text-gray-500 relative hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-            <span className="material-symbols-outlined">forum</span>
-            <span className="text-[10px] font-medium">Chats</span>
-            <span className="absolute top-0 -right-1 size-2 bg-red-500 rounded-full border-2 border-white dark:border-gray-950"></span>
-          </div>
-          <button 
-            onClick={() => navigate('/profile')}
-            className="flex flex-col items-center gap-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-          >
-            <span className="material-symbols-outlined">person</span>
-            <span className="text-[10px] font-medium">Profile</span>
-          </button>
-        </div>
-      </nav>
+      <BottomNav currentPage="bids" />
     </div>
   );
 }

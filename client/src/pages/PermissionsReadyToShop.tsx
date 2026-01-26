@@ -1,196 +1,349 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'wouter';
+import { motion } from 'framer-motion';
+import { useTranslation } from '../hooks/useTranslation';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Alert, AlertDescription } from '../components/ui/alert';
+import { Badge } from '../components/ui/badge';
+import { 
+  Mic, 
+  Camera, 
+  MapPin, 
+  Shield, 
+  CheckCircle, 
+  AlertCircle,
+  Settings,
+  ArrowRight,
+  Volume2
+} from 'lucide-react';
+
+interface Permission {
+  name: string;
+  icon: React.ReactNode;
+  description: string;
+  required: boolean;
+  granted: boolean;
+  error?: string;
+}
 
 export function PermissionsReadyToShop() {
-  const navigate = useNavigate();
-  const [permissions, setPermissions] = useState({
-    microphone: true,
-    location: false
-  });
-  const [isVoiceListening, setIsVoiceListening] = useState(false);
-
-  const handlePermissionToggle = (permission: 'microphone' | 'location') => {
-    setPermissions(prev => ({
-      ...prev,
-      [permission]: !prev[permission]
-    }));
-  };
-
-  const handleMicrophonePermission = async () => {
-    try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-      setPermissions(prev => ({ ...prev, microphone: true }));
-    } catch (error) {
-      console.error('Microphone permission denied:', error);
-      setPermissions(prev => ({ ...prev, microphone: false }));
+  const [, setLocation] = useLocation();
+  const { t } = useTranslation();
+  const [permissions, setPermissions] = useState<Permission[]>([
+    {
+      name: 'microphone',
+      icon: <Mic className="h-6 w-6" />,
+      description: t('permissions.microphone.description'),
+      required: true,
+      granted: false
+    },
+    {
+      name: 'camera',
+      icon: <Camera className="h-6 w-6" />,
+      description: t('permissions.camera.description'),
+      required: false,
+      granted: false
+    },
+    {
+      name: 'location',
+      icon: <MapPin className="h-6 w-6" />,
+      description: t('permissions.location.description'),
+      required: false,
+      granted: false
     }
-  };
+  ]);
 
-  const handleLocationPermission = async () => {
-    try {
-      await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
-      });
-      setPermissions(prev => ({ ...prev, location: true }));
-    } catch (error) {
-      console.error('Location permission denied:', error);
-      setPermissions(prev => ({ ...prev, location: false }));
-    }
-  };
+  const [isRequestingPermissions, setIsRequestingPermissions] = useState(false);
+  const [allRequiredGranted, setAllRequiredGranted] = useState(false);
 
-  const handleReadyToShop = () => {
-    // Store permissions in localStorage
-    localStorage.setItem('permissions', JSON.stringify(permissions));
-    navigate('/customer/shop');
-  };
-
-  const handleVoiceCommand = (command: string) => {
-    if (command.toLowerCase().includes('start shopping')) {
-      handleReadyToShop();
-    }
-  };
-
+  // Check existing permissions on mount
   useEffect(() => {
-    // Auto-request microphone permission if not already granted
-    if (!permissions.microphone) {
-      handleMicrophonePermission();
-    }
+    checkExistingPermissions();
   }, []);
 
+  // Update allRequiredGranted when permissions change
+  useEffect(() => {
+    const requiredPermissions = permissions.filter(p => p.required);
+    const grantedRequired = requiredPermissions.filter(p => p.granted);
+    setAllRequiredGranted(grantedRequired.length === requiredPermissions.length);
+  }, [permissions]);
+
+  const checkExistingPermissions = async () => {
+    const updatedPermissions = [...permissions];
+
+    // Check microphone permission
+    try {
+      const micPermission = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+      updatedPermissions[0].granted = micPermission.state === 'granted';
+    } catch (error) {
+      console.log('Microphone permission check failed:', error);
+    }
+
+    // Check camera permission
+    try {
+      const cameraPermission = await navigator.permissions.query({ name: 'camera' as PermissionName });
+      updatedPermissions[1].granted = cameraPermission.state === 'granted';
+    } catch (error) {
+      console.log('Camera permission check failed:', error);
+    }
+
+    // Check location permission
+    try {
+      const locationPermission = await navigator.permissions.query({ name: 'geolocation' as PermissionName });
+      updatedPermissions[2].granted = locationPermission.state === 'granted';
+    } catch (error) {
+      console.log('Location permission check failed:', error);
+    }
+
+    setPermissions(updatedPermissions);
+  };
+
+  const requestPermission = async (permissionName: string) => {
+    setIsRequestingPermissions(true);
+    const updatedPermissions = [...permissions];
+    const permissionIndex = updatedPermissions.findIndex(p => p.name === permissionName);
+
+    try {
+      switch (permissionName) {
+        case 'microphone':
+          const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          micStream.getTracks().forEach(track => track.stop());
+          updatedPermissions[permissionIndex].granted = true;
+          updatedPermissions[permissionIndex].error = undefined;
+          break;
+
+        case 'camera':
+          const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+          cameraStream.getTracks().forEach(track => track.stop());
+          updatedPermissions[permissionIndex].granted = true;
+          updatedPermissions[permissionIndex].error = undefined;
+          break;
+
+        case 'location':
+          await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+          });
+          updatedPermissions[permissionIndex].granted = true;
+          updatedPermissions[permissionIndex].error = undefined;
+          break;
+      }
+    } catch (error) {
+      updatedPermissions[permissionIndex].error = error instanceof Error ? error.message : 'Permission denied';
+    }
+
+    setPermissions(updatedPermissions);
+    setIsRequestingPermissions(false);
+  };
+
+  const requestAllPermissions = async () => {
+    setIsRequestingPermissions(true);
+    
+    for (const permission of permissions) {
+      if (!permission.granted) {
+        await requestPermission(permission.name);
+      }
+    }
+    
+    setIsRequestingPermissions(false);
+  };
+
+  const handleContinue = () => {
+    // Store permission preferences
+    localStorage.setItem('vyapar-mitra-permissions', JSON.stringify(permissions));
+    
+    // Navigate to customer dashboard
+    setLocation('/customer/dashboard');
+  };
+
+  const handleSkip = () => {
+    // Navigate without full permissions (limited functionality)
+    setLocation('/customer/dashboard');
+  };
+
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 font-display text-gray-900 dark:text-white antialiased">
-      {/* Main Container (Mobile Form Factor) */}
-      <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden max-w-[430px] mx-auto bg-white dark:bg-gray-900 shadow-2xl">
-        {/* Top App Bar */}
-        <div className="flex items-center bg-white dark:bg-gray-900 p-4 pb-2 justify-between border-b border-gray-100 dark:border-gray-800">
-          <div className="text-gray-900 dark:text-white flex size-12 shrink-0 items-center cursor-pointer" onClick={() => navigate(-1)}>
-            <span className="material-symbols-outlined">arrow_back_ios</span>
-          </div>
-          <h2 className="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">
-            Permissions
-          </h2>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-2xl"
+      >
+        <Card className="shadow-xl border-0">
+          <CardHeader className="text-center pb-6">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              className="mx-auto mb-4 p-4 bg-blue-100 dark:bg-blue-900 rounded-full"
+            >
+              <Shield className="h-12 w-12 text-blue-600 dark:text-blue-400" />
+            </motion.div>
+            <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
+              {t('permissions.title')}
+            </CardTitle>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">
+              {t('permissions.subtitle')}
+            </p>
+          </CardHeader>
 
-        {/* Page Indicators */}
-        <div className="flex w-full flex-row items-center justify-center gap-3 py-6 bg-white dark:bg-gray-900">
-          <div className="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-700"></div>
-          <div className="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-700"></div>
-          <div className="h-1.5 w-6 rounded-full bg-blue-600"></div>
-        </div>
-
-        {/* Headline & Body */}
-        <div className="bg-white dark:bg-gray-900 px-6 pb-4">
-          <h1 className="text-gray-900 dark:text-white tracking-tight text-[32px] font-bold leading-tight text-center pt-2">
-            Let's get you set up
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal pt-4 px-4 text-center">
-            To enable voice shopping and find local deals, we need a few permissions.
-          </p>
-        </div>
-
-        {/* Permissions List */}
-        <div className="flex flex-col gap-2 p-4 flex-1">
-          {/* Microphone Permission */}
-          <div className="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[88px] py-4 justify-between rounded-xl border border-gray-50 dark:border-gray-800 shadow-sm">
-            <div className="flex items-center gap-4">
-              <div className="text-blue-600 flex items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-900/30 shrink-0 size-14">
-                <span className="material-symbols-outlined" style={{fontSize: '32px'}}>mic</span>
-              </div>
-              <div className="flex flex-col justify-center">
-                <p className="text-gray-900 dark:text-white text-base font-semibold leading-normal">Microphone</p>
-                <p className="text-gray-500 dark:text-gray-400 text-sm font-normal leading-snug">
-                  Used to hear your voice commands for a hands-free experience.
-                </p>
-              </div>
+          <CardContent className="space-y-6">
+            {/* Permissions List */}
+            <div className="space-y-4">
+              {permissions.map((permission, index) => (
+                <motion.div
+                  key={permission.name}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + index * 0.1 }}
+                >
+                  <Card className={`border-2 transition-colors ${
+                    permission.granted 
+                      ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20' 
+                      : permission.error
+                      ? 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20'
+                      : 'border-gray-200 dark:border-gray-700'
+                  }`}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className={`p-2 rounded-full ${
+                            permission.granted 
+                              ? 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400'
+                              : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
+                          }`}>
+                            {permission.icon}
+                          </div>
+                          <div>
+                            <div className="flex items-center space-x-2">
+                              <h3 className="font-medium text-gray-900 dark:text-white capitalize">
+                                {t(`permissions.${permission.name}.title`)}
+                              </h3>
+                              {permission.required && (
+                                <Badge variant="destructive" className="text-xs">
+                                  {t('permissions.required')}
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              {permission.description}
+                            </p>
+                            {permission.error && (
+                              <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                                {permission.error}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          {permission.granted ? (
+                            <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
+                          ) : (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => requestPermission(permission.name)}
+                              disabled={isRequestingPermissions}
+                            >
+                              {t('permissions.allow')}
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
             </div>
-            <div className="shrink-0">
-              <button
-                onClick={() => permissions.microphone ? handlePermissionToggle('microphone') : handleMicrophonePermission()}
-                className={`relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none p-0.5 transition-all ${
-                  permissions.microphone 
-                    ? 'justify-end bg-blue-600' 
-                    : 'justify-start bg-gray-200 dark:bg-gray-700'
-                }`}
+
+            {/* Voice Test Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+            >
+              <Card className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20">
+                <CardContent className="p-4">
+                  <div className="flex items-center space-x-3">
+                    <Volume2 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                    <div>
+                      <h3 className="font-medium text-blue-900 dark:text-blue-100">
+                        {t('permissions.voiceTest.title')}
+                      </h3>
+                      <p className="text-sm text-blue-700 dark:text-blue-300">
+                        {t('permissions.voiceTest.description')}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Status Alert */}
+            {allRequiredGranted ? (
+              <Alert className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20">
+                <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                <AlertDescription className="text-green-800 dark:text-green-200">
+                  {t('permissions.allGranted')}
+                </AlertDescription>
+              </Alert>
+            ) : (
+              <Alert className="border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-900/20">
+                <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                <AlertDescription className="text-orange-800 dark:text-orange-200">
+                  {t('permissions.someRequired')}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+              <Button
+                onClick={requestAllPermissions}
+                disabled={isRequestingPermissions}
+                className="flex-1"
+                size="lg"
               >
-                <div className="h-full w-[27px] rounded-full bg-white shadow-md"></div>
-              </button>
+                <Shield className="h-4 w-4 mr-2" />
+                {isRequestingPermissions ? t('permissions.requesting') : t('permissions.allowAll')}
+              </Button>
+              
+              {allRequiredGranted ? (
+                <Button
+                  onClick={handleContinue}
+                  className="flex-1"
+                  size="lg"
+                >
+                  {t('permissions.continue')}
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  onClick={handleSkip}
+                  className="flex-1"
+                  size="lg"
+                >
+                  {t('permissions.skipForNow')}
+                </Button>
+              )}
             </div>
-          </div>
 
-          {/* Location Permission */}
-          <div className="flex items-center gap-4 bg-white dark:bg-gray-900 px-4 min-h-[88px] py-4 justify-between rounded-xl border border-gray-50 dark:border-gray-800 shadow-sm">
-            <div className="flex items-center gap-4">
-              <div className="text-blue-600 flex items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-900/30 shrink-0 size-14">
-                <span className="material-symbols-outlined" style={{fontSize: '32px'}}>location_on</span>
-              </div>
-              <div className="flex flex-col justify-center">
-                <p className="text-gray-900 dark:text-white text-base font-semibold leading-normal">Location</p>
-                <p className="text-gray-500 dark:text-gray-400 text-sm font-normal leading-snug">
-                  Used to find the best local shops and deals near you.
-                </p>
-              </div>
-            </div>
-            <div className="shrink-0">
-              <button
-                onClick={() => permissions.location ? handlePermissionToggle('location') : handleLocationPermission()}
-                className={`relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none p-0.5 transition-all ${
-                  permissions.location 
-                    ? 'justify-end bg-blue-600' 
-                    : 'justify-start bg-gray-200 dark:bg-gray-700'
-                }`}
+            {/* Settings Link */}
+            <div className="text-center pt-4 border-t border-gray-200 dark:border-gray-700">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setLocation('/voice-settings')}
+                className="text-gray-600 dark:text-gray-400"
               >
-                <div className="h-full w-[27px] rounded-full bg-white shadow-md"></div>
-              </button>
+                <Settings className="h-4 w-4 mr-2" />
+                {t('permissions.advancedSettings')}
+              </Button>
             </div>
-          </div>
-        </div>
-
-        {/* Action Footer */}
-        <div className="bg-white dark:bg-gray-900 p-6 flex flex-col gap-6">
-          {/* Ready to Shop Button */}
-          <button 
-            onClick={handleReadyToShop}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-600/20 transition-all text-lg flex items-center justify-center gap-2 active:scale-[0.98]"
-          >
-            Ready to Shop
-            <span className="material-symbols-outlined">shopping_bag</span>
-          </button>
-
-          {/* Voice Prompt Assistant */}
-          <div className="flex flex-col items-center gap-3 py-4">
-            <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
-              <div className="flex items-center justify-center relative">
-                {isVoiceListening && <div className="absolute w-4 h-4 bg-blue-600/40 rounded-full animate-ping"></div>}
-                <span className="material-symbols-outlined text-blue-600" style={{fontSize: '20px'}}>
-                  graphic_eq
-                </span>
-              </div>
-              <p className="text-gray-900 dark:text-white text-sm font-medium">
-                Say <span className="font-bold text-blue-600">"Start Shopping"</span> to begin
-              </p>
-            </div>
-          </div>
-
-          {/* Permission Status */}
-          <div className="flex items-center justify-center gap-4 text-xs">
-            <div className={`flex items-center gap-1 ${permissions.microphone ? 'text-green-600' : 'text-red-500'}`}>
-              <span className="material-symbols-outlined text-sm">
-                {permissions.microphone ? 'check_circle' : 'cancel'}
-              </span>
-              <span>Microphone</span>
-            </div>
-            <div className={`flex items-center gap-1 ${permissions.location ? 'text-green-600' : 'text-gray-400'}`}>
-              <span className="material-symbols-outlined text-sm">
-                {permissions.location ? 'check_circle' : 'radio_button_unchecked'}
-              </span>
-              <span>Location</span>
-            </div>
-          </div>
-
-          {/* iOS Home Indicator Spacing */}
-          <div className="h-4"></div>
-        </div>
-      </div>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }

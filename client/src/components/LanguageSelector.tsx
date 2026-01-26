@@ -12,14 +12,16 @@ import { cn } from '../lib/utils';
 
 interface LanguageSelectorProps {
   className?: string;
-  variant?: 'default' | 'compact' | 'icon-only';
+  variant?: 'default' | 'compact' | 'icon-only' | 'expanded';
   showFlag?: boolean;
+  onLanguageChange?: () => void;
 }
 
 export function LanguageSelector({ 
   className, 
   variant = 'default',
-  showFlag = true 
+  showFlag = true,
+  onLanguageChange 
 }: LanguageSelectorProps) {
   const { language, changeLanguage, supportedLanguages } = useTranslation();
   const [isChanging, setIsChanging] = useState(false);
@@ -32,6 +34,7 @@ export function LanguageSelector({
       await changeLanguage(newLanguage);
       // Store language preference in localStorage
       localStorage.setItem('vyapar-mitra-language', newLanguage);
+      onLanguageChange?.();
     } catch (error) {
       console.error('Failed to change language:', error);
     } finally {
@@ -40,6 +43,40 @@ export function LanguageSelector({
   };
 
   const currentLanguageInfo = supportedLanguages[language as keyof typeof supportedLanguages];
+
+  if (variant === 'expanded') {
+    return (
+      <div className="space-y-3">
+        {Object.entries(supportedLanguages).map(([code, info]) => (
+          <button
+            key={code}
+            onClick={() => handleLanguageChange(code)}
+            disabled={isChanging}
+            className={cn(
+              "w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 text-left border",
+              language === code 
+                ? "bg-blue-600 text-white border-blue-600 shadow-md" 
+                : "bg-gray-50 text-gray-900 border-gray-200 hover:bg-gray-100 hover:border-gray-300",
+              isChanging && "opacity-50 cursor-not-allowed",
+              className
+            )}
+          >
+            <span className="text-2xl">{info.flag}</span>
+            <div className="flex-1">
+              <div className="font-semibold text-base">{info.nativeName}</div>
+              <div className={cn(
+                "text-sm",
+                language === code ? "text-blue-100" : "text-gray-600"
+              )}>
+                {info.name}
+              </div>
+            </div>
+            {language === code && <Check className="h-5 w-5 text-white" />}
+          </button>
+        ))}
+      </div>
+    );
+  }
 
   if (variant === 'icon-only') {
     return (

@@ -1,19 +1,23 @@
 import { Link } from "wouter";
 import { useTranslation } from "../hooks/useTranslation";
+import { useAuth } from "../hooks/useAuth";
 import { LanguageSelector } from "./LanguageSelector";
 
 interface HeaderProps {
   title?: string;
   showBack?: boolean;
   showLanguageSelector?: boolean;
+  showUserInfo?: boolean;
 }
 
 export function Header({ 
   title, 
   showBack = false, 
-  showLanguageSelector = true 
+  showLanguageSelector = true,
+  showUserInfo = true
 }: HeaderProps) {
   const { t } = useTranslation();
+  const { user, isAuthenticated } = useAuth();
   
   // Use translation for default title if no title provided
   const displayTitle = title || t('shop.title');
@@ -35,11 +39,31 @@ export function Header({
           {displayTitle}
         </h1>
 
-        {showLanguageSelector ? (
-          <LanguageSelector variant="icon-only" className="shrink-0" />
-        ) : (
-          <div className="size-10" /> /* Spacer for balance */
-        )}
+        <div className="flex items-center space-x-2">
+          {showLanguageSelector && (
+            <LanguageSelector variant="icon-only" className="shrink-0" />
+          )}
+          
+          {showUserInfo && isAuthenticated && user && (
+            <Link 
+              href="/profile" 
+              className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                <span className="material-symbols-outlined text-white text-sm">
+                  {user.type === 'vendor' ? 'storefront' : 'person'}
+                </span>
+              </div>
+              <span className="text-sm font-medium text-gray-700 hidden sm:block">
+                {user.name}
+              </span>
+            </Link>
+          )}
+          
+          {!showLanguageSelector && !showUserInfo && (
+            <div className="size-10" /> /* Spacer for balance */
+          )}
+        </div>
       </div>
     </header>
   );

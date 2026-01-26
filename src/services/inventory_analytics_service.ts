@@ -1,6 +1,6 @@
 import { logger } from '../utils/logger';
-import { pool } from '../db/postgres';
-import { getRedisClient } from '../db/redis';
+import { getPool } from '../db/postgres';
+import { RedisService } from '../db/redis';
 
 interface InventoryAnalytics {
   totalProducts: number;
@@ -68,10 +68,10 @@ export class InventoryAnalyticsService {
   static async getInventoryAnalytics(vendorId: string): Promise<InventoryAnalytics> {
     try {
       const cacheKey = `inventory_analytics:${vendorId}`;
-      const redis = getRedisClient();
+      // Redis handled by RedisService
       
       // Check cache first
-      const cached = await redis.get(cacheKey);
+      const cached = await RedisService.get(cacheKey);
       if (cached) {
         logger.info('Inventory analytics served from cache', { vendorId });
         return JSON.parse(cached);
@@ -100,7 +100,7 @@ export class InventoryAnalyticsService {
       };
 
       // Cache the result
-      await redis.setex(cacheKey, this.CACHE_TTL, JSON.stringify(analytics));
+      await RedisService.setWithTTL(cacheKey, JSON.stringify(analytics), this.CACHE_TTL);
       
       logger.info('Inventory analytics generated', {
         vendorId,
@@ -123,6 +123,7 @@ export class InventoryAnalyticsService {
     totalValue: number;
     lowStockAlerts: number;
   }> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -160,6 +161,7 @@ export class InventoryAnalyticsService {
     stockLevel: number;
     daysUntilStockout: number;
   }>> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -219,6 +221,7 @@ export class InventoryAnalyticsService {
     stockLevel: number;
     recommendedAction: string;
   }>> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -282,6 +285,7 @@ export class InventoryAnalyticsService {
     averageMargin: number;
     turnoverRate: number;
   }>> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -325,6 +329,7 @@ export class InventoryAnalyticsService {
     recommendedOrder: number;
     urgency: 'high' | 'medium' | 'low';
   }>> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -409,6 +414,7 @@ export class InventoryAnalyticsService {
    * Track stock movements for audit and analysis
    */
   static async trackStockMovement(movement: StockMovement): Promise<void> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -466,6 +472,7 @@ export class InventoryAnalyticsService {
    * Get profitability analysis for products
    */
   static async getProfitabilityAnalysis(vendorId: string, days: number = 90): Promise<ProfitabilityAnalysis[]> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -527,6 +534,7 @@ export class InventoryAnalyticsService {
     severity: 'high' | 'medium' | 'low';
     actionRequired: string;
   }>> {
+    const pool = getPool();
     const client = await pool.connect();
     const alerts: Array<any> = [];
     
@@ -582,7 +590,7 @@ export class InventoryAnalyticsService {
       });
       
       return alerts.sort((a, b) => {
-        const severityOrder = { high: 3, medium: 2, low: 1 };
+        const severityOrder: { [key: string]: number } = { high: 3, medium: 2, low: 1 };
         return severityOrder[b.severity] - severityOrder[a.severity];
       });
     } finally {
