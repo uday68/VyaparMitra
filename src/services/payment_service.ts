@@ -480,5 +480,12 @@ export class PaymentService {
   }
 }
 
-// Export singleton instance
-export const paymentService = new PaymentService();
+// Export singleton instance with lazy initialization
+let paymentServiceInstance: PaymentService | null = null;
+
+export function getPaymentService(): PaymentService {
+  if (!paymentServiceInstance) {
+    paymentServiceInstance = new PaymentService();
+  }
+  return paymentServiceInstance;
+}

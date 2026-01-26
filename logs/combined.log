@@ -1,0 +1,82 @@
+{"timestamp":"2026-01-26 18:14:06","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:14:27","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:14:38","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:14:49","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:14:56","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:15:04","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:15:12","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:15:21","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:18:28","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:18:50","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:19:04","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:19:14","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:19:17","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:19:29","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:19:29","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:19:43","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:19:43","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:24:32","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:26:20","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:40:51","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:43:11","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:46:09","level":"error","message":"Service initialization failed","service":"vyapar-mitra-api","version":"1.0.0","error":"SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string"}
+{"timestamp":"2026-01-26 18:48:20","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:48:20","level":"error","message":"Service initialization failed","service":"vyapar-mitra-api","version":"1.0.0","error":"SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string"}
+{"timestamp":"2026-01-26 18:48:32","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:48:32","level":"error","message":"Service initialization failed","service":"vyapar-mitra-api","version":"1.0.0","error":"database \"vyapar_mitra_dev\" does not exist"}
+{"timestamp":"2026-01-26 18:49:10","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:49:11","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 18:49:11","level":"info","message":"All services initialized successfully","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:49:11","level":"info","message":"Server started successfully","service":"vyapar-mitra-api","version":"1.0.0","port":4000,"environment":"development"}
+{"timestamp":"2026-01-26 18:50:51","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:50:51","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 18:51:12","level":"info","message":"Received SIGINT, starting graceful shutdown...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:51:19","level":"info","message":"Initializing services...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:51:19","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 18:51:19","level":"info","message":"All services initialized successfully","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 18:51:19","level":"info","message":"Server started successfully","service":"vyapar-mitra-api","version":"1.0.0","port":4000,"environment":"development"}
+{"timestamp":"2026-01-26 18:54:35","level":"info","message":"Received SIGINT, starting graceful shutdown...","service":"vyapar-mitra-api","version":"1.0.0"}
+{"timestamp":"2026-01-26 19:02:50","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:02:50","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:02:50","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:02:50","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:03:20","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:06:30","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:08:44","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:08:44","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:08:44","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:08:44","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:08:44","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:09:10","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:09:10","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:09:10","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:09:10","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:09:11","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:09:56","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:09:57","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:09:57","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:09:57","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:10:39","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:10:39","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:10:39","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:10:40","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:11:06","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:11:06","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:11:07","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:11:07","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:14:15","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:14:15","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:14:16","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:14:16","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:15:14","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:15:51","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:16:51","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:17:51","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:19:48","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:22:55","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:23:13","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:24:21","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:25:59","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:27:19","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:30:50","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}
+{"timestamp":"2026-01-26 19:31:04","level":"info","message":"Image storage directories initialized","service":"vyapar-mitra-api","version":"1.0.0","uploadDir":"./uploads","thumbnailDir":"uploads\\thumbnails"}

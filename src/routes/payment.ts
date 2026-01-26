@@ -1,6 +1,6 @@
 import express from 'express';
 import { z } from 'zod';
-import { paymentService } from '../services/payment_service';
+import { getPaymentService } from '../services/payment_service';
 import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
 import { validateRequest } from '../middleware/validation';
 import { rateLimiters } from '../middleware/rateLimiter';
@@ -61,7 +61,7 @@ router.post('/create',
         });
       }
       
-      const payment = await paymentService.createPaymentOrder(paymentRequest);
+      const payment = await getPaymentService().createPaymentOrder(paymentRequest);
       
       res.json({
         success: true,
@@ -87,7 +87,7 @@ router.post('/verify',
     try {
       const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
       
-      await paymentService.processSuccessfulPayment(
+      await getPaymentService().processSuccessfulPayment(
         razorpay_payment_id,
         razorpay_order_id,
         razorpay_signature
@@ -136,7 +136,7 @@ router.get('/status/:orderId',
         });
       }
       
-      const payment = await paymentService.getPaymentStatus(orderId);
+      const payment = await getPaymentService().getPaymentStatus(orderId);
       
       if (!payment) {
         return res.status(404).json({
@@ -189,7 +189,7 @@ router.post('/link/:orderId',
         });
       }
       
-      const paymentLink = await paymentService.generatePaymentLink(orderId);
+      const paymentLink = await getPaymentService().generatePaymentLink(orderId);
       
       res.json({
         success: true,
@@ -223,7 +223,7 @@ router.post('/refund',
         });
       }
       
-      const refund = await paymentService.initiateRefund(req.body);
+      const refund = await getPaymentService().initiateRefund(req.body);
       
       res.json({
         success: true,
@@ -254,7 +254,7 @@ router.post('/webhook',
         });
       }
       
-      await paymentService.handleWebhook(req.body, signature);
+      await getPaymentService().handleWebhook(req.body, signature);
       
       res.json({
         success: true,

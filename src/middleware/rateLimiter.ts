@@ -1,5 +1,5 @@
 import rateLimit from 'express-rate-limit';
-import { RedisService } from '../db/redis';
+import { RedisService, isRedisConnected } from '../db/redis';
 import { Request, Response } from 'express';
 
 // Custom Redis store for rate limiting
@@ -16,6 +16,12 @@ class RedisStore {
     const redisKey = `${this.prefix}:${key}`;
     
     try {
+      if (!isRedisConnected()) {
+        // Fallback: allow request if Redis is not available
+        console.warn('Redis not available for rate limiting, allowing request');
+        return { totalHits: 1 };
+      }
+
       const current = await RedisService.get(redisKey);
       const hits = current ? parseInt(current) + 1 : 1;
       
@@ -39,6 +45,10 @@ class RedisStore {
     const redisKey = `${this.prefix}:${key}`;
     
     try {
+      if (!isRedisConnected()) {
+        return;
+      }
+
       const current = await RedisService.get(redisKey);
       if (current) {
         const hits = Math.max(0, parseInt(current) - 1);
@@ -57,6 +67,10 @@ class RedisStore {
     const redisKey = `${this.prefix}:${key}`;
     
     try {
+      if (!isRedisConnected()) {
+        return;
+      }
+      
       await RedisService.delete(redisKey);
     } catch (error) {
       console.error('Redis rate limiter reset error:', error);

@@ -5,8 +5,41 @@ let pool: Pool;
 
 export async function connectPostgreSQL(): Promise<void> {
   try {
+    // First, connect to the default 'postgres' database to create our database if needed
+    const defaultPool = new Pool({
+      host: 'localhost',
+      port: 5432,
+      database: 'postgres', // Connect to default database first
+      user: 'postgres',
+      password: '1234',
+      ssl: false
+    });
+
+    // Check if our database exists, create if not
+    try {
+      const dbCheckResult = await defaultPool.query(
+        "SELECT 1 FROM pg_database WHERE datname = 'vyapar_mitra_dev'"
+      );
+      
+      if (dbCheckResult.rows.length === 0) {
+        console.log('Creating database vyapar_mitra_dev...');
+        await defaultPool.query('CREATE DATABASE vyapar_mitra_dev');
+        console.log('✅ Database vyapar_mitra_dev created successfully');
+      }
+    } catch (createError) {
+      console.warn('Database creation check failed:', createError);
+    } finally {
+      await defaultPool.end();
+    }
+
+    // Now connect to our application database
     pool = new Pool({
-      connectionString: config.database.postgresql.uri,
+      host: 'localhost',
+      port: 5432,
+      database: 'vyapar_mitra_dev',
+      user: 'postgres',
+      password: '1234',
+      ssl: false
     });
     
     // Test connection
