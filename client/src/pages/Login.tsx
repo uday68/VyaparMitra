@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useTranslation } from '../hooks/useTranslation';
 import { useAuth } from '../hooks/useAuth';
-import { LanguageSelector } from '../components/LanguageSelector';
+import { AuthLayout, FormField, Input, RadioGroup } from '../design-system/components';
+import { Button } from '../components/ui/button';
 
 export function Login() {
   const [, setLocation] = useLocation();
@@ -13,11 +14,32 @@ export function Login() {
     password: '',
     userType: 'customer' as 'customer' | 'vendor'
   });
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    
+    if (!formData.email.trim()) {
+      newErrors.email = t('auth.errors.emailRequired', { defaultValue: 'Email is required' });
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = t('auth.errors.emailInvalid', { defaultValue: 'Please enter a valid email address' });
+    }
+    
+    if (!formData.password) {
+      newErrors.password = t('auth.errors.passwordRequired', { defaultValue: 'Password is required' });
+    } else if (formData.password.length < 6) {
+      newErrors.password = t('auth.errors.passwordTooShort', { defaultValue: 'Password must be at least 6 characters' });
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    
+    if (!validateForm()) return;
     
     try {
       await login(formData);
@@ -28,152 +50,177 @@ export function Login() {
         setLocation('/customer/dashboard');
       }
     } catch (err: any) {
-      setError(err.message || 'Login failed');
+      setErrors({ 
+        general: err.message || t('auth.errors.loginFailed', { defaultValue: 'Login failed. Please try again.' })
+      });
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
+  const userTypeOptions = [
+    {
+      value: 'customer',
+      label: t('auth.login.customer', { defaultValue: 'Customer' }),
+      description: t('auth.login.customerDesc', { defaultValue: 'Browse and buy products with voice assistance' }),
+      icon: <span className="material-symbols-outlined">shopping_cart</span>
+    },
+    {
+      value: 'vendor',
+      label: t('auth.login.vendor', { defaultValue: 'Vendor' }),
+      description: t('auth.login.vendorDesc', { defaultValue: 'Sell products and manage your business' }),
+      icon: <span className="material-symbols-outlined">store</span>
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      {/* Language Selector - Top Right */}
-      <div className="absolute top-4 right-4">
-        <LanguageSelector variant="compact" />
-      </div>
-      
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center">
-          <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center">
-            <span className="material-symbols-outlined text-white text-2xl">storefront</span>
+    <AuthLayout
+      title={t('auth.login.title', { defaultValue: 'Welcome Back' })}
+      subtitle={t('auth.login.subtitle', { defaultValue: 'Sign in to your VyaparMitra account' })}
+    >
+      <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+        {/* General Error */}
+        {errors.general && (
+          <div className="bg-error/10 border border-error/20 text-error px-4 py-3 rounded-xl flex items-center gap-2">
+            <span className="material-symbols-outlined text-sm">error</span>
+            <span className="text-sm font-medium">{errors.general}</span>
+          </div>
+        )}
+
+        {/* User Type Selection */}
+        <FormField
+          label={t('auth.login.userType', { defaultValue: 'I am a' })}
+          required
+        >
+          <RadioGroup
+            name="userType"
+            value={formData.userType}
+            onChange={(value) => setFormData(prev => ({ ...prev, userType: value as 'customer' | 'vendor' }))}
+            options={userTypeOptions}
+            disabled={isLoading}
+          />
+        </FormField>
+
+        {/* Email */}
+        <FormField
+          label={t('auth.login.email', { defaultValue: 'Email Address' })}
+          error={errors.email}
+          required
+        >
+          <Input
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            placeholder={t('auth.login.emailPlaceholder', { defaultValue: 'Enter your email address' })}
+            variant={errors.email ? 'error' : 'default'}
+            leftIcon={<span className="material-symbols-outlined">email</span>}
+            disabled={isLoading}
+            autoComplete="email"
+          />
+        </FormField>
+
+        {/* Password */}
+        <FormField
+          label={t('auth.login.password', { defaultValue: 'Password' })}
+          error={errors.password}
+          required
+        >
+          <Input
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            placeholder={t('auth.login.passwordPlaceholder', { defaultValue: 'Enter your password' })}
+            variant={errors.password ? 'error' : 'default'}
+            leftIcon={<span className="material-symbols-outlined">lock</span>}
+            disabled={isLoading}
+            autoComplete="current-password"
+          />
+        </FormField>
+
+        {/* Forgot Password Link */}
+        <div className="text-right">
+          <button
+            type="button"
+            className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+            onClick={() => {
+              // TODO: Implement forgot password
+              console.log('Forgot password clicked');
+            }}
+          >
+            {t('auth.login.forgotPassword', { defaultValue: 'Forgot your password?' })}
+          </button>
+        </div>
+
+        {/* Submit Button */}
+        <Button
+          type="submit"
+          variant="primary"
+          size="lg"
+          className="w-full"
+          isLoading={isLoading}
+          disabled={isLoading}
+        >
+          {isLoading 
+            ? t('auth.login.signingIn', { defaultValue: 'Signing In...' })
+            : t('auth.login.signIn', { defaultValue: 'Sign In' })
+          }
+        </Button>
+
+        {/* Divider */}
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-neutral-200 dark:border-neutral-700" />
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-4 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400">
+              {t('auth.login.or', { defaultValue: 'or' })}
+            </span>
           </div>
         </div>
-        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-          {t('auth.login.title')}
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          {t('auth.login.subtitle')}
-        </p>
-        <p className="mt-1 text-center text-xs text-blue-600">
-          {t('auth.languageNote', { defaultValue: 'Change language using the selector above' })}
-        </p>
-      </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-xl rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                {error}
-              </div>
-            )}
-
-            {/* User Type Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('auth.login.userType')}
-              </label>
-              <div className="flex space-x-4">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="userType"
-                    value="customer"
-                    checked={formData.userType === 'customer'}
-                    onChange={handleInputChange}
-                    className="mr-2"
-                  />
-                  <span className="text-sm">{t('auth.login.customer')}</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="userType"
-                    value="vendor"
-                    checked={formData.userType === 'vendor'}
-                    onChange={handleInputChange}
-                    className="mr-2"
-                  />
-                  <span className="text-sm">{t('auth.login.vendor')}</span>
-                </label>
-              </div>
-            </div>
-
-            {/* Email */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                {t('auth.login.identifier')}
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter your name or email"
-                />
-              </div>
-            </div>
-
-            {/* Password */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                {t('auth.login.password')}
-              </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter your password"
-                />
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <div>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? (
-                  <span className="flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    {t('common.loading')}
-                  </span>
-                ) : (
-                  t('auth.login.loginButton')
-                )}
-              </button>
-            </div>
-
-            {/* Sign Up Link */}
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => setLocation('/signup')}
-                className="text-blue-600 hover:text-blue-500 text-sm font-medium"
-              >
-                {t('auth.login.noAccount')} {t('auth.login.signUp')}
-              </button>
-            </div>
-          </form>
+        {/* Sign Up Link */}
+        <div className="text-center">
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+            {t('auth.login.noAccount', { defaultValue: "Don't have an account?" })}{' '}
+            <button
+              type="button"
+              onClick={() => setLocation('/signup')}
+              className="font-semibold text-primary hover:text-primary/80 transition-colors"
+            >
+              {t('auth.login.signUp', { defaultValue: 'Sign up for free' })}
+            </button>
+          </p>
         </div>
-      </div>
-    </div>
+
+        {/* Security Notice */}
+        <div className="bg-neutral-50 dark:bg-neutral-800/50 rounded-xl p-4 border border-neutral-200/50 dark:border-neutral-700/50">
+          <div className="flex items-start gap-3">
+            <span className="material-symbols-outlined text-primary text-xl mt-0.5">
+              security
+            </span>
+            <div>
+              <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 mb-1">
+                {t('auth.security.title', { defaultValue: 'Your data is secure' })}
+              </h4>
+              <p className="text-xs text-neutral-600 dark:text-neutral-400">
+                {t('auth.security.description', { 
+                  defaultValue: 'We use industry-standard encryption to protect your personal information and ensure secure transactions.' 
+                })}
+              </p>
+            </div>
+          </div>
+        </div>
+      </form>
+    </AuthLayout>
   );
 }

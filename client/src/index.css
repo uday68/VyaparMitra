@@ -3,205 +3,210 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
   :root {
-    /* Design System CSS Custom Properties - Light Theme (Default) */
     --color-background: #ffffff;
     --color-background-light: #f6f7f8;
     --color-background-muted: #f8fafc;
     --color-foreground: #111418;
     --color-foreground-muted: #718096;
-    
-    /* Primary colors from design references */
+
     --color-primary: #1d4ed8;
     --color-primary-foreground: #ffffff;
-    --color-primary-blue: #1d4ed8;
-    --color-primary-green: #15803d;
-    --color-primary-purple: #7c3aed;
-    --color-primary-blue-variant: #2563eb;
-    
-    /* Semantic colors */
+
     --color-success: #15803d;
-    --color-success-foreground: #ffffff;
     --color-warning: #b45309;
-    --color-warning-foreground: #ffffff;
     --color-error: #dc2626;
-    --color-error-foreground: #ffffff;
     --color-info: #2563eb;
-    --color-info-foreground: #ffffff;
-    
-    /* Neutral colors */
+
     --color-border: #e2e8f0;
-    --color-border-muted: #f6f7f8;
     --color-input: #e2e8f0;
-    --color-ring: #1c74e9;
-    
-    /* Card colors */
+
     --color-card: #ffffff;
     --color-card-foreground: #111418;
-    --color-card-border: #e2e8f0;
-    
-    /* Muted colors */
+
     --color-muted: #f6f7f8;
     --color-muted-foreground: #718096;
-    
-    /* Accent colors */
-    --color-accent: #f6f7f8;
-    --color-accent-foreground: #111418;
-    
-    /* Voice UI colors */
-    --color-voice-background: rgba(28, 116, 233, 0.1);
-    --color-voice-border: rgba(28, 116, 233, 0.2);
-    --color-voice-foreground: #1c74e9;
-    
-    /* Glass effect colors */
+
     --color-glass-background: rgba(255, 255, 255, 0.8);
     --color-glass-border: rgba(255, 255, 255, 0.2);
-    
-    /* Legacy variables for backward compatibility */
-    --primary: 214 84% 51%; /* #1c74e9 - Primary Blue */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 145 63% 42%; /* #27ae60 - Fresh Green */
-    --secondary-foreground: 0 0% 100%;
-    --accent: 214 84% 96%; /* Very light blue for backgrounds */
-    --accent-foreground: 214 84% 51%;
-    --background: 0 0% 100%;
-    --foreground: 215 19% 35%; /* #4a5568 */
-    --card: 0 0% 100%;
-    --card-foreground: 215 19% 35%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 214 84% 51%;
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
+    --shadow-md: 0 4px 6px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,.1);
+    --shadow-xl: 0 20px 25px rgba(0,0,0,.1);
+    --shadow-2xl: 0 25px 50px rgba(0,0,0,.25);
+
     --radius: 0.75rem;
     --font-sans: 'Work Sans', sans-serif;
   }
 
-  /* Dark theme overrides */
   .theme-dark {
-    --color-background: #111821;
-    --color-background-light: #171022;
-    --color-background-muted: #231a31;
-    --color-foreground: #f7fafc;
-    --color-foreground-muted: #718096;
-    
-    /* Neutral colors for dark theme */
-    --color-border: rgba(255, 255, 255, 0.1);
-    --color-border-muted: rgba(255, 255, 255, 0.05);
-    --color-input: rgba(255, 255, 255, 0.1);
-    
-    /* Card colors for dark theme */
-    --color-card: #1a202c;
-    --color-card-foreground: #f7fafc;
-    --color-card-border: rgba(255, 255, 255, 0.1);
-    
-    /* Muted colors for dark theme */
-    --color-muted: #1a202c;
-    --color-muted-foreground: #718096;
-    
-    /* Accent colors for dark theme */
-    --color-accent: #1a202c;
-    --color-accent-foreground: #f7fafc;
-    
-    /* Voice UI colors for dark theme */
-    --color-voice-background: rgba(28, 116, 233, 0.2);
-    --color-voice-border: rgba(28, 116, 233, 0.3);
-    
-    /* Glass effect colors for dark theme */
-    --color-glass-background: rgba(0, 0, 0, 0.8);
-    --color-glass-border: rgba(255, 255, 255, 0.1);
-    
-    /* Legacy dark theme variables */
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-  }
-
-  /* Color scheme variations */
-  .scheme-blue {
-    --color-primary: #1d4ed8;
-    --color-primary-blue: #1d4ed8;
-  }
-
-  .scheme-green {
-    --color-primary: #15803d;
-    --color-primary-green: #15803d;
-  }
-
-  .scheme-purple {
-    --color-primary: #7c3aed;
-    --color-primary-purple: #7c3aed;
+    --color-background: #0f172a;
+    --color-background-light: #1e293b;
+    --color-background-muted: #334155;
+    --color-foreground: #f8fafc;
+    --color-foreground-muted: #94a3b8;
+    --color-border: rgba(255,255,255,0.1);
+    --color-input: rgba(255,255,255,0.1);
+    --color-card: #1e293b;
+    --color-muted: #334155;
+    --color-glass-background: rgba(0,0,0,0.8);
+    --color-glass-border: rgba(255,255,255,0.1);
   }
 
   body {
-    background-color: var(--color-background);
+    background: var(--color-background);
     color: var(--color-foreground);
-    font-family: 'Work Sans', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: "rlig" 1, "calt" 1;
-    min-height: max(884px, 100dvh);
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    min-height: 100dvh;
+    transition: background-color .3s ease, color .3s ease;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,h2,h3,h4,h5,h6 {
     font-weight: 700;
     letter-spacing: -0.025em;
-    color: var(--color-foreground);
+    line-height: 1.2;
+  }
+
+  p {
+    margin-bottom: 1rem;
+    color: var(--color-foreground-muted);
+  }
+
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  a:hover {
+    opacity: .85;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
   }
 }
 
 @layer utilities {
   .material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    vertical-align: middle;
-    user-select: none;
+    font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
-  
+
   .glass-panel {
     background: var(--color-glass-background);
     border: 1px solid var(--color-glass-border);
     backdrop-filter: blur(12px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-lg);
   }
-  
+
   .voice-panel {
-    background: var(--color-voice-background);
-    border: 1px solid var(--color-voice-border);
-    color: var(--color-voice-foreground);
+    background: rgba(29,78,216,.12);
+    border: 1px solid rgba(29,78,216,.25);
+    color: var(--color-primary);
+    border-radius: 1rem;
+    backdrop-filter: blur(8px);
   }
-  
-  .safe-area-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  
-  /* Theme transition utilities */
+
   .theme-transition {
-    transition: background-color 0.3s ease-in-out, 
-                color 0.3s ease-in-out, 
-                border-color 0.3s ease-in-out,
-                box-shadow 0.3s ease-in-out;
+    transition: background-color .3s ease,
+                color .3s ease,
+                border-color .3s ease,
+                box-shadow .3s ease;
+  }
+
+  /* ---- FIXED FORM FIELD (NO @apply) ---- */
+  .form-field-professional {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: .5rem;
+    box-sizing: border-box;
+  }
+
+  .form-field-professional label {
+    display: block;
+    font-size: .875rem;
+    font-weight: 600;
+    margin-bottom: .5rem;
+    color: var(--color-foreground);
+  }
+
+  .form-field-professional input,
+  .form-field-professional textarea,
+  .form-field-professional select {
+    width: 100%;
+    padding: .75rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: .75rem;
+    border: 2px solid var(--color-input);
+    background: transparent;
+    color: var(--color-foreground);
+    transition: all .2s ease;
+    box-sizing: border-box;
+  }
+
+  .form-field-professional input:focus,
+  .form-field-professional textarea:focus,
+  .form-field-professional select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 6px rgba(29,78,216,.15);
+  }
+
+  .card-professional {
+    background: var(--color-card);
+    border-radius: 1rem;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .loading-shimmer {
+    background: linear-gradient(
+      90deg,
+      #e2e8f0 25%,
+      #f1f5f9 50%,
+      #e2e8f0 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
   }
 }
 
-/* Custom Scrollbar */
+/* Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
 }
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 9999px;
+  background: #cbd5e1;
+  border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-muted-foreground);
+
+/* Selection */
+::selection {
+  background: var(--color-primary);
+  color: white;
+}
+
+/* Print */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
 }

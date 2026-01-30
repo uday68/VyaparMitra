@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useTranslation } from '../hooks/useTranslation';
 import { useAuth } from '../hooks/useAuth';
-import { LanguageSelector } from '../components/LanguageSelector';
+import { AuthLayout, FormField, Input, RadioGroup } from '../design-system/components';
+import { Button } from '../components/ui/button';
 import { LocationPicker } from '../components/LocationPicker';
+import { cn } from '@/lib/utils';
 
 export function SignUp() {
   const [, setLocation] = useLocation();
@@ -14,11 +16,12 @@ export function SignUp() {
     email: '',
     password: '',
     confirmPassword: '',
-    language: language || 'hi', // Initialize with current language
+    language: language || 'hi',
     location: '',
     userType: 'customer' as 'customer' | 'vendor'
   });
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [passwordStrength, setPasswordStrength] = useState(0);
 
   // Sync form language with selected language
   useEffect(() => {
@@ -28,21 +31,57 @@ export function SignUp() {
     }));
   }, [language]);
 
+  const calculatePasswordStrength = (password: string) => {
+    let strength = 0;
+    if (password.length >= 8) strength += 1;
+    if (/[A-Z]/.test(password)) strength += 1;
+    if (/[a-z]/.test(password)) strength += 1;
+    if (/[0-9]/.test(password)) strength += 1;
+    if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+    return strength;
+  };
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = t('auth.errors.nameRequired', { defaultValue: 'Full name is required' });
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = t('auth.errors.nameTooShort', { defaultValue: 'Name must be at least 2 characters' });
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = t('auth.errors.emailRequired', { defaultValue: 'Email is required' });
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = t('auth.errors.emailInvalid', { defaultValue: 'Please enter a valid email address' });
+    }
+    
+    if (!formData.password) {
+      newErrors.password = t('auth.errors.passwordRequired', { defaultValue: 'Password is required' });
+    } else if (formData.password.length < 8) {
+      newErrors.password = t('auth.errors.passwordTooShort', { defaultValue: 'Password must be at least 8 characters' });
+    } else if (passwordStrength < 3) {
+      newErrors.password = t('auth.errors.passwordWeak', { 
+        defaultValue: 'Password should include uppercase, lowercase, numbers, and special characters' 
+      });
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = t('auth.errors.passwordMismatch', { defaultValue: 'Passwords do not match' });
+    }
+    
+    if (!formData.location.trim()) {
+      newErrors.location = t('auth.errors.locationRequired', { defaultValue: 'Location is required' });
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-
-    // Validate passwords match
-    if (formData.password !== formData.confirmPassword) {
-      setError(t('auth.errors.passwordMismatch'));
-      return;
-    }
-
-    // Validate password length
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
+    
+    if (!validateForm()) return;
 
     try {
       await register({
@@ -61,248 +100,258 @@ export function SignUp() {
         setLocation('/customer/shop');
       }
     } catch (err: any) {
-      setError(err.message || 'Registration failed');
+      setErrors({ 
+        general: err.message || t('auth.errors.registrationFailed', { defaultValue: 'Registration failed. Please try again.' })
+      });
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Calculate password strength
+    if (name === 'password') {
+      setPasswordStrength(calculatePasswordStrength(value));
+    }
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
-  const languages = [
-    { code: 'hi', name: 'हिंदी (Hindi)' },
-    { code: 'en', name: 'English' },
-    { code: 'bn', name: 'বাংলা (Bengali)' },
-    { code: 'te', name: 'తెలుగు (Telugu)' },
-    { code: 'mr', name: 'मराठी (Marathi)' },
-    { code: 'ta', name: 'தமிழ் (Tamil)' },
-    { code: 'gu', name: 'ગુજરાતી (Gujarati)' },
-    { code: 'kn', name: 'ಕನ್ನಡ (Kannada)' },
-    { code: 'ml', name: 'മലയാളം (Malayalam)' },
-    { code: 'pa', name: 'ਪੰਜਾਬੀ (Punjabi)' },
-    { code: 'or', name: 'ଓଡ଼ିଆ (Odia)' },
-    { code: 'as', name: 'অসমীয়া (Assamese)' },
+  const userTypeOptions = [
+    {
+      value: 'customer',
+      label: t('auth.register.customer', { defaultValue: 'Customer' }),
+      description: t('auth.register.customerDesc', { defaultValue: 'Browse and buy products with voice assistance' }),
+      icon: <span className="material-symbols-outlined">shopping_cart</span>
+    },
+    {
+      value: 'vendor',
+      label: t('auth.register.vendor', { defaultValue: 'Vendor' }),
+      description: t('auth.register.vendorDesc', { defaultValue: 'Sell products and manage your business' }),
+      icon: <span className="material-symbols-outlined">store</span>
+    }
   ];
 
+  const getPasswordStrengthColor = () => {
+    if (passwordStrength <= 2) return 'bg-error';
+    if (passwordStrength <= 3) return 'bg-warning';
+    return 'bg-success';
+  };
+
+  const getPasswordStrengthText = () => {
+    if (passwordStrength <= 2) return t('auth.password.weak', { defaultValue: 'Weak' });
+    if (passwordStrength <= 3) return t('auth.password.medium', { defaultValue: 'Medium' });
+    return t('auth.password.strong', { defaultValue: 'Strong' });
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      {/* Language Selector - Top Right */}
-      <div className="absolute top-4 right-4">
-        <LanguageSelector variant="compact" />
-      </div>
-      
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center">
-          <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center">
-            <span className="material-symbols-outlined text-white text-2xl">storefront</span>
+    <AuthLayout
+      title={t('auth.register.title', { defaultValue: 'Create Account' })}
+      subtitle={t('auth.register.subtitle', { defaultValue: 'Join VyaparMitra and start trading' })}
+      className="sm:max-w-lg"
+    >
+      <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+        {/* General Error */}
+        {errors.general && (
+          <div className="bg-error/10 border border-error/20 text-error px-4 py-3 rounded-xl flex items-center gap-2">
+            <span className="material-symbols-outlined text-sm">error</span>
+            <span className="text-sm font-medium">{errors.general}</span>
+          </div>
+        )}
+
+        {/* User Type Selection */}
+        <FormField
+          label={t('auth.register.userType', { defaultValue: 'I want to' })}
+          required
+        >
+          <RadioGroup
+            name="userType"
+            value={formData.userType}
+            onChange={(value) => setFormData(prev => ({ ...prev, userType: value as 'customer' | 'vendor' }))}
+            options={userTypeOptions}
+            disabled={isLoading}
+          />
+        </FormField>
+
+        {/* Name */}
+        <FormField
+          label={t('auth.register.name', { defaultValue: 'Full Name' })}
+          error={errors.name}
+          required
+        >
+          <Input
+            name="name"
+            type="text"
+            value={formData.name}
+            onChange={handleInputChange}
+            placeholder={t('auth.register.namePlaceholder', { defaultValue: 'Enter your full name' })}
+            variant={errors.name ? 'error' : 'default'}
+            leftIcon={<span className="material-symbols-outlined">person</span>}
+            disabled={isLoading}
+            autoComplete="name"
+          />
+        </FormField>
+
+        {/* Email */}
+        <FormField
+          label={t('auth.register.email', { defaultValue: 'Email Address' })}
+          error={errors.email}
+          required
+        >
+          <Input
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            placeholder={t('auth.register.emailPlaceholder', { defaultValue: 'Enter your email address' })}
+            variant={errors.email ? 'error' : 'default'}
+            leftIcon={<span className="material-symbols-outlined">email</span>}
+            disabled={isLoading}
+            autoComplete="email"
+          />
+        </FormField>
+
+        {/* Location */}
+        <FormField
+          label={t('auth.register.location', { defaultValue: 'Location' })}
+          error={errors.location}
+          required
+          description={t('auth.register.locationDesc', { defaultValue: 'This helps us connect you with nearby vendors' })}
+        >
+          <LocationPicker
+            value={formData.location}
+            onChange={(location) => setFormData(prev => ({ ...prev, location }))}
+            placeholder={t('auth.register.locationPlaceholder', { defaultValue: 'Enter your city or area' })}
+            disabled={isLoading}
+          />
+        </FormField>
+
+        {/* Password */}
+        <FormField
+          label={t('auth.register.password', { defaultValue: 'Password' })}
+          error={errors.password}
+          required
+        >
+          <Input
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            placeholder={t('auth.register.passwordPlaceholder', { defaultValue: 'Create a strong password' })}
+            variant={errors.password ? 'error' : 'default'}
+            leftIcon={<span className="material-symbols-outlined">lock</span>}
+            disabled={isLoading}
+            autoComplete="new-password"
+          />
+          {/* Password Strength Indicator */}
+          {formData.password && (
+            <div className="mt-2">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="flex-1 bg-neutral-200 dark:bg-neutral-700 rounded-full h-2">
+                  <div 
+                    className={cn(
+                      "h-2 rounded-full transition-all duration-300",
+                      getPasswordStrengthColor()
+                    )}
+                    style={{ width: `${(passwordStrength / 5) * 100}%` }}
+                  />
+                </div>
+                <span className={cn(
+                  "text-xs font-medium",
+                  passwordStrength <= 2 ? 'text-error' : passwordStrength <= 3 ? 'text-warning' : 'text-success'
+                )}>
+                  {getPasswordStrengthText()}
+                </span>
+              </div>
+              <p className="text-xs text-neutral-600 dark:text-neutral-400">
+                {t('auth.register.passwordHint', { 
+                  defaultValue: 'Use 8+ characters with uppercase, lowercase, numbers & symbols' 
+                })}
+              </p>
+            </div>
+          )}
+        </FormField>
+
+        {/* Confirm Password */}
+        <FormField
+          label={t('auth.register.confirmPassword', { defaultValue: 'Confirm Password' })}
+          error={errors.confirmPassword}
+          required
+        >
+          <Input
+            name="confirmPassword"
+            type="password"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+            placeholder={t('auth.register.confirmPasswordPlaceholder', { defaultValue: 'Confirm your password' })}
+            variant={errors.confirmPassword ? 'error' : formData.confirmPassword && formData.password === formData.confirmPassword ? 'success' : 'default'}
+            leftIcon={<span className="material-symbols-outlined">lock_reset</span>}
+            disabled={isLoading}
+            autoComplete="new-password"
+          />
+        </FormField>
+
+        {/* Terms and Privacy */}
+        <div className="bg-neutral-50 dark:bg-neutral-800/50 rounded-xl p-4 border border-neutral-200/50 dark:border-neutral-700/50">
+          <p className="text-xs text-neutral-600 dark:text-neutral-400">
+            {t('auth.register.terms', { 
+              defaultValue: 'By creating an account, you agree to our' 
+            })}{' '}
+            <button type="button" className="text-primary hover:underline font-medium">
+              {t('auth.register.termsOfService', { defaultValue: 'Terms of Service' })}
+            </button>{' '}
+            {t('common.and', { defaultValue: 'and' })}{' '}
+            <button type="button" className="text-primary hover:underline font-medium">
+              {t('auth.register.privacyPolicy', { defaultValue: 'Privacy Policy' })}
+            </button>
+          </p>
+        </div>
+
+        {/* Submit Button */}
+        <Button
+          type="submit"
+          variant="primary"
+          size="lg"
+          className="w-full"
+          isLoading={isLoading}
+          disabled={isLoading}
+        >
+          {isLoading 
+            ? t('auth.register.creating', { defaultValue: 'Creating Account...' })
+            : t('auth.register.createAccount', { defaultValue: 'Create Account' })
+          }
+        </Button>
+
+        {/* Divider */}
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-neutral-200 dark:border-neutral-700" />
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-4 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400">
+              {t('auth.register.or', { defaultValue: 'or' })}
+            </span>
           </div>
         </div>
-        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-          {t('auth.register.title')}
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          {t('auth.register.subtitle')}
-        </p>
-        <p className="mt-1 text-center text-xs text-blue-600">
-          {t('auth.languageNote', { defaultValue: 'Change language using the selector above' })}
-        </p>
-      </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-xl rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                {error}
-              </div>
-            )}
-
-            {/* User Type Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('auth.register.userType')}
-              </label>
-              <div className="flex space-x-4">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="userType"
-                    value="customer"
-                    checked={formData.userType === 'customer'}
-                    onChange={handleInputChange}
-                    className="mr-2"
-                  />
-                  <span className="text-sm">{t('auth.login.customer')}</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="userType"
-                    value="vendor"
-                    checked={formData.userType === 'vendor'}
-                    onChange={handleInputChange}
-                    className="mr-2"
-                  />
-                  <span className="text-sm">{t('auth.login.vendor')}</span>
-                </label>
-              </div>
-            </div>
-
-            {/* Name */}
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                {t('auth.register.name')}
-              </label>
-              <div className="mt-1">
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter your full name"
-                />
-              </div>
-            </div>
-
-            {/* Email */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter your email"
-                />
-              </div>
-            </div>
-
-            {/* Location with GPS */}
-            <div>
-              <label htmlFor="location" className="block text-sm font-medium text-gray-700">
-                {t('auth.register.location')}
-              </label>
-              <div className="mt-1">
-                <LocationPicker
-                  value={formData.location}
-                  onChange={(location) => setFormData(prev => ({ ...prev, location }))}
-                  placeholder="Enter your location"
-                  disabled={isLoading}
-                />
-              </div>
-            </div>
-
-            {/* Language - Auto-synced with selector */}
-            <div>
-              <label htmlFor="language" className="block text-sm font-medium text-gray-700">
-                {t('auth.register.language')}
-                <span className="text-xs text-blue-600 ml-2">({t('common.canBeChanged')})</span>
-              </label>
-              <div className="mt-1">
-                <select
-                  id="language"
-                  name="language"
-                  value={formData.language}
-                  onChange={handleInputChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                  disabled
-                >
-                  {languages.map((lang) => (
-                    <option key={lang.code} value={lang.code}>
-                      {lang.name}
-                    </option>
-                  ))}
-                </select>
-                <p className="text-xs text-gray-500 mt-1">
-                  {t('auth.register.languageNote', { defaultValue: 'Language is automatically set from the selector above' })}
-                </p>
-              </div>
-            </div>
-
-            {/* Password */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                {t('auth.register.password')}
-              </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter your password"
-                />
-              </div>
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                {t('auth.register.confirmPassword')}
-              </label>
-              <div className="mt-1">
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Confirm your password"
-                />
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <div>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? (
-                  <span className="flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    {t('common.loading')}
-                  </span>
-                ) : (
-                  t('auth.register.registerButton')
-                )}
-              </button>
-            </div>
-
-            {/* Sign In Link */}
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => setLocation('/login')}
-                className="text-blue-600 hover:text-blue-500 text-sm font-medium"
-              >
-                {t('auth.register.hasAccount')} {t('auth.register.signIn')}
-              </button>
-            </div>
-          </form>
+        {/* Sign In Link */}
+        <div className="text-center">
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+            {t('auth.register.hasAccount', { defaultValue: 'Already have an account?' })}{' '}
+            <button
+              type="button"
+              onClick={() => setLocation('/login')}
+              className="font-semibold text-primary hover:text-primary/80 transition-colors"
+            >
+              {t('auth.register.signIn', { defaultValue: 'Sign in here' })}
+            </button>
+          </p>
         </div>
-      </div>
-    </div>
+      </form>
+    </AuthLayout>
   );
 }

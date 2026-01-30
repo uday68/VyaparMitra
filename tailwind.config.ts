@@ -77,8 +77,19 @@ export default {
           background: "var(--color-glass-background)",
           border: "var(--color-glass-border)",
         },
-        "background-light": "#f6f7f8",
-        "background-dark": "#111821",
+        // Neutral color scale for professional UI
+        neutral: {
+          50: "var(--color-neutral-50, #f8fafc)",
+          100: "var(--color-neutral-100, #f1f5f9)",
+          200: "var(--color-neutral-200, #e2e8f0)",
+          300: "var(--color-neutral-300, #cbd5e1)",
+          400: "var(--color-neutral-400, #94a3b8)",
+          500: "var(--color-neutral-500, #64748b)",
+          600: "var(--color-neutral-600, #475569)",
+          700: "var(--color-neutral-700, #334155)",
+          800: "var(--color-neutral-800, #1e293b)",
+          900: "var(--color-neutral-900, #0f172a)",
+        },
         destructive: {
           DEFAULT: "var(--color-error)",
           foreground: "var(--color-error-foreground)",
