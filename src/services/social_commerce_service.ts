@@ -68,4 +68,4 @@ interface CommunityGroup {
   memberCount: number;
   isPublic: boolean;
   createdBy: string;
-  createdAt
+  createdAt: Date;

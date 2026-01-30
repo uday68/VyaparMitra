@@ -1,74 +1,192 @@
-<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root {
-  /* Stitch Design Colors */
-  --primary: 214 84% 51%; /* #1c74e9 - Primary Blue */
-  --primary-foreground: 0 0% 100%;
-  
-  --secondary: 145 63% 42%; /* #27ae60 - Fresh Green */
-  --secondary-foreground: 0 0% 100%;
-
-  --accent: 214 84% 96%; /* Very light blue for backgrounds */
-  --accent-foreground: 214 84% 51%;
-
-  --background: 0 0% 100%;
-  --foreground: 215 19% 35%; /* #4a5568 */
-
-  --card: 0 0% 100%;
-  --card-foreground: 215 19% 35%;
-
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
-
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 214 84% 51%;
-
-  --radius: 0.75rem;
-
-  --font-sans: 'Work Sans', sans-serif;
-}
-
-.dark {
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
-  --card: 222 47% 11%;
-  --card-foreground: 210 40% 98%;
-  --muted: 217 33% 17%;
-  --muted-foreground: 215 20% 65%;
-  --border: 217 33% 17%;
-  --input: 217 33% 17%;
-}
-
 @layer base {
+  :root {
+    /* Design System CSS Custom Properties - Light Theme (Default) */
+    --color-background: #ffffff;
+    --color-background-light: #f6f7f8;
+    --color-background-muted: #f8fafc;
+    --color-foreground: #111418;
+    --color-foreground-muted: #718096;
+    
+    /* Primary colors from design references */
+    --color-primary: #1d4ed8;
+    --color-primary-foreground: #ffffff;
+    --color-primary-blue: #1d4ed8;
+    --color-primary-green: #15803d;
+    --color-primary-purple: #7c3aed;
+    --color-primary-blue-variant: #2563eb;
+    
+    /* Semantic colors */
+    --color-success: #15803d;
+    --color-success-foreground: #ffffff;
+    --color-warning: #b45309;
+    --color-warning-foreground: #ffffff;
+    --color-error: #dc2626;
+    --color-error-foreground: #ffffff;
+    --color-info: #2563eb;
+    --color-info-foreground: #ffffff;
+    
+    /* Neutral colors */
+    --color-border: #e2e8f0;
+    --color-border-muted: #f6f7f8;
+    --color-input: #e2e8f0;
+    --color-ring: #1c74e9;
+    
+    /* Card colors */
+    --color-card: #ffffff;
+    --color-card-foreground: #111418;
+    --color-card-border: #e2e8f0;
+    
+    /* Muted colors */
+    --color-muted: #f6f7f8;
+    --color-muted-foreground: #718096;
+    
+    /* Accent colors */
+    --color-accent: #f6f7f8;
+    --color-accent-foreground: #111418;
+    
+    /* Voice UI colors */
+    --color-voice-background: rgba(28, 116, 233, 0.1);
+    --color-voice-border: rgba(28, 116, 233, 0.2);
+    --color-voice-foreground: #1c74e9;
+    
+    /* Glass effect colors */
+    --color-glass-background: rgba(255, 255, 255, 0.8);
+    --color-glass-border: rgba(255, 255, 255, 0.2);
+    
+    /* Legacy variables for backward compatibility */
+    --primary: 214 84% 51%; /* #1c74e9 - Primary Blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 145 63% 42%; /* #27ae60 - Fresh Green */
+    --secondary-foreground: 0 0% 100%;
+    --accent: 214 84% 96%; /* Very light blue for backgrounds */
+    --accent-foreground: 214 84% 51%;
+    --background: 0 0% 100%;
+    --foreground: 215 19% 35%; /* #4a5568 */
+    --card: 0 0% 100%;
+    --card-foreground: 215 19% 35%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 214 84% 51%;
+    --radius: 0.75rem;
+    --font-sans: 'Work Sans', sans-serif;
+  }
+
+  /* Dark theme overrides */
+  .theme-dark {
+    --color-background: #111821;
+    --color-background-light: #171022;
+    --color-background-muted: #231a31;
+    --color-foreground: #f7fafc;
+    --color-foreground-muted: #718096;
+    
+    /* Neutral colors for dark theme */
+    --color-border: rgba(255, 255, 255, 0.1);
+    --color-border-muted: rgba(255, 255, 255, 0.05);
+    --color-input: rgba(255, 255, 255, 0.1);
+    
+    /* Card colors for dark theme */
+    --color-card: #1a202c;
+    --color-card-foreground: #f7fafc;
+    --color-card-border: rgba(255, 255, 255, 0.1);
+    
+    /* Muted colors for dark theme */
+    --color-muted: #1a202c;
+    --color-muted-foreground: #718096;
+    
+    /* Accent colors for dark theme */
+    --color-accent: #1a202c;
+    --color-accent-foreground: #f7fafc;
+    
+    /* Voice UI colors for dark theme */
+    --color-voice-background: rgba(28, 116, 233, 0.2);
+    --color-voice-border: rgba(28, 116, 233, 0.3);
+    
+    /* Glass effect colors for dark theme */
+    --color-glass-background: rgba(0, 0, 0, 0.8);
+    --color-glass-border: rgba(255, 255, 255, 0.1);
+    
+    /* Legacy dark theme variables */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+  }
+
+  /* Color scheme variations */
+  .scheme-blue {
+    --color-primary: #1d4ed8;
+    --color-primary-blue: #1d4ed8;
+  }
+
+  .scheme-green {
+    --color-primary: #15803d;
+    --color-primary-green: #15803d;
+  }
+
+  .scheme-purple {
+    --color-primary: #7c3aed;
+    --color-primary-purple: #7c3aed;
+  }
+
   body {
-    @apply bg-background-light text-[#111418] font-display antialiased;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: 'Work Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "rlig" 1, "calt" 1;
     min-height: max(884px, 100dvh);
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold tracking-tight text-[#111418];
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--color-foreground);
   }
 }
 
 @layer utilities {
   .material-symbols-outlined {
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    @apply align-middle select-none;
+    vertical-align: middle;
+    user-select: none;
   }
   
   .glass-panel {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-lg;
+    background: var(--color-glass-background);
+    border: 1px solid var(--color-glass-border);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .voice-panel {
+    background: var(--color-voice-background);
+    border: 1px solid var(--color-voice-border);
+    color: var(--color-voice-foreground);
   }
   
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Theme transition utilities */
+  .theme-transition {
+    transition: background-color 0.3s ease-in-out, 
+                color 0.3s ease-in-out, 
+                border-color 0.3s ease-in-out,
+                box-shadow 0.3s ease-in-out;
   }
 }
 
@@ -78,90 +196,12 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  @apply bg-transparent;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-200 rounded-full hover:bg-slate-300;
-=======
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
-@import "tailwindcss";
-
-:root {
-  /* Stitch Design Colors */
-  --primary: 214 84% 51%; /* #1c74e9 - Primary Blue */
-  --primary-foreground: 0 0% 100%;
-  
-  --secondary: 145 63% 42%; /* #27ae60 - Fresh Green */
-  --secondary-foreground: 0 0% 100%;
-
-  --accent: 214 84% 96%; /* Very light blue for backgrounds */
-  --accent-foreground: 214 84% 51%;
-
-  --background: 0 0% 100%;
-  --foreground: 215 19% 35%; /* #4a5568 */
-
-  --card: 0 0% 100%;
-  --card-foreground: 215 19% 35%;
-
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
-
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 214 84% 51%;
-
-  --radius: 0.75rem;
-
-  --font-sans: 'Work Sans', sans-serif;
+  background: var(--color-border);
+  border-radius: 9999px;
 }
-
-.dark {
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
-  --card: 222 47% 11%;
-  --card-foreground: 210 40% 98%;
-  --muted: 217 33% 17%;
-  --muted-foreground: 215 20% 65%;
-  --border: 217 33% 17%;
-  --input: 217 33% 17%;
-}
-
-@layer base {
-  body {
-    @apply bg-background-light text-[#111418] font-display antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
-    min-height: max(884px, 100dvh);
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-bold tracking-tight text-[#111418];
-  }
-}
-
-@layer utilities {
-  .material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    @apply align-middle select-none;
-  }
-  
-  .glass-panel {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-lg;
-  }
-  
-  .safe-area-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  @apply bg-transparent;
-}
-::-webkit-scrollbar-thumb {
-  @apply bg-slate-200 rounded-full hover:bg-slate-300;
->>>>>>> d1ac549239b3aebea702ed26e8a42118723781d8
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted-foreground);
 }
