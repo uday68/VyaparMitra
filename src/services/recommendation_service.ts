@@ -1,6 +1,6 @@
 import { logger } from '../utils/logger';
-import { pool } from '../db/postgres';
-import { getRedisClient } from '../db/redis';
+import { getPool } from '../db/postgres';
+import { getRedisClient, RedisService } from '../db/redis';
 import { TranslationService } from './translation_service';
 
 interface RecommendationRequest {
@@ -52,10 +52,10 @@ export class RecommendationService {
   static async getRecommendations(request: RecommendationRequest): Promise<ProductRecommendation[]> {
     try {
       const cacheKey = `recommendations:${request.userId}:${request.context}:${request.currentProductId || 'none'}`;
-      const redis = getRedisClient();
+      // Redis handled by RedisService
       
       // Check cache first
-      const cached = await redis.get(cacheKey);
+      const cached = await RedisService.get(cacheKey);
       if (cached) {
         logger.info('Recommendations served from cache', { userId: request.userId });
         return JSON.parse(cached);
@@ -90,7 +90,7 @@ export class RecommendationService {
         .slice(0, this.MAX_RECOMMENDATIONS);
 
       // Cache the result
-      await redis.setex(cacheKey, this.CACHE_TTL, JSON.stringify(recommendations));
+      await RedisService.setWithTTL(cacheKey, this.CACHE_TTL, JSON.stringify(recommendations));
       
       logger.info('Recommendations generated', {
         userId: request.userId,
@@ -160,6 +160,7 @@ export class RecommendationService {
    * Get browsing-based recommendations
    */
   private static async getBrowsingRecommendations(request: RecommendationRequest): Promise<ProductRecommendation[]> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -245,6 +246,7 @@ export class RecommendationService {
       return await this.getGeneralRecommendations(request);
     }
     
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -337,6 +339,7 @@ export class RecommendationService {
       return await this.getGeneralRecommendations(request);
     }
     
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -413,6 +416,7 @@ export class RecommendationService {
    * Get popular products as fallback recommendations
    */
   private static async getPopularProducts(request: RecommendationRequest): Promise<ProductRecommendation[]> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -652,6 +656,7 @@ export class RecommendationService {
     productId: string,
     action: 'viewed' | 'clicked' | 'negotiated' | 'purchased' | 'ignored'
   ): Promise<void> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {

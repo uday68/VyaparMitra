@@ -1,5 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'wouter';
+import { motion } from 'framer-motion';
+import { useTranslation } from '../hooks/useTranslation';
+import { Header } from '../components/Header';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import { 
+  WifiOff, 
+  Wifi, 
+  RefreshCw, 
+  Zap, 
+  Mic, 
+  ShoppingBag,
+  Calculator,
+  History,
+  MessageCircle,
+  CheckCircle,
+  XCircle,
+  Lightbulb,
+  Circle
+} from 'lucide-react';
 
 export function OfflineVoiceState() {
   const navigate = useNavigate();

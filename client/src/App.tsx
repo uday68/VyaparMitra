@@ -1,10 +1,12 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "./components/ui/toaster";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { Suspense, useEffect } from "react";
 import "./i18n"; // Initialize i18n
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import {
   Home,
   Chat,
@@ -26,8 +28,16 @@ import {
   VoiceTransactionSuccess,
   VoiceRecognitionError,
   VoiceTransactionActive,
-  OfflineVoiceState
+  OfflineVoiceState,
+  Login,
+  SignUp,
+  Profile,
+  CustomerDashboard,
+  PermissionsReadyToShop
 } from "./pages";
+import { CustomerBidsDashboard } from "./pages/CustomerBidsDashboard";
+import { VoiceCommandsReference } from "./pages/VoiceCommandsReference";
+import { InteractiveVoiceGuide } from "./pages/InteractiveVoiceGuide";
 
 // Loading component for Suspense
 function LoadingSpinner() {
@@ -40,45 +50,192 @@ function LoadingSpinner() {
 
 function Router() {
   return (
-    <Routes>
-      {/* Main routes */}
-      <Route path="/" element={<Home />} />
-      <Route path="/welcome" element={<WelcomeLanguageSelection />} />
+    <Switch>
+      {/* Public routes */}
+      <Route path="/login">
+        <ProtectedRoute requireAuth={false}>
+          <Login />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/signup">
+        <ProtectedRoute requireAuth={false}>
+          <SignUp />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/welcome">
+        <ProtectedRoute requireAuth={false}>
+          <WelcomeLanguageSelection />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/permissions-ready-to-shop">
+        <ProtectedRoute>
+          <PermissionsReadyToShop />
+        </ProtectedRoute>
+      </Route>
+      
+      {/* Protected routes - require authentication */}
+      <Route path="/">
+        <ProtectedRoute>
+          <Home />
+        </ProtectedRoute>
+      </Route>
+      
+      {/* Profile route */}
+      <Route path="/profile">
+        <ProtectedRoute>
+          <Profile />
+        </ProtectedRoute>
+      </Route>
       
       {/* Chat and negotiation routes */}
-      <Route path="/chat/:id" element={<Chat />} />
-      <Route path="/customer-chat/:id" element={<CustomerNegotiation />} />
-      <Route path="/customer/negotiation/:productId" element={<CustomerVoiceNegotiation />} />
-      <Route path="/confirmation/:id" element={<DealConfirmation />} />
-      <Route path="/customer/deal-confirmation/:id" element={<DealConfirmation />} />
+      <Route path="/chat/:id">
+        <ProtectedRoute>
+          <Chat />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/customer-chat/:id">
+        <ProtectedRoute requiredUserType="customer" showUnauthorized={true}>
+          <CustomerNegotiation />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/customer/negotiation/:productId">
+        <ProtectedRoute requiredUserType="customer" showUnauthorized={true}>
+          <CustomerVoiceNegotiation />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/confirmation/:id">
+        <ProtectedRoute>
+          <DealConfirmation />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/customer/deal-confirmation/:id">
+        <ProtectedRoute requiredUserType="customer" showUnauthorized={true}>
+          <DealConfirmation />
+        </ProtectedRoute>
+      </Route>
       
-      {/* Customer routes */}
-      <Route path="/customer/shop" element={<CustomerShop />} />
+      {/* Vendor routes - strict RBAC */}
+      <Route path="/vendor">
+        <ProtectedRoute requiredUserType="vendor" showUnauthorized={true}>
+          <Vendor />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/vendor/qr-code">
+        <ProtectedRoute requiredUserType="vendor" showUnauthorized={true}>
+          <VendorQRCode />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/add-product">
+        <ProtectedRoute requiredUserType="vendor" showUnauthorized={true}>
+          <AddProduct />
+        </ProtectedRoute>
+      </Route>
       
-      {/* Vendor routes */}
-      <Route path="/vendor" element={<Vendor />} />
-      <Route path="/vendor/qr-code" element={<VendorQRCode />} />
-      <Route path="/add-product" element={<AddProduct />} />
+      {/* Customer routes - strict RBAC */}
+      <Route path="/customer/dashboard">
+        <ProtectedRoute requiredUserType="customer" showUnauthorized={true}>
+          <CustomerDashboard />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/customer/bids">
+        <ProtectedRoute requiredUserType="customer" showUnauthorized={true}>
+          <CustomerBidsDashboard />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/customer/shop">
+        <ProtectedRoute requiredUserType="customer" showUnauthorized={true}>
+          <CustomerShop />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/customer-chat/:id">
+        <ProtectedRoute requiredUserType="customer" showUnauthorized={true}>
+          <CustomerNegotiation />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/customer/negotiation/:productId">
+        <ProtectedRoute requiredUserType="customer" showUnauthorized={true}>
+          <CustomerVoiceNegotiation />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/customer/deal-confirmation/:id">
+        <ProtectedRoute requiredUserType="customer" showUnauthorized={true}>
+          <DealConfirmation />
+        </ProtectedRoute>
+      </Route>
       
       {/* Voice and settings routes */}
-      <Route path="/voice-settings" element={<VoiceSettings />} />
-      <Route path="/voice-settings-page" element={<VoiceSettingsPage />} />
-      <Route path="/voice-customization" element={<VoiceCustomization />} />
-      <Route path="/voice-commands" element={<VoiceCommandsGuide />} />
-      <Route path="/hands-free-settings" element={<HandsFreeSettings />} />
+      <Route path="/voice-settings">
+        <ProtectedRoute>
+          <VoiceSettings />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/voice-settings-page">
+        <ProtectedRoute>
+          <VoiceSettingsPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/voice-customization">
+        <ProtectedRoute>
+          <VoiceCustomization />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/voice-commands">
+        <ProtectedRoute>
+          <VoiceCommandsGuide />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/hands-free-settings">
+        <ProtectedRoute>
+          <HandsFreeSettings />
+        </ProtectedRoute>
+      </Route>
       
       {/* Transaction and success routes */}
-      <Route path="/transaction-active/:negotiationId" element={<VoiceTransactionActive />} />
-      <Route path="/transaction-success/:transactionId" element={<VoiceTransactionSuccess />} />
-      <Route path="/voice-error" element={<VoiceRecognitionError />} />
-      <Route path="/offline" element={<OfflineVoiceState />} />
+      <Route path="/transaction-active/:negotiationId">
+        <ProtectedRoute>
+          <VoiceTransactionActive />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/transaction-success/:transactionId">
+        <ProtectedRoute>
+          <VoiceTransactionSuccess />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/voice-error">
+        <ProtectedRoute>
+          <VoiceRecognitionError />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/offline">
+        <ProtectedRoute>
+          <OfflineVoiceState />
+        </ProtectedRoute>
+      </Route>
       
       {/* History and other routes */}
-      <Route path="/order-history" element={<OrderHistory />} />
+      <Route path="/order-history">
+        <ProtectedRoute>
+          <OrderHistory />
+        </ProtectedRoute>
+      </Route>
+      
+      {/* Voice Commands Reference route */}
+      <Route path="/voice-commands-reference">
+        <ProtectedRoute>
+          <VoiceCommandsReference />
+        </ProtectedRoute>
+      </Route>
+      
+      {/* Interactive Voice Guide route */}
+      <Route path="/interactive-voice-guide">
+        <ProtectedRoute>
+          <InteractiveVoiceGuide />
+        </ProtectedRoute>
+      </Route>
       
       {/* 404 fallback */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+      <Route component={NotFound} />
+    </Switch>
   );
 }
 
@@ -101,14 +258,14 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <TooltipProvider>
+      <TooltipProvider>
+        <AuthProvider>
           <Suspense fallback={<LoadingSpinner />}>
             <Toaster />
             <Router />
           </Suspense>
-        </TooltipProvider>
-      </BrowserRouter>
+        </AuthProvider>
+      </TooltipProvider>
     </QueryClientProvider>
   );
 }

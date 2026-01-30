@@ -97,7 +97,7 @@ export const rateLimiters = {
   // Authentication endpoints (stricter)
   auth: rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 10, // Limit each IP to 10 auth requests per windowMs
+    max: process.env.NODE_ENV === 'development' ? 50 : 10, // More lenient in development
     message: {
       success: false,
       error: 'Too many authentication attempts, please try again later',
@@ -176,6 +176,34 @@ export const rateLimiters = {
     standardHeaders: true,
     legacyHeaders: false,
     store: new RedisStore('rate_limit:translation', 1 * 60 * 1000) as any,
+  }),
+
+  // Analytics API (moderate limits)
+  analytics: rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 60, // Limit each IP to 60 analytics requests per minute
+    message: {
+      success: false,
+      error: 'Too many analytics requests, please try again later',
+      code: 'ANALYTICS_RATE_LIMIT_EXCEEDED',
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    store: new RedisStore('rate_limit:analytics', 1 * 60 * 1000) as any,
+  }),
+
+  // Recommendations API (moderate limits)
+  recommendations: rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 30, // Limit each IP to 30 recommendation requests per minute
+    message: {
+      success: false,
+      error: 'Too many recommendation requests, please try again later',
+      code: 'RECOMMENDATIONS_RATE_LIMIT_EXCEEDED',
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    store: new RedisStore('rate_limit:recommendations', 1 * 60 * 1000) as any,
   }),
 };
 

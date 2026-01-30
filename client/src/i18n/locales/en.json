@@ -38,7 +38,8 @@
     "register": "Register",
     "and": "and",
     "canBeChanged": "can be changed anytime in settings",
-    "or": "or"
+    "or": "or",
+    "of": "of"
   },
   "navigation": {
     "home": "Home",
@@ -47,7 +48,8 @@
     "orders": "Orders",
     "profile": "Profile",
     "settings": "Settings",
-    "help": "Help"
+    "help": "Help",
+    "goToDashboard": "Go to Dashboard"
   },
   "auth": {
     "login": {
@@ -75,7 +77,8 @@
       "registerButton": "Create Account",
       "hasAccount": "Already have an account?",
       "signIn": "Sign In",
-      "terms": "By creating an account, you agree to our Terms of Service and Privacy Policy"
+      "terms": "By creating an account, you agree to our Terms of Service and Privacy Policy",
+      "languageNote": "Language is automatically set from the selector above"
     },
     "errors": {
       "invalidCredentials": "Invalid credentials",
@@ -83,7 +86,10 @@
       "passwordMismatch": "Passwords do not match",
       "networkError": "Network error. Please try again.",
       "serverError": "Server error. Please try again later."
-    }
+    },
+    "languageNote": "Change language using the selector above",
+    "currentUserType": "Current user type",
+    "switchAccount": "Switch Account"
   },
   "welcome": {
     "title": "Welcome to VyaparMitra",
@@ -139,17 +145,23 @@
       "price": "Price Range",
       "location": "Location",
       "rating": "Rating",
-      "availability": "In Stock Only"
+      "availability": "In Stock Only",
+      "all": "All Products",
+      "deals": "Deals",
+      "nearby": "Nearby",
+      "rating": "High Rated"
     },
     "product": {
       "price": "Price",
       "per": "per",
       "kg": "kg",
       "piece": "piece",
+      "dozen": "dozen",
       "liter": "liter",
-      "inStock": "In Stock",
+      "negotiate": "Negotiate",
+      "lowStock": "Only {{count}} left in stock!",
       "outOfStock": "Out of Stock",
-      "negotiate": "Start Negotiation",
+      "inStock": "In Stock",
       "addToCart": "Add to Cart",
       "viewDetails": "View Details"
     },
@@ -235,7 +247,17 @@
       "print": "Print QR Code",
       "share": "Share QR Code",
       "regenerate": "Regenerate Code"
-    }
+    },
+    "orderHistory": "Order History",
+    "totalRevenue": "Total Revenue",
+    "commission": "Commission",
+    "pendingPayments": "pending payments",
+    "noOrders": "No orders yet",
+    "waitingForOrders": "Waiting for customer orders",
+    "negotiatedDown": "Negotiated down by",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "markShipped": "Mark as Shipped"
   },
   "voice": {
     "settings": {
@@ -293,12 +315,35 @@
     "title": "Order History",
     "recent": "Recent Orders",
     "all": "All Orders",
+    "totalSpent": "Total Spent",
+    "totalSavings": "Total Savings",
+    "completedOrders": "completed orders",
+    "throughNegotiation": "through negotiation",
+    "noOrders": "No orders yet",
+    "startShopping": "Start shopping to see your orders here",
+    "saved": "Saved",
     "status": {
       "pending": "Pending",
       "confirmed": "Confirmed",
       "shipped": "Shipped",
       "delivered": "Delivered",
       "cancelled": "Cancelled"
+    },
+    "filter": {
+      "all": "All",
+      "pending": "Pending",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "period": {
+      "today": "Today",
+      "week": "This Week",
+      "month": "This Month"
+    },
+    "payment": {
+      "pending": "Payment Pending",
+      "paid": "Paid",
+      "failed": "Payment Failed"
     },
     "orderNumber": "Order #{{number}}",
     "orderDate": "Order Date",
@@ -358,7 +403,8 @@
     "network": "Network error. Please check your connection.",
     "server": "Server error. Please try again later.",
     "notFound": "The requested resource was not found.",
-    "unauthorized": "You are not authorized to perform this action.",
+    "unauthorized": "Access Denied",
+    "unauthorizedMessage": "You do not have permission to access this page",
     "forbidden": "Access denied.",
     "validation": "Please check your input and try again.",
     "timeout": "Request timed out. Please try again."
@@ -377,6 +423,227 @@
     "voiceStillWorks": "Voice commands still work offline",
     "reconnecting": "Reconnecting...",
     "reconnected": "Back online!"
+  },
+  "location": {
+    "useCurrentLocation": "Use current location",
+    "useGPS": "Use GPS Location",
+    "gettingLocation": "Getting location...",
+    "locationDetected": "Location detected",
+    "notSupported": "GPS location is not supported in this browser",
+    "error": "Failed to get location",
+    "permissionDenied": "Location access denied by user",
+    "unavailable": "Location information unavailable",
+    "timeout": "Location request timed out",
+    "showMap": "Show Map",
+    "hideMap": "Hide Map",
+    "mapComingSoon": "Interactive map coming soon"
+  },
+  "permissions": {
+    "title": "Ready to Shop with Voice?",
+    "subtitle": "Enable permissions for the best VyaparMitra experience",
+    "microphone": {
+      "title": "Microphone Access",
+      "description": "Required for voice commands and negotiations"
+    },
+    "camera": {
+      "title": "Camera Access", 
+      "description": "Optional for QR code scanning and product photos"
+    },
+    "location": {
+      "title": "Location Access",
+      "description": "Optional for finding nearby vendors and shops"
+    },
+    "required": "Required",
+    "allow": "Allow",
+    "allowAll": "Allow All Permissions",
+    "continue": "Continue Shopping",
+    "skipForNow": "Skip for Now",
+    "requesting": "Requesting Permissions...",
+    "allGranted": "All permissions granted! You're ready to shop with full voice features.",
+    "someRequired": "Some required permissions are missing. Voice features may be limited.",
+    "voiceTest": {
+      "title": "Voice Assistant Ready",
+      "description": "Try saying 'Hello VyaparMitra' to test your voice setup"
+    },
+    "advancedSettings": "Advanced Voice Settings"
+  },
+  "qrScanner": {
+    "title": "Scan QR Code",
+    "subtitle": "Point your camera at a vendor's QR code",
+    "scanning": "Scanning...",
+    "scanSuccess": "QR Code Scanned Successfully!",
+    "scanVendorQR": "Scan Vendor QR",
+    "startScanning": "Start Scanning",
+    "stopScanning": "Stop Scanning",
+    "switchCamera": "Switch Camera",
+    "frontCamera": "Front Camera",
+    "backCamera": "Back Camera",
+    "noCamera": "No Camera Available",
+    "permissionDenied": "Camera permission denied",
+    "notSupported": "QR scanning not supported on this device",
+    "invalidQR": "Invalid vendor QR code",
+    "scanAgain": "Scan Again",
+    "manualEntry": "Enter Vendor ID Manually",
+    "vendorId": "Vendor ID",
+    "goToShop": "Go to Shop",
+    "errors": {
+      "cameraNotFound": "Camera not found",
+      "permissionDenied": "Camera access denied",
+      "notSupported": "QR scanning not supported",
+      "invalidFormat": "Invalid QR code format",
+      "networkError": "Network error while processing QR code"
+    },
+    "instructions": {
+      "holdSteady": "Hold your device steady",
+      "pointAtQR": "Point camera at QR code",
+      "ensureGoodLighting": "Ensure good lighting",
+      "moveCloser": "Move closer if needed"
+    }
+  },
+  "bids": {
+    "dashboard": {
+      "title": "My Bids",
+      "activeBids": "Active Bids",
+      "totalSavings": "Total Savings",
+      "tabs": {
+        "active": "Active",
+        "completed": "Completed",
+        "expired": "Expired"
+      },
+      "noActiveBids": "No active bids at the moment",
+      "noExpiredBids": "No expired bids",
+      "startShopping": "Start Shopping"
+    },
+    "status": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "countered": "Countered",
+      "expired": "Expired"
+    },
+    "originalPrice": "Original Price",
+    "currentOffer": "Current Offer",
+    "rounds": "rounds",
+    "saved": "Saved",
+    "expiredOn": "Expired on",
+    "actions": {
+      "accept": "Accept",
+      "negotiate": "Negotiate",
+      "counter": "Counter",
+      "viewDetails": "View Details",
+      "bidAgain": "Bid Again"
+    }
+  },
+  "voiceCommands": {
+    "title": "Voice Commands Guide",
+    "searchPlaceholder": "Search voice commands...",
+    "totalCommands": "Total Commands",
+    "languages": "Languages",
+    "categories": {
+      "shopping": "Shopping",
+      "navigation": "Navigation", 
+      "negotiation": "Negotiation",
+      "settings": "Settings",
+      "general": "General"
+    },
+    "pattern": "Pattern",
+    "playExample": "Play",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "noResults": "No commands found for '{{query}}'",
+    "noCommands": "No commands available",
+    "clearSearch": "Clear Search",
+    "tips": {
+      "title": "Voice Tips",
+      "speakClearly": "Speak clearly and at a normal pace for best recognition",
+      "useNaturalLanguage": "Use natural language - you don't need to memorize exact phrases",
+      "waitForResponse": "Wait for the voice assistant to respond before giving the next command"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome back, {{name}}!",
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon", 
+      "evening": "Good evening"
+    },
+    "search": {
+      "placeholder": "Search products, vendors, or categories..."
+    },
+    "actions": {
+      "browse": "Browse Shop",
+      "scanQR": "Scan QR",
+      "history": "Order History",
+      "voice": "Voice Commands"
+    },
+    "stats": {
+      "title": "Your Shopping Stats",
+      "totalSpent": "Total Spent",
+      "totalSaved": "Total Saved",
+      "activeDeals": "Active Deals",
+      "completedOrders": "Completed Orders"
+    },
+    "voice": {
+      "banner": "Try voice commands: 'Show me fresh apples' or 'Find deals near me'",
+      "tryNow": "Try Now"
+    },
+    "deals": {
+      "title": "Featured Deals",
+      "endsIn": "Ends in {{time}}"
+    },
+    "vendors": {
+      "recent": "Recent Vendors",
+      "lastVisit": "Last visit {{time}}"
+    },
+    "recommendations": {
+      "title": "Recommended for You",
+      "empty": "Start shopping to get personalized recommendations",
+      "startShopping": "Start Shopping"
+    }
+  },
+  "voiceTransaction": {
+    "title": "Voice Transaction",
+    "subtitle": "Processing your request...",
+    "step": "Step",
+    "processing": "Processing your voice command...",
+    "completed": "Transaction completed!",
+    "cancel": "Cancel Transaction",
+    "steps": {
+      "processing": {
+        "title": "Processing Voice Command",
+        "description": "Analyzing your negotiation request..."
+      },
+      "connecting": {
+        "title": "Connecting to Vendor",
+        "description": "Establishing secure connection..."
+      },
+      "negotiating": {
+        "title": "Negotiating Price",
+        "description": "AI is negotiating on your behalf..."
+      },
+      "finalizing": {
+        "title": "Finalizing Deal",
+        "description": "Confirming transaction details..."
+      }
+    }
+  },
+  "voiceGuide": {
+    "title": "Interactive Voice Guide",
+    "progress": "Learning Progress",
+    "completed": "Completed",
+    "currentStep": "Current Step",
+    "totalCompleted": "Total Completed",
+    "categories": {
+      "basics": "Basics",
+      "shopping": "Shopping",
+      "negotiation": "Negotiation",
+      "settings": "Settings"
+    },
+    "tryThis": "Try This Voice Command",
+    "playing": "Playing...",
+    "playExample": "Play Example",
+    "markComplete": "Mark Complete",
+    "allSteps": "All Guide Steps"
   },
   "accessibility": {
     "screenReader": {

@@ -1,6 +1,6 @@
 import { logger } from '../utils/logger';
-import { pool } from '../db/postgres';
-import { getRedisClient } from '../db/redis';
+import { getPool } from '../db/postgres';
+import { getRedisClient, RedisService } from '../db/redis';
 
 interface PricePredictionRequest {
   productId: string;
@@ -48,10 +48,10 @@ export class PricePredictionService {
   static async predictPrice(request: PricePredictionRequest): Promise<PricePredictionResponse> {
     try {
       const cacheKey = `price_prediction:${request.productId}:${request.category}:${request.location}`;
-      const redis = getRedisClient();
+      // Redis handled by RedisService
       
       // Check cache first
-      const cached = await redis.get(cacheKey);
+      const cached = await RedisService.get(cacheKey);
       if (cached) {
         logger.info('Price prediction served from cache', { productId: request.productId });
         return JSON.parse(cached);
@@ -78,7 +78,7 @@ export class PricePredictionService {
       };
 
       // Cache the result
-      await redis.setex(cacheKey, this.CACHE_TTL, JSON.stringify(response));
+      await RedisService.setWithTTL(cacheKey, this.CACHE_TTL, JSON.stringify(response));
       
       logger.info('Price prediction generated', {
         productId: request.productId,
@@ -97,6 +97,7 @@ export class PricePredictionService {
    * Gather historical market data for prediction
    */
   private static async gatherMarketData(request: PricePredictionRequest): Promise<MarketData> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -314,6 +315,7 @@ export class PricePredictionService {
     changePercent: number;
     dataPoints: Array<{ date: string; avgPrice: number; volume: number }>;
   }> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {
@@ -374,6 +376,7 @@ export class PricePredictionService {
     pricePosition: 'below' | 'at' | 'above';
     recommendation: string;
   }> {
+    const pool = getPool();
     const client = await pool.connect();
     
     try {

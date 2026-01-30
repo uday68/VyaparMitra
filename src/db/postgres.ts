@@ -104,11 +104,114 @@ async function createTables(): Promise<void> {
     );
   `;
 
+  const createSocialPostsTable = `
+    CREATE TABLE IF NOT EXISTS social_posts (
+      id SERIAL PRIMARY KEY,
+      user_id VARCHAR(24) NOT NULL,
+      type VARCHAR(50) NOT NULL,
+      content TEXT NOT NULL,
+      product_id VARCHAR(24),
+      negotiation_id INTEGER,
+      images TEXT,
+      language VARCHAR(10) DEFAULT 'en',
+      location VARCHAR(255),
+      tags TEXT,
+      is_verified BOOLEAN DEFAULT false,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
+  const createSocialPostLikesTable = `
+    CREATE TABLE IF NOT EXISTS social_post_likes (
+      id SERIAL PRIMARY KEY,
+      user_id VARCHAR(24) NOT NULL,
+      post_id INTEGER REFERENCES social_posts(id) ON DELETE CASCADE,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, post_id)
+    );
+  `;
+
+  const createSocialPostCommentsTable = `
+    CREATE TABLE IF NOT EXISTS social_post_comments (
+      id SERIAL PRIMARY KEY,
+      user_id VARCHAR(24) NOT NULL,
+      post_id INTEGER REFERENCES social_posts(id) ON DELETE CASCADE,
+      content TEXT NOT NULL,
+      language VARCHAR(10) DEFAULT 'en',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
+  const createUserFollowsTable = `
+    CREATE TABLE IF NOT EXISTS user_follows (
+      id SERIAL PRIMARY KEY,
+      follower_id VARCHAR(24) NOT NULL,
+      following_id VARCHAR(24) NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(follower_id, following_id)
+    );
+  `;
+
+  const createCommunitychallengesTable = `
+    CREATE TABLE IF NOT EXISTS community_challenges (
+      id SERIAL PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
+      description TEXT NOT NULL,
+      type VARCHAR(50) NOT NULL,
+      start_date TIMESTAMP NOT NULL,
+      end_date TIMESTAMP NOT NULL,
+      prizes TEXT,
+      rules TEXT,
+      hashtags TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
+  const createStockMovementsTable = `
+    CREATE TABLE IF NOT EXISTS stock_movements (
+      id SERIAL PRIMARY KEY,
+      product_id VARCHAR(24) NOT NULL,
+      movement_type VARCHAR(20) NOT NULL,
+      quantity INTEGER NOT NULL,
+      reason TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
+  const createRecommendationInteractionsTable = `
+    CREATE TABLE IF NOT EXISTS recommendation_interactions (
+      id SERIAL PRIMARY KEY,
+      user_id VARCHAR(24) NOT NULL,
+      product_id VARCHAR(24) NOT NULL,
+      action VARCHAR(20) NOT NULL,
+      interaction_count INTEGER DEFAULT 1,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, product_id, action, DATE(created_at))
+    );
+  `;
+
+  const createUserProductViewsTable = `
+    CREATE TABLE IF NOT EXISTS user_product_views (
+      id SERIAL PRIMARY KEY,
+      user_id VARCHAR(24) NOT NULL,
+      product_id VARCHAR(24) NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
   try {
     await pool.query(createNegotiationsTable);
     await pool.query(createBidsTable);
     await pool.query(createTransactionsTable);
     await pool.query(createStockLocksTable);
+    await pool.query(createSocialPostsTable);
+    await pool.query(createSocialPostLikesTable);
+    await pool.query(createSocialPostCommentsTable);
+    await pool.query(createUserFollowsTable);
+    await pool.query(createCommunitychallengesTable);
+    await pool.query(createStockMovementsTable);
+    await pool.query(createRecommendationInteractionsTable);
+    await pool.query(createUserProductViewsTable);
     console.log('✅ PostgreSQL tables created/verified');
   } catch (error) {
     console.error('❌ Failed to create tables:', error);
@@ -122,3 +225,6 @@ export function getPool(): Pool {
   }
   return pool;
 }
+
+// Export pool directly for services
+export { pool };
