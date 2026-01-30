@@ -11,27 +11,27 @@ VyaparMitra is a revolutionary voice-first e-commerce platform that enables seam
 <table>
 <tr>
 <td align="center" width="20%">
-<img src="stitch_ai_assisted_negotiation_chat/welcome_&_language_selection/screen.png" width="200" alt="Welcome Screen"/>
+<img src="../stitch_ai_assisted_negotiation_chat/welcome_&_language_selection/screen.png" width="200" alt="Welcome Screen"/>
 <br><b>Welcome & Language Selection</b>
 <br><sub>Multilingual onboarding with voice-guided setup</sub>
 </td>
 <td align="center" width="20%">
-<img src="stitch_ai_assisted_negotiation_chat/permissions_&_ready_to_shop/screen.png" width="200" alt="Permissions Setup"/>
+<img src="../stitch_ai_assisted_negotiation_chat/permissions_&_ready_to_shop/screen.png" width="200" alt="Permissions Setup"/>
 <br><b>Permissions & Voice Setup</b>
 <br><sub>Voice permissions and accessibility configuration</sub>
 </td>
 <td align="center" width="20%">
-<img src="stitch_ai_assisted_negotiation_chat/customer_shop_browser_with_voice/screen.png" width="200" alt="Shop Browser"/>
+<img src="../stitch_ai_assisted_negotiation_chat/customer_shop_browser_with_voice/screen.png" width="200" alt="Shop Browser"/>
 <br><b>Shop Browser with Voice Assistant</b>
 <br><sub>Voice-enabled product browsing with AI assistant</sub>
 </td>
 <td align="center" width="20%">
-<img src="stitch_ai_assisted_negotiation_chat/customer_voice_negotiation/screen.png" width="200" alt="Customer Negotiation"/>
+<img src="../stitch_ai_assisted_negotiation_chat/customer_voice_negotiation/screen.png" width="200" alt="Customer Negotiation"/>
 <br><b>Voice-Powered Negotiation</b>
 <br><sub>Real-time voice negotiations with AI assistance</sub>
 </td>
 <td align="center" width="20%">
-<img src="stitch_ai_assisted_negotiation_chat/customer_deal_confirmation/screen.png" width="200" alt="Deal Confirmation"/>
+<img src="../stitch_ai_assisted_negotiation_chat/customer_deal_confirmation/screen.png" width="200" alt="Deal Confirmation"/>
 <br><b>Deal Confirmation & Success</b>
 <br><sub>Transaction completion with voice confirmation</sub>
 </td>
@@ -43,22 +43,22 @@ VyaparMitra is a revolutionary voice-first e-commerce platform that enables seam
 <table>
 <tr>
 <td align="center" width="25%">
-<img src="stitch_ai_assisted_negotiation_chat/vendor_dashboard_with_voice_ai_1/screen.png" width="200" alt="Vendor Dashboard"/>
+<img src="../stitch_ai_assisted_negotiation_chat/vendor_dashboard_with_voice_ai_1/screen.png" width="200" alt="Vendor Dashboard"/>
 <br><b>Vendor Dashboard with Voice AI</b>
 <br><sub>Comprehensive vendor management with voice controls</sub>
 </td>
 <td align="center" width="25%">
-<img src="stitch_ai_assisted_negotiation_chat/ai-assisted_negotiation_chat/screen.png" width="200" alt="AI Negotiation"/>
+<img src="../stitch_ai_assisted_negotiation_chat/ai-assisted_negotiation_chat/screen.png" width="200" alt="AI Negotiation"/>
 <br><b>AI-Assisted Negotiation Interface</b>
 <br><sub>Intelligent negotiation assistance for vendors</sub>
 </td>
 <td align="center" width="25%">
-<img src="stitch_ai_assisted_negotiation_chat/voice-enabled_add_product/screen.png" width="200" alt="Add Product"/>
+<img src="../stitch_ai_assisted_negotiation_chat/voice-enabled_add_product/screen.png" width="200" alt="Add Product"/>
 <br><b>Voice-Enabled Product Management</b>
 <br><sub>Hands-free product catalog management</sub>
 </td>
 <td align="center" width="25%">
-<img src="stitch_ai_assisted_negotiation_chat/vendor_order_history_with_voice_ai/screen.png" width="200" alt="Order History"/>
+<img src="../stitch_ai_assisted_negotiation_chat/vendor_order_history_with_voice_ai/screen.png" width="200" alt="Order History"/>
 <br><b>Order History with Voice AI</b>
 <br><sub>Voice-accessible transaction history and analytics</sub>
 </td>
@@ -70,22 +70,22 @@ VyaparMitra is a revolutionary voice-first e-commerce platform that enables seam
 <table>
 <tr>
 <td align="center" width="25%">
-<img src="stitch_ai_assisted_negotiation_chat/ai_voice_customization_1/screen.png" width="200" alt="Voice Customization"/>
+<img src="../stitch_ai_assisted_negotiation_chat/ai_voice_customization_1/screen.png" width="200" alt="Voice Customization"/>
 <br><b>Voice Customization & AI Settings</b>
 <br><sub>Personalized AI voice configuration</sub>
 </td>
 <td align="center" width="25%">
-<img src="stitch_ai_assisted_negotiation_chat/advanced_voice_accessibility_3/screen.png" width="200" alt="Voice Accessibility"/>
+<img src="../stitch_ai_assisted_negotiation_chat/advanced_voice_accessibility_3/screen.png" width="200" alt="Voice Accessibility"/>
 <br><b>Advanced Voice Accessibility</b>
 <br><sub>Comprehensive accessibility features for all users</sub>
 </td>
 <td align="center" width="25%">
-<img src="stitch_ai_assisted_negotiation_chat/hands-free_mode_settings_2/screen.png" width="200" alt="Hands-Free Settings"/>
+<img src="../stitch_ai_assisted_negotiation_chat/hands-free_mode_settings_2/screen.png" width="200" alt="Hands-Free Settings"/>
 <br><b>Hands-Free Mode Settings</b>
 <br><sub>Always-on voice interaction configuration</sub>
 </td>
 <td align="center" width="25%">
-<img src="stitch_ai_assisted_negotiation_chat/voice_assistant_settings/screen.png" width="200" alt="Voice Settings"/>
+<img src="../stitch_ai_assisted_negotiation_chat/voice_assistant_settings/screen.png" width="200" alt="Voice Settings"/>
 <br><b>Voice Assistant Settings</b>
 <br><sub>Detailed voice assistant customization</sub>
 </td>
@@ -97,17 +97,17 @@ VyaparMitra is a revolutionary voice-first e-commerce platform that enables seam
 <table>
 <tr>
 <td align="center" width="33%">
-<img src="stitch_ai_assisted_negotiation_chat/voice-first_how-to_guide/screen.png" width="200" alt="Voice Guide"/>
+<img src="../stitch_ai_assisted_negotiation_chat/voice-first_how-to_guide/screen.png" width="200" alt="Voice Guide"/>
 <br><b>Voice-First How-To Guide</b>
 <br><sub>Interactive voice tutorials and onboarding</sub>
 </td>
 <td align="center" width="33%">
-<img src="stitch_ai_assisted_negotiation_chat/voice_commands_reference_guide/screen.png" width="200" alt="Voice Commands"/>
+<img src="../stitch_ai_assisted_negotiation_chat/voice_commands_reference_guide/screen.png" width="200" alt="Voice Commands"/>
 <br><b>Voice Commands Reference</b>
 <br><sub>Comprehensive voice command documentation</sub>
 </td>
 <td align="center" width="33%">
-<img src="stitch_ai_assisted_negotiation_chat/interactive_voice_guide/screen.png" width="200" alt="Interactive Guide"/>
+<img src="../stitch_ai_assisted_negotiation_chat/interactive_voice_guide/screen.png" width="200" alt="Interactive Guide"/>
 <br><b>Interactive Voice Guide</b>
 <br><sub>Step-by-step voice interaction tutorials</sub>
 </td>
@@ -119,27 +119,27 @@ VyaparMitra is a revolutionary voice-first e-commerce platform that enables seam
 <table>
 <tr>
 <td align="center" width="20%">
-<img src="stitch_ai_assisted_negotiation_chat/voice_transaction_active_animation/screen.png" width="200" alt="Transaction Active"/>
+<img src="../stitch_ai_assisted_negotiation_chat/voice_transaction_active_animation/screen.png" width="200" alt="Transaction Active"/>
 <br><b>Voice Transaction Active</b>
 <br><sub>Real-time transaction processing with voice feedback</sub>
 </td>
 <td align="center" width="20%">
-<img src="stitch_ai_assisted_negotiation_chat/voice_transaction_success_state/screen.png" width="200" alt="Transaction Success"/>
+<img src="../stitch_ai_assisted_negotiation_chat/voice_transaction_success_state/screen.png" width="200" alt="Transaction Success"/>
 <br><b>Voice Transaction Success</b>
 <br><sub>Voice-confirmed successful transactions</sub>
 </td>
 <td align="center" width="20%">
-<img src="stitch_ai_assisted_negotiation_chat/voice_recognition_error_state/screen.png" width="200" alt="Voice Error State"/>
+<img src="../stitch_ai_assisted_negotiation_chat/voice_recognition_error_state/screen.png" width="200" alt="Voice Error State"/>
 <br><b>Voice Error Handling</b>
 <br><sub>Intelligent error handling with voice guidance</sub>
 </td>
 <td align="center" width="20%">
-<img src="stitch_ai_assisted_negotiation_chat/offline_voice_interaction_state/screen.png" width="200" alt="Offline State"/>
+<img src="../stitch_ai_assisted_negotiation_chat/offline_voice_interaction_state/screen.png" width="200" alt="Offline State"/>
 <br><b>Offline Voice Support</b>
 <br><sub>Offline voice interaction capabilities</sub>
 </td>
 <td align="center" width="20%">
-<img src="stitch_ai_assisted_negotiation_chat/syncing_success_animation/screen.png" width="200" alt="Syncing Animation"/>
+<img src="../stitch_ai_assisted_negotiation_chat/syncing_success_animation/screen.png" width="200" alt="Syncing Animation"/>
 <br><b>System Synchronization</b>
 <br><sub>Real-time data synchronization with voice feedback</sub>
 </td>
@@ -151,17 +151,17 @@ VyaparMitra is a revolutionary voice-first e-commerce platform that enables seam
 <table>
 <tr>
 <td align="center" width="33%">
-<img src="stitch_ai_assisted_negotiation_chat/customer_bids_dashboard/screen.png" width="200" alt="Bids Dashboard"/>
+<img src="../stitch_ai_assisted_negotiation_chat/customer_bids_dashboard/screen.png" width="200" alt="Bids Dashboard"/>
 <br><b>Customer Bids Dashboard</b>
 <br><sub>Real-time bid tracking and management</sub>
 </td>
 <td align="center" width="33%">
-<img src="stitch_ai_assisted_negotiation_chat/shop_qr_flyer_print_preview/screen.png" width="200" alt="QR Flyer"/>
+<img src="../stitch_ai_assisted_negotiation_chat/shop_qr_flyer_print_preview/screen.png" width="200" alt="QR Flyer"/>
 <br><b>QR Code Integration</b>
 <br><sub>Printable QR codes for physical store integration</sub>
 </td>
 <td align="center" width="33%">
-<img src="stitch_ai_assisted_negotiation_chat/vendor_offline_status_dashboard/screen.png" width="200" alt="Vendor Status"/>
+<img src="../stitch_ai_assisted_negotiation_chat/vendor_offline_status_dashboard/screen.png" width="200" alt="Vendor Status"/>
 <br><b>Vendor Status Management</b>
 <br><sub>Comprehensive vendor status and availability management</sub>
 </td>
@@ -173,7 +173,7 @@ VyaparMitra is a revolutionary voice-first e-commerce platform that enables seam
 <table>
 <tr>
 <td align="center" width="100%">
-<img src="stitch_ai_assisted_negotiation_chat/unified_voice_&_automation_settings/screen.png" width="300" alt="Unified Settings"/>
+<img src="../stitch_ai_assisted_negotiation_chat/unified_voice_&_automation_settings/screen.png" width="300" alt="Unified Settings"/>
 <br><b>Voice & Automation Settings</b>
 <br><sub>Centralized voice and automation configuration</sub>
 </td>
@@ -506,38 +506,38 @@ Voice Commands → Reference Guide → Interactive Tutorial → Practice Mode
 
 ##### High Priority - Core User Experience
 1. **Permissions & Ready to Shop Page** (`/permissions-ready-to-shop`)
-   - **Design**: `stitch_ai_assisted_negotiation_chat/permissions_&_ready_to_shop/screen.png`
+   - **Design**: `../stitch_ai_assisted_negotiation_chat/permissions_&_ready_to_shop/screen.png`
    - **Features**: Voice permissions setup, microphone access, camera permissions
    - **Buttons**: "Allow Microphone", "Allow Camera", "Continue Shopping", "Skip for Now"
    - **Implementation**: Create `PermissionsReadyToShop.tsx` component
 
 2. **Shop QR Flyer Print Preview** (`/vendor/qr-flyer`)
-   - **Design**: `stitch_ai_assisted_negotiation_chat/shop_qr_flyer_print_preview/screen.png`
+   - **Design**: `../stitch_ai_assisted_negotiation_chat/shop_qr_flyer_print_preview/screen.png`
    - **Features**: Printable QR code flyers, shop information, contact details
    - **Buttons**: "Print Flyer", "Download PDF", "Share QR", "Customize Design"
    - **Implementation**: Create `ShopQRFlyer.tsx` component
 
 3. **Syncing Success Animation** (`/syncing-success`)
-   - **Design**: `stitch_ai_assisted_negotiation_chat/syncing_success_animation/screen.png`
+   - **Design**: `../stitch_ai_assisted_negotiation_chat/syncing_success_animation/screen.png`
    - **Features**: Data synchronization feedback, progress indicators
    - **Buttons**: "Continue", "View Details", "Retry Sync"
    - **Implementation**: Create `SyncingSuccess.tsx` component
 
 ##### Medium Priority - Enhanced Features
 4. **Vendor Dashboard v2** (`/vendor/dashboard-v2`)
-   - **Design**: `stitch_ai_assisted_negotiation_chat/vendor_dashboard_with_voice_ai_2/screen.png`
+   - **Design**: `../stitch_ai_assisted_negotiation_chat/vendor_dashboard_with_voice_ai_2/screen.png`
    - **Features**: Enhanced analytics, voice AI integration, advanced controls
    - **Buttons**: "Voice Analytics", "AI Insights", "Bulk Actions", "Export Data"
    - **Implementation**: Enhance existing `Vendor.tsx` or create `VendorDashboardV2.tsx`
 
 5. **Vendor Offline Status Dashboard** (`/vendor/offline-status`)
-   - **Design**: `stitch_ai_assisted_negotiation_chat/vendor_offline_status_dashboard/screen.png`
+   - **Design**: `../stitch_ai_assisted_negotiation_chat/vendor_offline_status_dashboard/screen.png`
    - **Features**: Offline mode management, sync status, cached data
    - **Buttons**: "Go Online", "Sync Now", "Offline Settings", "View Cache"
    - **Implementation**: Create `VendorOfflineStatus.tsx` component
 
 6. **Unified Voice & Automation Settings** (`/unified-voice-automation`)
-   - **Design**: `stitch_ai_assisted_negotiation_chat/unified_voice_&_automation_settings/screen.png`
+   - **Design**: `../stitch_ai_assisted_negotiation_chat/unified_voice_&_automation_settings/screen.png`
    - **Features**: Centralized voice settings, automation rules, AI preferences
    - **Buttons**: "Voice Settings", "Automation Rules", "AI Preferences", "Reset Defaults"
    - **Implementation**: Create `UnifiedVoiceAutomation.tsx` component
