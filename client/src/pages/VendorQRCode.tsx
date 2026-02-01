@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'wouter';
 
 export function VendorQRCode() {
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownload = async () => {
@@ -48,7 +48,7 @@ export function VendorQRCode() {
       <header className="sticky top-0 z-30 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
         <div className="flex items-center justify-between px-4 h-16 max-w-md mx-auto">
           <button 
-            onClick={() => navigate(-1)}
+            onClick={() => window.history.back()}
             className="flex items-center justify-center p-2 -ml-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
           >
             <span className="material-symbols-outlined">arrow_back_ios_new</span>

@@ -1,9 +1,26 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
+import { 
+  Button, 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription,
+  Toggle,
+  Select,
+  RadioGroup,
+  PageLayout,
+  Container,
+  Section,
+  VoiceStatusIndicator
+} from "../design-system/components";
+import { useTheme } from "../design-system/themes/ThemeProvider";
 
 export default function VoiceCustomization() {
   const [, setLocation] = useLocation();
+  const { colorScheme } = useTheme();
   const [assistantProfile, setAssistantProfile] = useState("natural");
   const [language, setLanguage] = useState("hindi");
   const [speakingSpeed, setSpeakingSpeed] = useState(1.0);
@@ -20,188 +37,154 @@ export default function VoiceCustomization() {
   };
 
   return (
-    <div className="bg-background-light font-display text-[#111418] min-h-screen flex flex-col">
-      <div className="relative flex min-h-screen w-full max-w-[430px] mx-auto flex-col bg-white shadow-xl overflow-x-hidden">
-        {/* TopAppBar */}
-        <div className="flex items-center bg-white p-4 pb-2 justify-between sticky top-0 z-10 border-b border-gray-100">
-          <button 
-            onClick={() => setLocation("/vendor")}
-            className="text-[#111418] flex size-10 shrink-0 items-center justify-center cursor-pointer"
-          >
-            <span className="material-symbols-outlined">arrow_back_ios</span>
-          </button>
-          <h2 className="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">
-            Voice Settings
-          </h2>
-        </div>
-
-        <div className="flex-1 overflow-y-auto pb-32">
-          {/* Section: Assistant Profile */}
-          <div className="pt-4">
-            <h3 className="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2">
-              Assistant Profile
-            </h3>
-            <p className="text-sm text-gray-500 px-4 mb-2">
-              Choose how your assistant responds to trade queries.
-            </p>
-            
-            {/* SegmentedButtons */}
-            <div className="flex px-4 py-3">
-              <div className="flex h-11 flex-1 items-center justify-center rounded-xl bg-[#f0f2f4] p-1">
-                <label className={`flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 text-sm font-semibold leading-normal transition-all ${
-                  assistantProfile === "natural" 
-                    ? "bg-white shadow-[0_0_4px_rgba(0,0,0,0.1)] text-primary" 
-                    : "text-[#637388]"
-                }`}>
-                  <span className="truncate">Natural</span>
-                  <input 
-                    checked={assistantProfile === "natural"}
-                    onChange={() => setAssistantProfile("natural")}
-                    className="invisible w-0" 
-                    name="feedback-style" 
-                    type="radio" 
-                    value="Natural"
-                  />
-                </label>
-                <label className={`flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 text-sm font-semibold leading-normal transition-all ${
-                  assistantProfile === "brief" 
-                    ? "bg-white shadow-[0_0_4px_rgba(0,0,0,0.1)] text-primary" 
-                    : "text-[#637388]"
-                }`}>
-                  <span className="truncate">Brief</span>
-                  <input 
-                    checked={assistantProfile === "brief"}
-                    onChange={() => setAssistantProfile("brief")}
-                    className="invisible w-0" 
-                    name="feedback-style" 
-                    type="radio" 
-                    value="Brief"
-                  />
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div className="h-px bg-gray-100 mx-4 my-2"></div>
-
-          {/* Section: Voice Options */}
-          <div className="pt-2">
-            <h3 className="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-4">
-              Voice Options
-            </h3>
-            
-            {/* Language Selection */}
-            <div className="px-4 py-3">
-              <label className="flex flex-col w-full">
-                <p className="text-[#111418] text-base font-medium leading-normal pb-2">Language</p>
-                <div className="relative">
-                  <select 
-                    value={language}
-                    onChange={(e) => setLanguage(e.target.value)}
-                    className="appearance-none flex w-full min-w-0 flex-1 rounded-xl text-[#111418] focus:outline-0 focus:ring-2 focus:ring-primary border border-[#dce0e5] bg-white h-14 px-4 text-base font-normal leading-normal"
-                  >
-                    <option value="english">English (Global)</option>
-                    <option value="hindi">Hindi (हिन्दी)</option>
-                    <option value="spanish">Spanish (Español)</option>
-                    <option value="french">French (Français)</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                    <span className="material-symbols-outlined">expand_more</span>
-                  </div>
-                </div>
-              </label>
-            </div>
-
-            {/* Speaking Speed Slider */}
-            <div className="px-4 py-3 mt-2">
-              <p className="text-[#111418] text-base font-medium leading-normal pb-4">Speaking Speed</p>
-              <div className="flex items-center gap-4">
-                <span className="material-symbols-outlined text-gray-400">slow_motion_video</span>
-                <input 
-                  className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary"
-                  max="2.0" 
-                  min="0.5" 
-                  step="0.1" 
-                  type="range" 
-                  value={speakingSpeed}
-                  onChange={(e) => setSpeakingSpeed(parseFloat(e.target.value))}
-                />
-                <span className="material-symbols-outlined text-gray-400">speed</span>
-              </div>
-              <div className="flex justify-between mt-2 px-1">
-                <span className="text-xs text-gray-500">Slow</span>
-                <span className="text-xs text-gray-500">Normal</span>
-                <span className="text-xs text-gray-500">Fast</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="h-px bg-gray-100 mx-4 my-4"></div>
-
-          {/* Section: Automation */}
-          <div className="pt-2">
-            <h3 className="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2">
-              Automation
-            </h3>
-            
-            {/* Auto-Read New Bids Toggle */}
-            <div className="flex items-center justify-between px-4 py-4">
-              <div className="flex flex-col gap-1">
-                <p className="text-[#111418] text-base font-medium">Auto-Read New Bids</p>
-                <p className="text-sm text-gray-500">Narrate incoming bids instantly</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input 
-                  checked={autoReadBids}
-                  onChange={(e) => setAutoReadBids(e.target.checked)}
-                  className="sr-only peer" 
-                  type="checkbox"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-              </label>
-            </div>
-
-            {/* Voice Confirmation Toggle */}
-            <div className="flex items-center justify-between px-4 py-4">
-              <div className="flex flex-col gap-1">
-                <p className="text-[#111418] text-base font-medium">Voice Confirmation for Deals</p>
-                <p className="text-sm text-gray-500">Ask for "Yes" to confirm a sale</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input 
-                  checked={voiceConfirmation}
-                  onChange={(e) => setVoiceConfirmation(e.target.checked)}
-                  className="sr-only peer" 
-                  type="checkbox"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* Floating Microphone Test Button */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-white via-white to-transparent">
-          <div className="flex flex-col items-center gap-4">
-            <motion.button 
-              whileTap={{ scale: 0.95 }}
-              onClick={handleTestVoice}
-              className={`flex items-center justify-center size-16 rounded-full shadow-lg transition-all ${
-                isTestingVoice 
-                  ? "bg-red-500 text-white shadow-red-500/30" 
-                  : "bg-primary text-white shadow-primary/30"
-              }`}
+    <PageLayout>
+      {/* Header */}
+      <header className="sticky top-0 z-10 bg-background border-b border-border">
+        <Container>
+          <div className="flex items-center justify-between py-4">
+            <Button 
+              variant="ghost"
+              size="icon"
+              onClick={() => setLocation("/vendor")}
             >
-              <span className="material-symbols-outlined text-3xl">
-                {isTestingVoice ? "stop" : "mic"}
-              </span>
-            </motion.button>
-            <p className="text-sm font-semibold text-primary">
-              {isTestingVoice ? "Testing Voice..." : "Tap to Test Voice Commands"}
-            </p>
+              <span className="material-symbols-outlined">arrow_back_ios</span>
+            </Button>
+            <h2 className="text-lg font-bold text-foreground">
+              Voice Settings
+            </h2>
+            <div className="w-10" /> {/* Spacer for centering */}
           </div>
+        </Container>
+      </header>
+
+      <Container className="pb-32 space-y-6">
+        {/* Assistant Profile Section */}
+        <Section>
+          <Card>
+            <CardHeader>
+              <CardTitle>Assistant Profile</CardTitle>
+              <CardDescription>
+                Choose how your assistant responds to trade queries.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <RadioGroup
+                value={assistantProfile}
+                onValueChange={setAssistantProfile}
+                options={[
+                  { value: "natural", label: "Natural" },
+                  { value: "brief", label: "Brief" }
+                ]}
+                orientation="horizontal"
+              />
+            </CardContent>
+          </Card>
+        </Section>
+
+        {/* Voice Options Section */}
+        <Section>
+          <Card>
+            <CardHeader>
+              <CardTitle>Voice Options</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Language Selection */}
+              <div>
+                <label className="block text-base font-medium text-foreground mb-2">
+                  Language
+                </label>
+                <Select
+                  value={language}
+                  onValueChange={setLanguage}
+                >
+                  <option value="english">English (Global)</option>
+                  <option value="hindi">Hindi (हिन्दी)</option>
+                  <option value="spanish">Spanish (Español)</option>
+                  <option value="french">French (Français)</option>
+                </Select>
+              </div>
+
+              {/* Speaking Speed Slider */}
+              <div>
+                <label className="block text-base font-medium text-foreground mb-4">
+                  Speaking Speed
+                </label>
+                <div className="flex items-center gap-4">
+                  <span className="material-symbols-outlined text-muted">slow_motion_video</span>
+                  <input 
+                    className="flex-1 h-2 bg-neutral-200 dark:bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-primary"
+                    max="2.0" 
+                    min="0.5" 
+                    step="0.1" 
+                    type="range" 
+                    value={speakingSpeed}
+                    onChange={(e) => setSpeakingSpeed(parseFloat(e.target.value))}
+                  />
+                  <span className="material-symbols-outlined text-muted">speed</span>
+                </div>
+                <div className="flex justify-between mt-2 px-1">
+                  <span className="text-xs text-muted">Slow</span>
+                  <span className="text-xs text-muted">Normal</span>
+                  <span className="text-xs text-muted">Fast</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </Section>
+
+        {/* Automation Section */}
+        <Section>
+          <Card>
+            <CardHeader>
+              <CardTitle>Automation</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Toggle
+                checked={autoReadBids}
+                onCheckedChange={setAutoReadBids}
+                label="Auto-Read New Bids"
+                description="Narrate incoming bids instantly"
+                colorScheme="blue"
+              />
+
+              <Toggle
+                checked={voiceConfirmation}
+                onCheckedChange={setVoiceConfirmation}
+                label="Voice Confirmation for Deals"
+                description="Ask for 'Yes' to confirm a sale"
+                colorScheme="blue"
+              />
+            </CardContent>
+          </Card>
+        </Section>
+      </Container>
+
+      {/* Floating Voice Test Button */}
+      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
+        <div className="flex flex-col items-center gap-4 p-6 bg-background/95 backdrop-blur-sm rounded-2xl border border-border shadow-lg">
+          <Button
+            variant="voice"
+            size="icon"
+            className="size-16 rounded-full"
+            onClick={handleTestVoice}
+            disabled={isTestingVoice}
+          >
+            <span className="material-symbols-outlined text-3xl">
+              {isTestingVoice ? "stop" : "mic"}
+            </span>
+          </Button>
+          <p className="text-sm font-semibold text-primary-purple">
+            {isTestingVoice ? "Testing Voice..." : "Tap to Test Voice Commands"}
+          </p>
+          {isTestingVoice && (
+            <VoiceStatusIndicator 
+              status="processing" 
+              size="sm" 
+              showLabel={false}
+            />
+          )}
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }

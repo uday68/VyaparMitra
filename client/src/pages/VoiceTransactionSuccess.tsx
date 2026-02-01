@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'wouter';
 
 export function VoiceTransactionSuccess() {
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
   const { transactionId } = useParams<{ transactionId: string }>();
   const [isAnimating, setIsAnimating] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
@@ -30,11 +30,11 @@ export function VoiceTransactionSuccess() {
   };
 
   const handleContinueShopping = () => {
-    navigate('/customer/shop');
+    setLocation('/customer/shop');
   };
 
   const handleViewReceipt = () => {
-    navigate(`/customer/receipt/${transactionId}`);
+    setLocation(`/customer/receipt/${transactionId}`);
   };
 
   const handleVoiceCommand = (command: string) => {

@@ -16,6 +16,9 @@ const buttonVariants = cva(
         // Secondary button - outlined style
         secondary: "bg-transparent text-primary border-2 border-primary hover:bg-primary/5 active:bg-primary/10 focus-visible:ring-primary/50",
         
+        // Outline button - same as secondary for compatibility
+        outline: "bg-transparent text-primary border-2 border-primary hover:bg-primary/5 active:bg-primary/10 focus-visible:ring-primary/50",
+        
         // Ghost button - minimal style
         ghost: "bg-transparent text-neutral-700 border border-transparent hover:bg-neutral-100 active:bg-neutral-200 focus-visible:ring-neutral-500/50 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:active:bg-neutral-700",
         
@@ -67,6 +70,23 @@ const buttonVariants = cva(
       },
       {
         variant: "secondary",
+        colorScheme: "purple",
+        class: "text-primary-purple border-primary-purple hover:bg-primary-purple/5 active:bg-primary-purple/10 focus-visible:ring-primary-purple/50"
+      },
+      
+      // Outline button color schemes (same as secondary)
+      {
+        variant: "outline",
+        colorScheme: "blue",
+        class: "text-primary-blue border-primary-blue hover:bg-primary-blue/5 active:bg-primary-blue/10 focus-visible:ring-primary-blue/50"
+      },
+      {
+        variant: "outline",
+        colorScheme: "green",
+        class: "text-primary-green border-primary-green hover:bg-primary-green/5 active:bg-primary-green/10 focus-visible:ring-primary-green/50"
+      },
+      {
+        variant: "outline",
         colorScheme: "purple",
         class: "text-primary-purple border-primary-purple hover:bg-primary-purple/5 active:bg-primary-purple/10 focus-visible:ring-primary-purple/50"
       },

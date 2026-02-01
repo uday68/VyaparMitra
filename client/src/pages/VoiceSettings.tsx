@@ -1,9 +1,26 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
+import { 
+  Button, 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription,
+  Toggle,
+  VoiceAssistantBanner,
+  Waveform,
+  VoiceStatusIndicator,
+  PageLayout,
+  Container,
+  Section
+} from "../design-system/components";
+import { useTheme } from "../design-system/themes/ThemeProvider";
 
 export default function VoiceSettings() {
   const [, setLocation] = useLocation();
+  const { colorScheme } = useTheme();
   const [selectedVoice, setSelectedVoice] = useState("male");
   const [highContrastWaveform, setHighContrastWaveform] = useState(true);
   const [voiceShortcuts, setVoiceShortcuts] = useState([
@@ -28,245 +45,202 @@ export default function VoiceSettings() {
   };
 
   return (
-    <div className="bg-[#f7f5f8] font-display min-h-screen flex flex-col pb-24">
-      {/* Top App Bar */}
-      <header className="sticky top-0 z-50 bg-white border-b border-[#dfdbe6]">
-        <div className="flex items-center px-4 py-4 justify-between max-w-md mx-auto">
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => setLocation("/vendor")}
-              className="text-[#141118] flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 cursor-pointer"
+    <PageLayout>
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-background border-b border-border">
+        <Container>
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="ghost"
+                size="icon"
+                onClick={() => setLocation("/vendor")}
+              >
+                <span className="material-symbols-outlined">arrow_back</span>
+              </Button>
+              <h1 className="text-xl font-bold text-foreground">
+                Voice Settings
+              </h1>
+            </div>
+            <Button 
+              variant="ghost"
+              onClick={handleSave}
+              colorScheme="purple"
             >
-              <span className="material-symbols-outlined">arrow_back</span>
-            </button>
-            <h1 className="text-[#141118] text-xl font-bold leading-tight tracking-[-0.015em]">
-              Voice Settings
-            </h1>
+              Reset
+            </Button>
           </div>
-          <button 
-            onClick={handleSave}
-            className="text-[#8743f4] cursor-pointer font-semibold"
-          >
-            Reset
-          </button>
-        </div>
+        </Container>
       </header>
 
-      <main className="flex-1 w-full max-w-md mx-auto overflow-y-auto">
+      <Container className="pb-24">
         {/* Assistant Voice Section */}
-        <section className="py-4">
-          <h2 className="text-[#141118] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-2">
+        <Section>
+          <h2 className="text-2xl font-bold text-foreground mb-4">
             Assistant Voice
           </h2>
-          <div className="px-4 space-y-3">
-            {/* Male Voice Option */}
-            <motion.div 
-              whileTap={{ scale: 0.98 }}
-              className={`flex h-16 items-center justify-between rounded-xl p-4 shadow-sm cursor-pointer ${
-                selectedVoice === "male" 
-                  ? "bg-white border-2 border-[#8743f4]" 
-                  : "bg-white border border-[#dfdbe6]"
-              }`}
-              onClick={() => setSelectedVoice("male")}
-            >
-              <div className="flex items-center gap-3">
-                <span className={`material-symbols-outlined ${
-                  selectedVoice === "male" ? "text-[#8743f4]" : "text-[#70608a]"
-                }`}>
-                  person
-                </span>
-                <span className="text-[#141118] font-bold text-lg">Male</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="material-symbols-outlined text-[#70608a] cursor-pointer">
-                  play_circle
-                </span>
-                <div className={`w-6 h-6 rounded-full border-4 flex items-center justify-center ${
-                  selectedVoice === "male" 
-                    ? "border-[#8743f4] bg-[#8743f4]" 
-                    : "border-[#dfdbe6]"
-                }`}>
-                  {selectedVoice === "male" && (
-                    <div className="w-2 h-2 rounded-full bg-white"></div>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Female Voice Option */}
-            <motion.div 
-              whileTap={{ scale: 0.98 }}
-              className={`flex h-16 items-center justify-between rounded-xl p-4 shadow-sm cursor-pointer ${
-                selectedVoice === "female" 
-                  ? "bg-white border-2 border-[#8743f4]" 
-                  : "bg-white border border-[#dfdbe6]"
-              }`}
-              onClick={() => setSelectedVoice("female")}
-            >
-              <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-[#70608a]">person_2</span>
-                <span className="text-[#141118] font-bold text-lg">Female</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="material-symbols-outlined text-[#70608a] cursor-pointer">
-                  play_circle
-                </span>
-                <div className="w-6 h-6 rounded-full border-2 border-[#dfdbe6]"></div>
-              </div>
-            </motion.div>
-
-            {/* Neutral Voice Option */}
-            <motion.div 
-              whileTap={{ scale: 0.98 }}
-              className={`flex h-16 items-center justify-between rounded-xl p-4 shadow-sm cursor-pointer ${
-                selectedVoice === "neutral" 
-                  ? "bg-white border-2 border-[#8743f4]" 
-                  : "bg-white border border-[#dfdbe6]"
-              }`}
-              onClick={() => setSelectedVoice("neutral")}
-            >
-              <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-[#70608a]">face</span>
-                <span className="text-[#141118] font-bold text-lg">Neutral</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="material-symbols-outlined text-[#70608a] cursor-pointer">
-                  play_circle
-                </span>
-                <div className="w-6 h-6 rounded-full border-2 border-[#dfdbe6]"></div>
-              </div>
-            </motion.div>
+          <div className="space-y-3">
+            {/* Voice Options */}
+            {[
+              { key: "male", label: "Male", icon: "person" },
+              { key: "female", label: "Female", icon: "person_2" },
+              { key: "neutral", label: "Neutral", icon: "face" }
+            ].map((voice) => (
+              <Card 
+                key={voice.key}
+                variant={selectedVoice === voice.key ? "outlined" : "default"}
+                className={`cursor-pointer transition-all ${
+                  selectedVoice === voice.key 
+                    ? "border-primary-purple border-2" 
+                    : "hover:border-primary-purple/50"
+                }`}
+                onClick={() => setSelectedVoice(voice.key)}
+              >
+                <CardContent className="flex items-center justify-between p-4">
+                  <div className="flex items-center gap-3">
+                    <span className={`material-symbols-outlined ${
+                      selectedVoice === voice.key ? "text-primary-purple" : "text-muted"
+                    }`}>
+                      {voice.icon}
+                    </span>
+                    <span className="text-foreground font-bold text-lg">{voice.label}</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <Button variant="ghost" size="icon">
+                      <span className="material-symbols-outlined text-muted">
+                        play_circle
+                      </span>
+                    </Button>
+                    <div className={`w-6 h-6 rounded-full border-4 flex items-center justify-center ${
+                      selectedVoice === voice.key 
+                        ? "border-primary-purple bg-primary-purple" 
+                        : "border-border"
+                    }`}>
+                      {selectedVoice === voice.key && (
+                        <div className="w-2 h-2 rounded-full bg-white"></div>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        </section>
+        </Section>
 
         {/* Visual Feedback Section */}
-        <section className="py-4">
-          <h2 className="text-[#141118] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3">
+        <Section>
+          <h2 className="text-2xl font-bold text-foreground mb-4">
             Visual Feedback
           </h2>
-          <div className="p-4 pt-0">
-            <div className="flex flex-1 flex-col items-start justify-between gap-4 rounded-xl border border-[#dfdbe6] bg-white p-5">
-              <div className="flex w-full justify-between items-center">
-                <div className="flex flex-col gap-1">
-                  <p className="text-[#141118] text-lg font-bold leading-tight">
-                    High-Contrast Waveform
-                  </p>
-                  <p className="text-[#70608a] text-sm font-normal leading-normal">
-                    Show movement when AI talks
-                  </p>
-                </div>
-                <label className="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-[#f2f0f5] p-0.5 has-[:checked]:justify-end has-[:checked]:bg-[#8743f4]">
-                  <div className="h-full w-[27px] rounded-full bg-white shadow-md"></div>
-                  <input 
-                    checked={highContrastWaveform}
-                    onChange={(e) => setHighContrastWaveform(e.target.checked)}
-                    className="invisible absolute" 
-                    type="checkbox"
-                  />
-                </label>
-              </div>
+          <Card>
+            <CardContent className="p-5">
+              <Toggle
+                checked={highContrastWaveform}
+                onCheckedChange={setHighContrastWaveform}
+                label="High-Contrast Waveform"
+                description="Show movement when AI talks"
+                colorScheme="purple"
+              />
 
               {/* Live Waveform Preview */}
-              <div className="w-full h-24 bg-[#f2f0f5] rounded-lg flex items-center justify-center gap-1 overflow-hidden">
-                {[...Array(8)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="w-2 bg-[#8743f4] rounded-full"
-                    animate={{
-                      height: highContrastWaveform 
-                        ? [32, 48, 64, 56, 72, 56, 40, 24][i] 
-                        : [16, 24, 32, 28, 36, 28, 20, 12][i]
-                    }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      repeatType: "reverse",
-                      delay: i * 0.1
-                    }}
-                  />
-                ))}
+              <div className="mt-4 w-full h-24 bg-background-light dark:bg-background-muted rounded-lg flex items-center justify-center overflow-hidden">
+                <Waveform
+                  isActive={true}
+                  amplitude={highContrastWaveform ? 1 : 0.6}
+                  colorScheme="purple"
+                  size="lg"
+                />
               </div>
-            </div>
-          </div>
-        </section>
+            </CardContent>
+          </Card>
+        </Section>
 
         {/* Voice Command Shortcuts */}
-        <section className="py-4">
-          <div className="flex justify-between items-center px-4 pb-3">
-            <h2 className="text-[#141118] text-[22px] font-bold leading-tight tracking-[-0.015em]">
+        <Section>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-foreground">
               Voice Shortcuts
             </h2>
-            <button 
+            <Button 
+              variant="ghost"
+              size="sm"
               onClick={handleAddShortcut}
-              className="text-[#8743f4] font-bold flex items-center gap-1 text-sm"
+              colorScheme="purple"
+              leftIcon={<span className="material-symbols-outlined text-sm">add</span>}
             >
-              <span className="material-symbols-outlined text-sm">add</span> Add New
-            </button>
+              Add New
+            </Button>
           </div>
-          <div className="px-4 space-y-2">
+          <div className="space-y-2">
             {voiceShortcuts.map((shortcut) => (
               <motion.div
                 key={shortcut.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center justify-between p-4 bg-white border border-[#dfdbe6] rounded-xl"
               >
-                <div className="flex flex-col">
-                  <span className="text-[#141118] font-bold">"{shortcut.phrase}"</span>
-                  <span className={`text-xs flex items-center gap-1 ${
-                    shortcut.recorded ? "text-[#70608a]" : "text-[#8743f4]"
-                  }`}>
-                    <span className="material-symbols-outlined text-xs">
-                      {shortcut.recorded ? "mic" : "warning"}
-                    </span>
-                    {shortcut.recorded ? "Recorded" : "No tag recorded"}
-                  </span>
-                </div>
-                <button className={`px-4 py-2 rounded-lg font-bold text-sm ${
-                  shortcut.recorded 
-                    ? "bg-[#f2f0f5] text-[#141118]" 
-                    : "bg-[#8743f4] text-white"
-                }`}>
-                  {shortcut.recorded ? "Update" : "Record"}
-                </button>
+                <Card>
+                  <CardContent className="flex items-center justify-between p-4">
+                    <div className="flex flex-col">
+                      <span className="text-foreground font-bold">"{shortcut.phrase}"</span>
+                      <span className={`text-xs flex items-center gap-1 ${
+                        shortcut.recorded ? "text-muted" : "text-primary-purple"
+                      }`}>
+                        <span className="material-symbols-outlined text-xs">
+                          {shortcut.recorded ? "mic" : "warning"}
+                        </span>
+                        {shortcut.recorded ? "Recorded" : "No tag recorded"}
+                      </span>
+                    </div>
+                    <Button 
+                      variant={shortcut.recorded ? "secondary" : "primary"}
+                      size="sm"
+                      colorScheme="purple"
+                    >
+                      {shortcut.recorded ? "Update" : "Record"}
+                    </Button>
+                  </CardContent>
+                </Card>
               </motion.div>
             ))}
           </div>
-        </section>
+        </Section>
 
         {/* Save Button */}
-        <div className="px-4 py-6">
-          <motion.button 
-            whileTap={{ scale: 0.98 }}
+        <Section>
+          <Button 
             onClick={handleSave}
-            className="w-full bg-[#8743f4] text-white font-bold py-4 rounded-xl shadow-lg shadow-[#8743f4]/20 text-lg"
+            className="w-full"
+            size="lg"
+            colorScheme="purple"
           >
             Save Voice Settings
-          </motion.button>
-        </div>
-      </main>
+          </Button>
+        </Section>
+      </Container>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#dfdbe6] px-6 py-2">
-        <div className="flex justify-between items-center max-w-md mx-auto">
-          <div className="flex flex-col items-center gap-1 text-[#70608a]">
-            <span className="material-symbols-outlined">home</span>
-            <span className="text-[10px] font-medium">Home</span>
+      <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-6 py-2">
+        <Container>
+          <div className="flex justify-between items-center">
+            <div className="flex flex-col items-center gap-1 text-muted">
+              <span className="material-symbols-outlined">home</span>
+              <span className="text-xs font-medium">Home</span>
+            </div>
+            <div className="flex flex-col items-center gap-1 text-primary-purple">
+              <span className="material-symbols-outlined">settings_voice</span>
+              <span className="text-xs font-bold">Voice</span>
+            </div>
+            <div className="flex flex-col items-center gap-1 text-muted">
+              <span className="material-symbols-outlined">bar_chart</span>
+              <span className="text-xs font-medium">Analytics</span>
+            </div>
+            <div className="flex flex-col items-center gap-1 text-muted">
+              <span className="material-symbols-outlined">account_circle</span>
+              <span className="text-xs font-medium">Profile</span>
+            </div>
           </div>
-          <div className="flex flex-col items-center gap-1 text-[#8743f4]">
-            <span className="material-symbols-outlined">settings_voice</span>
-            <span className="text-[10px] font-bold">Voice</span>
-          </div>
-          <div className="flex flex-col items-center gap-1 text-[#70608a]">
-            <span className="material-symbols-outlined">bar_chart</span>
-            <span className="text-[10px] font-medium">Analytics</span>
-          </div>
-          <div className="flex flex-col items-center gap-1 text-[#70608a]">
-            <span className="material-symbols-outlined">account_circle</span>
-            <span className="text-[10px] font-medium">Profile</span>
-          </div>
-        </div>
+        </Container>
       </nav>
-    </div>
+    </PageLayout>
   );
 }

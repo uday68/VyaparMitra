@@ -130,7 +130,7 @@ export function optionalAuth(
     };
   } catch (error) {
     // Ignore token errors for optional auth
-    console.warn('Optional auth token verification failed:', error.message);
+    console.warn('Optional auth token verification failed:', (error as Error).message);
   }
 
   next();

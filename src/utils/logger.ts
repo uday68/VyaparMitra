@@ -274,7 +274,7 @@ export class PerformanceMonitor {
       this.end(operation, context);
       return result;
     } catch (error) {
-      this.end(operation, { ...context, error: error.message });
+      this.end(operation, { ...context, error: error instanceof Error ? error.message : String(error) });
       throw error;
     }
   }

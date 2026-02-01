@@ -175,7 +175,7 @@ export function validateConfig(): void {
     console.warn('⚠️  BHASHINI_API_KEY not set. Translation service will not work.');
   }
 
-  if (config.security.jwtSecret === 'your-secret-key-change-in-production' && config.server.nodeEnv === 'production') {
+  if (config.auth.jwtSecret === 'your-secret-key-change-in-production' && config.server.nodeEnv === 'production') {
     throw new Error('JWT_SECRET must be set in production');
   }
 }

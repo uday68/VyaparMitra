@@ -1,6 +1,7 @@
 import { logger } from '../utils/logger';
 import { getPool, pool } from '../db/postgres';
 import { getRedisClient, RedisService } from '../db/redis';
+import { AnalyticsErrorHandler } from '../utils/analytics-error-handler';
 
 interface NegotiationAnalytics {
   totalNegotiations: number;
@@ -55,55 +56,64 @@ export class NegotiationAnalyticsService {
     customerId?: string,
     category?: string
   ): Promise<NegotiationAnalytics> {
-    try {
-      const cacheKey = `negotiation_analytics:${vendorId || 'all'}:${customerId || 'all'}:${category || 'all'}`;
-      const redis = getRedisClient();
-      
-      // Check cache first
-      const cached = await RedisService.get(cacheKey);
-      if (cached) {
-        logger.info('Negotiation analytics served from cache', { vendorId, customerId, category });
-        return JSON.parse(cached);
-      }
+    return AnalyticsErrorHandler.safeExecute(
+      async () => {
+        const cacheKey = `negotiation_analytics:${vendorId || 'all'}:${customerId || 'all'}:${category || 'all'}`;
+        const redis = getRedisClient();
+        
+        // Check cache first
+        const cached = await RedisService.get(cacheKey);
+        if (cached) {
+          logger.info('Negotiation analytics served from cache', { vendorId, customerId, category });
+          return JSON.parse(cached);
+        }
 
-      const [
-        basicStats,
-        categoryPerformance,
-        negotiationPatterns,
-        customerBehavior,
-        vendorPerformance
-      ] = await Promise.all([
-        this.getBasicNegotiationStats(vendorId, customerId, category),
-        this.getCategoryPerformance(vendorId, customerId, category),
-        this.getNegotiationPatterns(vendorId, customerId, category),
-        this.getCustomerBehavior(vendorId, customerId, category),
-        this.getVendorPerformance(vendorId, customerId, category)
-      ]);
+        // Check if required tables exist
+        const pool = getPool();
+        const tablesExist = await AnalyticsErrorHandler.checkTablesExist(pool, ['negotiations', 'products', 'bids']);
+        
+        if (!tablesExist) {
+          return AnalyticsErrorHandler.getDefaultNegotiationAnalytics();
+        }
 
-      const analytics: NegotiationAnalytics = {
-        ...basicStats,
-        topPerformingCategories: categoryPerformance,
-        negotiationPatterns,
-        customerBehavior,
-        vendorPerformance
-      };
+        const [
+          basicStats,
+          categoryPerformance,
+          negotiationPatterns,
+          customerBehavior,
+          vendorPerformance
+        ] = await Promise.all([
+          this.getBasicNegotiationStats(vendorId, customerId, category),
+          this.getCategoryPerformance(vendorId, customerId, category),
+          this.getNegotiationPatterns(vendorId, customerId, category),
+          this.getCustomerBehavior(vendorId, customerId, category),
+          this.getVendorPerformance(vendorId, customerId, category)
+        ]);
 
-      // Cache the result
-      await RedisService.setWithTTL(cacheKey, JSON.stringify(analytics), this.CACHE_TTL);
-      
-      logger.info('Negotiation analytics generated', {
-        vendorId,
-        customerId,
-        category,
-        totalNegotiations: analytics.totalNegotiations,
-        successRate: analytics.successRate
-      });
+        const analytics: NegotiationAnalytics = {
+          ...basicStats,
+          topPerformingCategories: categoryPerformance,
+          negotiationPatterns,
+          customerBehavior,
+          vendorPerformance
+        };
 
-      return analytics;
-    } catch (error) {
-      logger.error('Negotiation analytics generation failed', { error, vendorId, customerId, category });
-      throw new Error('Failed to generate negotiation analytics');
-    }
+        // Cache the result
+        await RedisService.setWithTTL(cacheKey, JSON.stringify(analytics), this.CACHE_TTL);
+        
+        logger.info('Negotiation analytics generated', {
+          vendorId,
+          customerId,
+          category,
+          totalNegotiations: analytics.totalNegotiations,
+          successRate: analytics.successRate
+        });
+
+        return analytics;
+      },
+      AnalyticsErrorHandler.getDefaultNegotiationAnalytics(),
+      'getNegotiationAnalytics'
+    );
   }
 
   /**
@@ -128,13 +138,13 @@ export class NegotiationAnalyticsService {
       let paramIndex = 1;
 
       if (vendorId) {
-        whereClause += ` AND p.vendor_id = $${paramIndex}`;
+        whereClause += ` AND p.vendor_id = $${paramIndex}::uuid`;
         params.push(vendorId);
         paramIndex++;
       }
 
       if (customerId) {
-        whereClause += ` AND n.user_id = $${paramIndex}`;
+        whereClause += ` AND n.user_id = $${paramIndex}::uuid`;
         params.push(customerId);
         paramIndex++;
       }
@@ -194,13 +204,13 @@ export class NegotiationAnalyticsService {
       let paramIndex = 1;
 
       if (vendorId) {
-        whereClause += ` AND p.vendor_id = $${paramIndex}`;
+        whereClause += ` AND p.vendor_id = $${paramIndex}::uuid`;
         params.push(vendorId);
         paramIndex++;
       }
 
       if (customerId) {
-        whereClause += ` AND n.user_id = $${paramIndex}`;
+        whereClause += ` AND n.user_id = $${paramIndex}::uuid`;
         params.push(customerId);
         paramIndex++;
       }
@@ -262,13 +272,13 @@ export class NegotiationAnalyticsService {
       let paramIndex = 1;
 
       if (vendorId) {
-        whereClause += ` AND p.vendor_id = $${paramIndex}`;
+        whereClause += ` AND p.vendor_id = $${paramIndex}::uuid`;
         params.push(vendorId);
         paramIndex++;
       }
 
       if (customerId) {
-        whereClause += ` AND n.user_id = $${paramIndex}`;
+        whereClause += ` AND n.user_id = $${paramIndex}::uuid`;
         params.push(customerId);
         paramIndex++;
       }
@@ -380,13 +390,13 @@ export class NegotiationAnalyticsService {
       let paramIndex = 1;
 
       if (vendorId) {
-        whereClause += ` AND p.vendor_id = $${paramIndex}`;
+        whereClause += ` AND p.vendor_id = $${paramIndex}::uuid`;
         params.push(vendorId);
         paramIndex++;
       }
 
       if (customerId) {
-        whereClause += ` AND n.user_id = $${paramIndex}`;
+        whereClause += ` AND n.user_id = $${paramIndex}::uuid`;
         params.push(customerId);
         paramIndex++;
       }
@@ -451,13 +461,13 @@ export class NegotiationAnalyticsService {
       let paramIndex = 1;
 
       if (vendorId) {
-        whereClause += ` AND p.vendor_id = $${paramIndex}`;
+        whereClause += ` AND p.vendor_id = $${paramIndex}::uuid`;
         params.push(vendorId);
         paramIndex++;
       }
 
       if (customerId) {
-        whereClause += ` AND n.user_id = $${paramIndex}`;
+        whereClause += ` AND n.user_id = $${paramIndex}::uuid`;
         params.push(customerId);
         paramIndex++;
       }

@@ -3,9 +3,17 @@ import { Theme, ThemeContextValue } from '../types';
 import { ColorScheme, ThemeMode, ThemeProviderProps } from './types';
 import { lightTheme, lightThemeProperties } from './light';
 import { darkTheme, darkThemeProperties } from './dark';
+import { 
+  createDebouncedThemeSwitch, 
+  initializePerformanceOptimizations,
+  measureThemeSwitchPerformance 
+} from '../utils/performance';
 
 // Create theme context
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
+
+// Debounced theme switch for better performance
+const debouncedThemeSwitch = createDebouncedThemeSwitch(50);
 
 // Theme provider component
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({
@@ -19,6 +27,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
   // Get current theme based on mode
   const currentTheme: Theme = themeMode === 'light' ? lightTheme : darkTheme;
+
+  // Initialize performance optimizations on mount
+  useEffect(() => {
+    initializePerformanceOptimizations();
+  }, []);
 
   // Load theme from localStorage on mount
   useEffect(() => {
@@ -50,23 +63,34 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     }
   }, [themeMode, colorScheme, storageKey]);
 
-  // Apply CSS custom properties when theme changes
+  // Apply CSS custom properties when theme changes with performance monitoring
   useEffect(() => {
+    const perf = measureThemeSwitchPerformance();
+    
     const root = document.documentElement;
     const properties = themeMode === 'light' ? lightThemeProperties : darkThemeProperties;
     
-    // Apply all CSS custom properties
-    Object.entries(properties).forEach(([property, value]) => {
-      root.style.setProperty(property, value);
-    });
+    // Use requestAnimationFrame for smooth theme transitions
+    requestAnimationFrame(() => {
+      // Apply all CSS custom properties
+      Object.entries(properties).forEach(([property, value]) => {
+        root.style.setProperty(property, value);
+      });
 
-    // Apply theme class to body for Tailwind CSS
-    document.body.className = document.body.className.replace(/theme-\w+/g, '');
-    document.body.classList.add(`theme-${themeMode}`);
-    
-    // Apply color scheme class
-    document.body.className = document.body.className.replace(/scheme-\w+/g, '');
-    document.body.classList.add(`scheme-${colorScheme}`);
+      // Apply theme class to body for Tailwind CSS
+      document.body.className = document.body.className.replace(/theme-\w+/g, '');
+      document.body.classList.add(`theme-${themeMode}`);
+      
+      // Apply color scheme class
+      document.body.className = document.body.className.replace(/scheme-\w+/g, '');
+      document.body.classList.add(`scheme-${colorScheme}`);
+      
+      // Apply data attributes for CSS selectors
+      root.setAttribute('data-theme', themeMode);
+      root.setAttribute('data-color-scheme', colorScheme);
+      
+      perf.end();
+    });
   }, [themeMode, colorScheme]);
 
   // Toggle between light and dark themes

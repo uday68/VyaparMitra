@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 
 export function OfflineVoiceState() {
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
   const [isRetrying, setIsRetrying] = useState(false);
   const [offlineFeatures, setOfflineFeatures] = useState({
     voiceCommands: true,
@@ -41,7 +41,7 @@ export function OfflineVoiceState() {
       setIsRetrying(false);
       // Check if online
       if (navigator.onLine) {
-        navigate(-1);
+        setLocation('/customer/dashboard');
       }
     }, 2000);
   };
@@ -49,7 +49,7 @@ export function OfflineVoiceState() {
   const handleContinueOffline = () => {
     // Enable offline mode and continue
     localStorage.setItem('offlineMode', 'true');
-    navigate('/customer/shop');
+    setLocation('/customer/shop');
   };
 
   const handleGoOnline = () => {
@@ -59,12 +59,12 @@ export function OfflineVoiceState() {
 
   useEffect(() => {
     const handleOnline = () => {
-      navigate(-1);
+      setLocation('/customer/dashboard');
     };
 
     window.addEventListener('online', handleOnline);
     return () => window.removeEventListener('online', handleOnline);
-  }, [navigate]);
+  }, [setLocation]);
 
   const FeatureStatus = ({ feature, available, description }: { 
     feature: string; 
@@ -96,7 +96,7 @@ export function OfflineVoiceState() {
         <div className="sticky top-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-4">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => setLocation('/customer/dashboard')}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
             >
               <span className="material-symbols-outlined text-gray-900 dark:text-white">arrow_back</span>

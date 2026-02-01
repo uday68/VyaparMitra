@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'wouter';
 
 export function VoiceCommandsGuide() {
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
   const [activeCategory, setActiveCategory] = useState('shopping');
 
   const commandCategories = {
@@ -127,7 +127,7 @@ export function VoiceCommandsGuide() {
         <div className="sticky top-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-4">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => window.history.back()}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
             >
               <span className="material-symbols-outlined text-gray-900 dark:text-white">arrow_back</span>
@@ -224,7 +224,7 @@ export function VoiceCommandsGuide() {
               <span className="material-symbols-outlined text-blue-600 text-2xl">record_voice_over</span>
             </div>
             <button
-              onClick={() => navigate('/voice-test')}
+              onClick={() => setLocation('/voice-test')}
               className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
             >
               Start Voice Practice

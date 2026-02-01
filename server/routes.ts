@@ -11,12 +11,21 @@ import authRoutes from "../src/routes/auth";
 import apiRoutes from "../src/routes/api";
 import paymentRoutes from "../src/routes/payment";
 import analyticsRoutes from "../src/routes/analytics";
+import voiceRoutes from "../src/routes/voice";
+
+// Import Cross-Language QR Commerce routes
+import { createQRSessionsRouter } from "../src/routes/qr-sessions";
+
+// Import WebSocket service
+import { WebSocketService } from "../src/services/websocket_service";
 
 // Import database initialization
 import { connectMongoDB } from "../src/db/mongo";
 import { connectRedis } from "../src/db/redis";
 import { connectPostgreSQL } from "../src/db/postgres";
 import { ImageStorageService } from "../src/services/image_storage";
+
+let webSocketService: WebSocketService;
 
 export async function registerRoutes(
   httpServer: Server,
@@ -26,9 +35,17 @@ export async function registerRoutes(
   // Initialize database connections
   try {
     await connectMongoDB();
-    await connectRedis();
-    await connectPostgreSQL();
+    const redis = await connectRedis();
+    const db = await connectPostgreSQL();
     await ImageStorageService.initialize();
+    
+    // Initialize WebSocket service for real-time communication
+    webSocketService = new WebSocketService(httpServer, db, redis);
+    
+    // Initialize Cross-Language QR Commerce routes
+    const qrSessionsRouter = createQRSessionsRouter(db, redis);
+    app.use('/api/qr-sessions', qrSessionsRouter);
+    
     console.log('✅ All services initialized successfully');
   } catch (error) {
     console.error('❌ Service initialization failed:', error);
@@ -46,6 +63,7 @@ export async function registerRoutes(
   app.use('/api/auth', authRoutes);
   app.use('/api/payment', paymentRoutes);
   app.use('/api/analytics', analyticsRoutes);
+  app.use('/api/voice', voiceRoutes);
   app.use('/api', apiRoutes);
 
   // Health check endpoints

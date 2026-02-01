@@ -1,6 +1,7 @@
 import { logger } from '../utils/logger';
 import { getPool } from '../db/postgres';
 import { RedisService } from '../db/redis';
+import { AnalyticsErrorHandler } from '../utils/analytics-error-handler';
 
 interface InventoryAnalytics {
   totalProducts: number;
@@ -66,53 +67,61 @@ export class InventoryAnalyticsService {
    * Get comprehensive inventory analytics for a vendor
    */
   static async getInventoryAnalytics(vendorId: string): Promise<InventoryAnalytics> {
-    try {
-      const cacheKey = `inventory_analytics:${vendorId}`;
-      // Redis handled by RedisService
-      
-      // Check cache first
-      const cached = await RedisService.get(cacheKey);
-      if (cached) {
-        logger.info('Inventory analytics served from cache', { vendorId });
-        return JSON.parse(cached);
-      }
+    return AnalyticsErrorHandler.safeExecute(
+      async () => {
+        const cacheKey = `inventory_analytics:${vendorId}`;
+        
+        // Check cache first
+        const cached = await RedisService.get(cacheKey);
+        if (cached) {
+          logger.info('Inventory analytics served from cache', { vendorId });
+          return JSON.parse(cached);
+        }
 
-      const [
-        basicStats,
-        fastMovingItems,
-        slowMovingItems,
-        categoryPerformance,
-        reorderRecommendations
-      ] = await Promise.all([
-        this.getBasicInventoryStats(vendorId),
-        this.getFastMovingItems(vendorId),
-        this.getSlowMovingItems(vendorId),
-        this.getCategoryPerformance(vendorId),
-        this.getReorderRecommendations(vendorId)
-      ]);
+        // Check if required tables exist
+        const pool = getPool();
+        const tablesExist = await AnalyticsErrorHandler.checkTablesExist(pool, ['products', 'negotiations', 'orders']);
+        
+        if (!tablesExist) {
+          return AnalyticsErrorHandler.getDefaultInventoryAnalytics();
+        }
 
-      const analytics: InventoryAnalytics = {
-        ...basicStats,
-        fastMovingItems,
-        slowMovingItems,
-        categoryPerformance,
-        reorderRecommendations
-      };
+        const [
+          basicStats,
+          fastMovingItems,
+          slowMovingItems,
+          categoryPerformance,
+          reorderRecommendations
+        ] = await Promise.all([
+          this.getBasicInventoryStats(vendorId),
+          this.getFastMovingItems(vendorId),
+          this.getSlowMovingItems(vendorId),
+          this.getCategoryPerformance(vendorId),
+          this.getReorderRecommendations(vendorId)
+        ]);
 
-      // Cache the result
-      await RedisService.setWithTTL(cacheKey, JSON.stringify(analytics), this.CACHE_TTL);
-      
-      logger.info('Inventory analytics generated', {
-        vendorId,
-        totalProducts: analytics.totalProducts,
-        lowStockAlerts: analytics.lowStockAlerts
-      });
+        const analytics: InventoryAnalytics = {
+          ...basicStats,
+          fastMovingItems,
+          slowMovingItems,
+          categoryPerformance,
+          reorderRecommendations
+        };
 
-      return analytics;
-    } catch (error) {
-      logger.error('Inventory analytics generation failed', { error, vendorId });
-      throw new Error('Failed to generate inventory analytics');
-    }
+        // Cache the result
+        await RedisService.setWithTTL(cacheKey, JSON.stringify(analytics), this.CACHE_TTL);
+        
+        logger.info('Inventory analytics generated', {
+          vendorId,
+          totalProducts: analytics.totalProducts,
+          lowStockAlerts: analytics.lowStockAlerts
+        });
+
+        return analytics;
+      },
+      AnalyticsErrorHandler.getDefaultInventoryAnalytics(),
+      'getInventoryAnalytics'
+    );
   }
 
   /**
@@ -127,13 +136,31 @@ export class InventoryAnalyticsService {
     const client = await pool.connect();
     
     try {
+      // Check if products table exists
+      const tableCheck = await client.query(`
+        SELECT EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_schema = 'public' 
+          AND table_name = 'products'
+        );
+      `);
+      
+      if (!tableCheck.rows[0].exists) {
+        logger.warn('Products table does not exist, returning default stats');
+        return {
+          totalProducts: 0,
+          totalValue: 0,
+          lowStockAlerts: 0
+        };
+      }
+      
       const query = `
         SELECT 
           COUNT(*) as total_products,
           SUM(price * stock_quantity) as total_value,
           COUNT(CASE WHEN stock_quantity <= $2 THEN 1 END) as low_stock_alerts
         FROM products
-        WHERE vendor_id = $1
+        WHERE vendor_id = $1::uuid
         AND is_active = true
       `;
       
@@ -188,7 +215,7 @@ export class InventoryAnalyticsService {
           AND n.status = 'completed'
           GROUP BY n.product_id
         ) sales_data ON p.id = sales_data.product_id
-        WHERE p.vendor_id = $1
+        WHERE p.vendor_id = $1::uuid
         AND p.is_active = true
         AND COALESCE(sales_data.sales_velocity, 0) > 0.5
         ORDER BY sales_data.sales_velocity DESC
@@ -237,7 +264,7 @@ export class InventoryAnalyticsService {
           ) as days_since_last_sale
         FROM products p
         LEFT JOIN negotiations n ON p.id = n.product_id AND n.status = 'completed'
-        WHERE p.vendor_id = $1
+        WHERE p.vendor_id = $1::uuid
         AND p.is_active = true
         GROUP BY p.id, p.name, p.category, p.stock_quantity, p.created_at
         HAVING COALESCE(
@@ -298,7 +325,7 @@ export class InventoryAnalyticsService {
         FROM products p
         LEFT JOIN negotiations n ON p.id = n.product_id AND n.status = 'completed'
         LEFT JOIN orders o ON n.id = o.negotiation_id
-        WHERE p.vendor_id = $1
+        WHERE p.vendor_id = $1::uuid
         AND p.is_active = true
         AND n.created_at >= NOW() - INTERVAL '90 days'
         GROUP BY p.category
@@ -352,7 +379,7 @@ export class InventoryAnalyticsService {
           AND n.status = 'completed'
           GROUP BY n.product_id
         ) sales_data ON p.id = sales_data.product_id
-        WHERE p.vendor_id = $1
+        WHERE p.vendor_id = $1::uuid
         AND p.is_active = true
         AND (
           p.stock_quantity <= p.reorder_level
@@ -498,7 +525,7 @@ export class InventoryAnalyticsService {
         FROM products p
         LEFT JOIN negotiations n ON p.id = n.product_id AND n.status = 'completed'
         LEFT JOIN orders o ON n.id = o.negotiation_id
-        WHERE p.vendor_id = $1
+        WHERE p.vendor_id = $1::uuid
         AND p.is_active = true
         AND (n.created_at >= NOW() - INTERVAL '${days} days' OR n.created_at IS NULL)
         GROUP BY p.id, p.name, p.category
@@ -543,7 +570,7 @@ export class InventoryAnalyticsService {
       const lowStockQuery = `
         SELECT id, name, stock_quantity, reorder_level
         FROM products
-        WHERE vendor_id = $1
+        WHERE vendor_id = $1::uuid
         AND is_active = true
         AND stock_quantity <= reorder_level
       `;
@@ -570,7 +597,7 @@ export class InventoryAnalyticsService {
           COUNT(n.id) as recent_negotiations
         FROM products p
         JOIN negotiations n ON p.id = n.product_id
-        WHERE p.vendor_id = $1
+        WHERE p.vendor_id = $1::uuid
         AND n.created_at >= NOW() - INTERVAL '7 days'
         GROUP BY p.id, p.name
         HAVING COUNT(n.id) >= 5

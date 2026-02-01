@@ -2,8 +2,70 @@ import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useProducts } from '../hooks/use-products';
 import { useTranslation } from '../hooks/useTranslation';
-import { Header } from '../components/Header';
-import { BottomNav } from '../components/BottomNav';
+import { 
+  Container, 
+  Section, 
+  Stack,
+  TouchTargetButton,
+  VoiceAssistantBanner 
+} from '../design-system/components';
+import { Input } from '../design-system/components/Input';
+import { cn } from '../design-system/utils/cn';
+
+interface Product {
+  id: number;
+  name: string;
+  price: string;
+  description: string;
+  image: string;
+}
+
+interface ProductCardProps {
+  product: Product;
+  onPlaceBid: (productId: number) => void;
+}
+
+function ProductCard({ product, onPlaceBid }: ProductCardProps) {
+  const { t } = useTranslation();
+  
+  return (
+    <div className="bg-card dark:bg-slate-900 border border-border dark:border-gray-800 rounded-xl overflow-hidden shadow-sm">
+      <div className="p-4 flex items-stretch justify-between gap-4">
+        <div className="flex flex-[2_2_0px] flex-col justify-between">
+          <div className="flex flex-col gap-1">
+            <p className="text-foreground dark:text-white text-lg font-bold leading-tight">
+              {product.name}
+            </p>
+            <p className="text-primary-blue text-base font-semibold leading-normal">
+              {product.price}
+            </p>
+            <p className="text-foreground-muted dark:text-gray-400 text-sm font-normal line-clamp-2">
+              {product.description}
+            </p>
+          </div>
+          <TouchTargetButton
+            onClick={() => onPlaceBid(product.id)}
+            size="comfortable"
+            className={cn(
+              "mt-3 w-fit rounded-lg h-9 px-4",
+              "bg-primary-blue text-white text-sm font-bold leading-normal",
+              "hover:bg-primary-blue/90 transition-colors"
+            )}
+            aria-label={`${t('shop.product.negotiate')} ${product.name}`}
+          >
+            {t('shop.product.negotiate')}
+          </TouchTargetButton>
+        </div>
+        <div 
+          className="w-28 h-28 bg-center bg-no-repeat bg-cover rounded-lg flex-shrink-0" 
+          style={{backgroundImage: `url("${product.image}")`}}
+          role="img"
+          aria-label={product.name}
+        />
+      </div>
+    </div>
+  );
+}
 
 export function CustomerShop() {
   const [, setLocation] = useLocation();
@@ -20,7 +82,7 @@ export function CustomerShop() {
     setIsVoiceActive(!isVoiceActive);
   };
 
-  const mockProducts = [
+  const mockProducts: Product[] = [
     {
       id: 1,
       name: 'Fresh Shimla Apples',
@@ -47,82 +109,85 @@ export function CustomerShop() {
   const displayProducts = products || mockProducts;
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex flex-col">
-      {/* Header Section */}
-      <Header title={t('vendor.dashboard.title')} />
+    <div className="bg-background-light dark:bg-background-dark text-foreground dark:text-white min-h-screen flex flex-col">
       
-      {/* Search Bar Component */}
-      <div className="px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
-        <label className="flex flex-col min-w-40 h-12 w-full">
-          <div className="flex w-full flex-1 items-stretch rounded-xl h-full shadow-sm border border-gray-100 dark:border-gray-700">
-            <div className="text-gray-500 flex bg-white dark:bg-slate-800 items-center justify-center pl-4 rounded-l-xl">
-              <span className="material-symbols-outlined">search</span>
+      {/* Header Section */}
+      <header className="sticky top-0 z-50 bg-card dark:bg-background-dark border-b border-border dark:border-gray-800">
+        <Container maxWidth="mobile">
+          <div className="flex items-center p-4 pb-2 justify-between">
+            <div className="text-primary-blue flex size-10 shrink-0 items-center justify-center">
+              <span className="material-symbols-outlined text-3xl">translate</span>
             </div>
-            <input 
-              className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-xl text-gray-900 dark:text-white focus:outline-0 focus:ring-0 border-none bg-white dark:bg-slate-800 h-full placeholder:text-gray-500 px-4 pl-2 text-base font-normal leading-normal" 
-              placeholder={t('shop.searchPlaceholder')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+            <h1 className="text-foreground dark:text-white text-xl font-bold leading-tight tracking-tight flex-1 text-center pr-10">
+              {t('shop.title')}
+            </h1>
           </div>
-        </label>
-      </div>
-
-      {/* Product List */}
-      <main className="flex-1 overflow-y-auto pb-44 px-4 pt-4 space-y-4">
-        {displayProducts.map((product) => (
-          <div key={product.id} className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-gray-800 rounded-xl overflow-hidden shadow-sm">
-            <div className="p-4 flex items-stretch justify-between gap-4">
-              <div className="flex flex-[2_2_0px] flex-col justify-between">
-                <div className="flex flex-col gap-1">
-                  <p className="text-gray-900 dark:text-white text-lg font-bold leading-tight">{product.name}</p>
-                  <p className="text-blue-600 text-base font-semibold leading-normal">{product.price}</p>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm font-normal line-clamp-2">{product.description}</p>
-                </div>
-                <button 
-                  onClick={() => handlePlaceBid(product.id)}
-                  className="flex mt-3 min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-blue-600 text-white text-sm font-bold leading-normal w-fit hover:bg-blue-700 transition-colors"
-                >
-                  <span>{t('shop.product.negotiate')}</span>
-                </button>
+          
+          {/* Search Bar */}
+          <div className="px-4 py-3">
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-foreground-muted">
+                <span className="material-symbols-outlined">search</span>
               </div>
-              <div 
-                className="w-28 h-28 bg-center bg-no-repeat bg-cover rounded-lg flex-shrink-0" 
-                style={{backgroundImage: `url("${product.image}")`}}
+              <Input
+                type="text"
+                placeholder={t('shop.searchPlaceholder')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={cn(
+                  "pl-12 h-12 rounded-xl shadow-sm",
+                  "bg-card dark:bg-slate-800 border-border dark:border-gray-700",
+                  "focus:ring-2 focus:ring-primary-blue focus:border-primary-blue"
+                )}
               />
             </div>
           </div>
-        ))}
+        </Container>
+      </header>
+
+      {/* Product List */}
+      <main className="flex-1 overflow-y-auto pb-44">
+        <Container maxWidth="mobile">
+          <Section spacing="component">
+            <Stack spacing="component">
+              {isLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="text-foreground-muted">{t('common.loading')}</div>
+                </div>
+              ) : (
+                displayProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onPlaceBid={handlePlaceBid}
+                  />
+                ))
+              )}
+            </Stack>
+          </Section>
+        </Container>
       </main>
 
       {/* Voice Assistant Banner */}
       {isVoiceActive && (
         <div className="fixed bottom-20 left-4 right-4 z-40">
-          <div className="bg-blue-50 dark:bg-blue-900/20 backdrop-blur-md border border-blue-200 rounded-2xl p-4 flex items-center gap-4 shadow-lg ring-1 ring-blue-100">
-            <div className="relative flex items-center justify-center">
-              <div className="absolute inset-0 bg-blue-600/30 rounded-full animate-ping opacity-75"></div>
-              <div className="bg-blue-600 text-white size-12 rounded-full flex items-center justify-center relative z-10">
-                <span className="material-symbols-outlined">mic</span>
-              </div>
-            </div>
-            <div className="flex-1">
-              <p className="text-blue-600 text-sm font-semibold">{t('voice.settings.title')}</p>
-              <p className="text-gray-900 dark:text-white text-sm font-medium leading-snug">
-                {t('shop.voiceCommands.negotiate')}
-              </p>
-            </div>
-            <button 
-              onClick={toggleVoiceAssistant}
-              className="text-blue-600/60 hover:text-blue-600"
-            >
-              <span className="material-symbols-outlined">close</span>
-            </button>
-          </div>
+          <VoiceAssistantBanner
+            status="idle"
+            message={t('shop.voiceCommands.negotiate')}
+            onToggle={toggleVoiceAssistant}
+            colorScheme="blue"
+            className={cn(
+              "bg-primary-blue/10 dark:bg-primary-blue/20 backdrop-blur-md",
+              "border border-primary-blue/20 rounded-2xl shadow-lg ring-1 ring-primary-blue/10"
+            )}
+          />
         </div>
       )}
 
-      {/* Bottom Navigation */}
-      <BottomNav currentPage="shop" />
+      {/* Bottom Navigation Placeholder */}
+      <div className="h-20 bg-card dark:bg-background-dark border-t border-border dark:border-gray-800">
+        {/* BottomNav component would go here */}
+      </div>
     </div>
   );
 }

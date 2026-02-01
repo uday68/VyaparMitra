@@ -2,8 +2,15 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class", ".theme-dark"],
-  content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
+  content: ["../client/index.html", "../client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
+    // Custom breakpoints from design references
+    screens: {
+      'sm': '320px',   // Mobile-first (mobile)
+      'md': '768px',   // Tablet
+      'lg': '1024px',  // Desktop
+      'xl': '1280px',  // Wide screens
+    },
     extend: {
       borderRadius: {
         none: "0",

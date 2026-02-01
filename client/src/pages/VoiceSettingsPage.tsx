@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useTranslation } from '../hooks/useTranslation';
+import { 
+  Button, 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription,
+  Toggle,
+  Select,
+  PageLayout,
+  Container,
+  Section
+} from '../design-system/components';
+import { useTheme } from '../design-system/themes/ThemeProvider';
 
 export function VoiceSettingsPage() {
   const [, setLocation] = useLocation();
+  const { colorScheme } = useTheme();
   const { t, supportedLanguages, language, changeLanguage } = useTranslation();
   const [settings, setSettings] = useState({
     voiceEnabled: true,
@@ -28,7 +43,7 @@ export function VoiceSettingsPage() {
   const handleSave = () => {
     // Save settings to localStorage or API
     localStorage.setItem('voiceSettings', JSON.stringify(settings));
-    setLocation(-1);
+    setLocation('/voice-settings');
   };
 
   const handleTestVoice = () => {
@@ -39,208 +54,215 @@ export function VoiceSettingsPage() {
     }
   };
 
-  const ToggleSwitch = ({ enabled, onToggle }: { enabled: boolean; onToggle: () => void }) => (
-    <button
-      onClick={onToggle}
-      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-        enabled ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
-      }`}
-    >
-      <span
-        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-          enabled ? 'translate-x-6' : 'translate-x-1'
-        }`}
-      />
-    </button>
-  );
-
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-md mx-auto bg-white dark:bg-gray-800 min-h-screen">
-        {/* Header */}
-        <div className="sticky top-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-4">
-          <div className="flex items-center justify-between">
-            <button
-              onClick={() => setLocation(-1)}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+    <PageLayout>
+      {/* Header */}
+      <header className="sticky top-0 z-10 bg-background border-b border-border">
+        <Container>
+          <div className="flex items-center justify-between py-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setLocation('/voice-settings')}
             >
-              <span className="material-symbols-outlined text-gray-900 dark:text-white">arrow_back</span>
-            </button>
-            <h1 className="text-lg font-bold text-gray-900 dark:text-white">{t('voice.settings.title')}</h1>
-            <button
+              <span className="material-symbols-outlined">arrow_back</span>
+            </Button>
+            <h1 className="text-lg font-bold text-foreground">{t('voice.settings.title')}</h1>
+            <Button
+              variant="ghost"
               onClick={handleSave}
-              className="text-blue-600 font-semibold hover:bg-blue-50 px-3 py-1 rounded-lg transition-colors"
+              colorScheme="blue"
             >
               {t('common.save')}
-            </button>
+            </Button>
           </div>
-        </div>
+        </Container>
+      </header>
 
-        <div className="p-4 space-y-6">
-          {/* Voice Assistant Toggle */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-white text-lg">mic</span>
+      <Container className="space-y-6">
+        {/* Voice Assistant Toggle */}
+        <Section>
+          <Card variant="elevated" className="bg-primary-blue/5 border-primary-blue/20">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-primary-blue rounded-full flex items-center justify-center">
+                    <span className="material-symbols-outlined text-white text-lg">mic</span>
+                  </div>
+                  <div>
+                    <CardTitle className="text-base">{t('voice.settings.title')}</CardTitle>
+                    <CardDescription>{t('permissions.microphone.description')}</CardDescription>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">{t('voice.settings.title')}</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('permissions.microphone.description')}</p>
-                </div>
+                <Toggle
+                  checked={settings.voiceEnabled}
+                  onCheckedChange={(checked) => handleSettingChange('voiceEnabled', checked)}
+                  colorScheme="blue"
+                />
               </div>
-              <ToggleSwitch
-                enabled={settings.voiceEnabled}
-                onToggle={() => handleSettingChange('voiceEnabled', !settings.voiceEnabled)}
-              />
-            </div>
-            {settings.voiceEnabled && (
-              <button
-                onClick={handleTestVoice}
-                className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-              >
-                {t('voice.settings.testVoice')}
-              </button>
-            )}
-          </div>
-
-          {/* Voice Settings */}
-          {settings.voiceEnabled && (
-            <>
-              {/* Language Selection */}
-              <div className="space-y-3">
-                <h3 className="font-semibold text-gray-900 dark:text-white">{t('voice.settings.language')}</h3>
-                <select
-                  value={settings.language}
-                  onChange={(e) => handleSettingChange('language', e.target.value)}
-                  className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              {settings.voiceEnabled && (
+                <Button
+                  onClick={handleTestVoice}
+                  className="w-full"
+                  colorScheme="blue"
                 >
-                  {Object.entries(supportedLanguages).map(([code, info]) => (
-                    <option key={code} value={code}>
-                      {info.nativeName} ({info.name})
-                    </option>
-                  ))}
-                </select>
-              </div>
+                  {t('voice.settings.testVoice')}
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        </Section>
 
-              {/* Voice Speed */}
-              <div className="space-y-3">
-                <h3 className="font-semibold text-gray-900 dark:text-white">{t('voice.settings.speed')}</h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {['slow', 'normal', 'fast'].map((speed) => (
-                    <button
-                      key={speed}
-                      onClick={() => handleSettingChange('voiceSpeed', speed)}
-                      className={`p-3 rounded-lg border-2 font-medium capitalize transition-colors ${
-                        settings.voiceSpeed === speed
-                          ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-600'
-                          : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-blue-300'
-                      }`}
-                    >
-                      {speed}
-                    </button>
-                  ))}
-                </div>
-              </div>
+        {/* Voice Settings */}
+        {settings.voiceEnabled && (
+          <>
+            {/* Language Selection */}
+            <Section>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('voice.settings.language')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Select
+                    value={settings.language}
+                    onValueChange={(value) => handleSettingChange('language', value)}
+                  >
+                    {Object.entries(supportedLanguages).map(([code, info]) => (
+                      <option key={code} value={code}>
+                        {info.nativeName} ({info.name})
+                      </option>
+                    ))}
+                  </Select>
+                </CardContent>
+              </Card>
+            </Section>
 
-              {/* Voice Gender */}
-              <div className="space-y-3">
-                <h3 className="font-semibold text-gray-900 dark:text-white">{t('voice.settings.voiceType')}</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { key: 'female', label: t('voice.settings.female') },
-                    { key: 'male', label: t('voice.settings.male') }
-                  ].map((gender) => (
-                    <button
-                      key={gender.key}
-                      onClick={() => handleSettingChange('voiceGender', gender.key)}
-                      className={`p-3 rounded-lg border-2 font-medium transition-colors ${
-                        settings.voiceGender === gender.key
-                          ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-600'
-                          : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-blue-300'
-                      }`}
-                    >
-                      {gender.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Advanced Settings */}
-              <div className="space-y-4">
-                <h3 className="font-semibold text-gray-900 dark:text-white">{t('settings.title')}</h3>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">{t('settings.handsFree.continuousListening')}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings.handsFree.continuousListening')}</p>
-                    </div>
-                    <ToggleSwitch
-                      enabled={settings.autoListen}
-                      onToggle={() => handleSettingChange('autoListen', !settings.autoListen)}
-                    />
+            {/* Voice Speed */}
+            <Section>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('voice.settings.speed')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['slow', 'normal', 'fast'].map((speed) => (
+                      <Button
+                        key={speed}
+                        variant={settings.voiceSpeed === speed ? "primary" : "secondary"}
+                        onClick={() => handleSettingChange('voiceSpeed', speed)}
+                        className="capitalize"
+                        colorScheme="blue"
+                      >
+                        {speed}
+                      </Button>
+                    ))}
                   </div>
+                </CardContent>
+              </Card>
+            </Section>
 
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">{t('settings.handsFree.title')}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings.handsFree.enabled')}</p>
-                    </div>
-                    <ToggleSwitch
-                      enabled={settings.handsFreeModeEnabled}
-                      onToggle={() => handleSettingChange('handsFreeModeEnabled', !settings.handsFreeModeEnabled)}
-                    />
+            {/* Voice Gender */}
+            <Section>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('voice.settings.voiceType')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { key: 'female', label: t('voice.settings.female') },
+                      { key: 'male', label: t('voice.settings.male') }
+                    ].map((gender) => (
+                      <Button
+                        key={gender.key}
+                        variant={settings.voiceGender === gender.key ? "primary" : "secondary"}
+                        onClick={() => handleSettingChange('voiceGender', gender.key)}
+                        colorScheme="blue"
+                      >
+                        {gender.label}
+                      </Button>
+                    ))}
                   </div>
+                </CardContent>
+              </Card>
+            </Section>
 
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">{t('settings.handsFree.voiceConfirmation')}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings.handsFree.voiceConfirmation')}</p>
-                    </div>
-                    <ToggleSwitch
-                      enabled={settings.voiceConfirmation}
-                      onToggle={() => handleSettingChange('voiceConfirmation', !settings.voiceConfirmation)}
-                    />
+            {/* Advanced Settings */}
+            <Section>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('settings.title')}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Toggle
+                    checked={settings.autoListen}
+                    onCheckedChange={(checked) => handleSettingChange('autoListen', checked)}
+                    label={t('settings.handsFree.continuousListening')}
+                    description={t('settings.handsFree.continuousListening')}
+                    colorScheme="blue"
+                  />
+
+                  <Toggle
+                    checked={settings.handsFreeModeEnabled}
+                    onCheckedChange={(checked) => handleSettingChange('handsFreeModeEnabled', checked)}
+                    label={t('settings.handsFree.title')}
+                    description={t('settings.handsFree.enabled')}
+                    colorScheme="blue"
+                  />
+
+                  <Toggle
+                    checked={settings.voiceConfirmation}
+                    onCheckedChange={(checked) => handleSettingChange('voiceConfirmation', checked)}
+                    label={t('settings.handsFree.voiceConfirmation')}
+                    description={t('settings.handsFree.voiceConfirmation')}
+                    colorScheme="blue"
+                  />
+                </CardContent>
+              </Card>
+            </Section>
+
+            {/* Background Noise Filtering */}
+            <Section>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('voice.settings.calibrateMic')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['low', 'medium', 'high'].map((level) => (
+                      <Button
+                        key={level}
+                        variant={settings.backgroundNoise === level ? "primary" : "secondary"}
+                        onClick={() => handleSettingChange('backgroundNoise', level)}
+                        className="capitalize"
+                        colorScheme="blue"
+                      >
+                        {level}
+                      </Button>
+                    ))}
                   </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
+            </Section>
+          </>
+        )}
 
-              {/* Background Noise Filtering */}
-              <div className="space-y-3">
-                <h3 className="font-semibold text-gray-900 dark:text-white">{t('voice.settings.calibrateMic')}</h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {['low', 'medium', 'high'].map((level) => (
-                    <button
-                      key={level}
-                      onClick={() => handleSettingChange('backgroundNoise', level)}
-                      className={`p-3 rounded-lg border-2 font-medium capitalize transition-colors ${
-                        settings.backgroundNoise === level
-                          ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-600'
-                          : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-blue-300'
-                      }`}
-                    >
-                      {level}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* Help Section */}
-          <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t('voice.commands.title')}</h3>
-            <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+        {/* Help Section */}
+        <Section>
+          <Card className="bg-background-light dark:bg-background-muted">
+            <CardHeader>
+              <CardTitle>{t('voice.commands.title')}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2 text-sm text-muted">
               <p>• "{t('voice.commands.negotiation.makeOffer')}" - {t('negotiation.title')}</p>
               <p>• "{t('voice.commands.negotiation.acceptDeal')}" - {t('negotiation.acceptOffer')}</p>
               <p>• "{t('voice.commands.shopping.negotiate')}" - {t('negotiation.counterOffer')}</p>
               <p>• "{t('voice.commands.shopping.showCategory')}" - {t('shop.categories.all')}</p>
               <p>• "{t('navigation.help')}" - {t('navigation.help')}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            </CardContent>
+          </Card>
+        </Section>
+      </Container>
+    </PageLayout>
   );
 }

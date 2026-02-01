@@ -11,6 +11,7 @@ import {
   Home,
   Chat,
   Vendor,
+  VendorInventory,
   CustomerNegotiation,
   DealConfirmation,
   AddProduct,
@@ -38,6 +39,7 @@ import {
 import { CustomerBidsDashboard } from "./pages/CustomerBidsDashboard";
 import { VoiceCommandsReference } from "./pages/VoiceCommandsReference";
 import { InteractiveVoiceGuide } from "./pages/InteractiveVoiceGuide";
+import { CrossLanguageNegotiation } from "./pages/CrossLanguageNegotiation";
 
 // Loading component for Suspense
 function LoadingSpinner() {
@@ -118,6 +120,11 @@ function Router() {
       <Route path="/vendor">
         <ProtectedRoute requiredUserType="vendor" showUnauthorized={true}>
           <Vendor />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/vendor/inventory">
+        <ProtectedRoute requiredUserType="vendor" showUnauthorized={true}>
+          <VendorInventory />
         </ProtectedRoute>
       </Route>
       <Route path="/vendor/qr-code">
@@ -230,6 +237,18 @@ function Router() {
       <Route path="/interactive-voice-guide">
         <ProtectedRoute>
           <InteractiveVoiceGuide />
+        </ProtectedRoute>
+      </Route>
+      
+      {/* Cross-Language QR Commerce routes */}
+      <Route path="/negotiate/:mode/:sessionId?">
+        <ProtectedRoute>
+          <CrossLanguageNegotiation />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/cross-language-negotiation">
+        <ProtectedRoute>
+          <CrossLanguageNegotiation />
         </ProtectedRoute>
       </Route>
       

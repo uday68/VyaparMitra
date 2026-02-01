@@ -12,7 +12,8 @@ import {
   Settings, 
   X,
   Zap,
-  MessageCircle
+  MessageCircle,
+  Globe
 } from 'lucide-react';
 
 interface VoiceAssistantProps {
@@ -28,7 +29,7 @@ interface VoiceCommand {
 }
 
 export function VoiceAssistant({ isActive, onToggle, className = '' }: VoiceAssistantProps) {
-  const { t } = useTranslation();
+  const { t, language, supportedLanguages } = useTranslation();
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [transcript, setTranscript] = useState('');
@@ -36,6 +37,8 @@ export function VoiceAssistant({ isActive, onToggle, className = '' }: VoiceAssi
   const [confidence, setConfidence] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
+  const [detectedLanguage, setDetectedLanguage] = useState(language);
+  const [isProcessing, setIsProcessing] = useState(false);
   
   const recognitionRef = useRef<any>(null);
   const synthRef = useRef<SpeechSynthesis | null>(null);
@@ -43,36 +46,134 @@ export function VoiceAssistant({ isActive, onToggle, className = '' }: VoiceAssi
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationRef = useRef<number>();
 
-  // Voice commands mapping
-  const voiceCommands: VoiceCommand[] = [
-    {
-      command: 'show me apples',
-      response: t('voice.responses.showingApples'),
-      action: () => window.location.href = '/customer/shop?search=apples'
-    },
-    {
-      command: 'find deals near me',
-      response: t('voice.responses.findingDeals'),
-      action: () => window.location.href = '/customer/shop?filter=deals'
-    },
-    {
-      command: 'scan qr code',
-      response: t('voice.responses.openingScanner'),
-      action: () => window.location.href = '/customer/shop?action=scan'
-    },
-    {
-      command: 'show my orders',
-      response: t('voice.responses.showingOrders'),
-      action: () => window.location.href = '/order-history'
-    },
-    {
-      command: 'help',
-      response: t('voice.responses.help'),
-      action: () => setIsExpanded(true)
-    }
-  ];
+  // Get language-specific recognition language code
+  const getRecognitionLanguage = (langCode: string): string => {
+    const recognitionLanguages = {
+      'en': 'en-US',
+      'hi': 'hi-IN',
+      'bn': 'bn-IN',
+      'mr': 'mr-IN',
+      'gu': 'gu-IN',
+      'pa': 'pa-IN',
+      'ta': 'ta-IN',
+      'te': 'te-IN',
+      'kn': 'kn-IN',
+      'ml': 'ml-IN',
+      'or': 'or-IN',
+      'as': 'as-IN'
+    };
+    return recognitionLanguages[langCode as keyof typeof recognitionLanguages] || 'en-US';
+  };
 
-  // Initialize speech recognition
+  // Get TTS language code
+  const getTTSLanguage = (langCode: string): string => {
+    const ttsLanguages = {
+      'en': 'en-US',
+      'hi': 'hi-IN',
+      'bn': 'bn-IN',
+      'mr': 'mr-IN',
+      'gu': 'gu-IN',
+      'pa': 'pa-IN',
+      'ta': 'ta-IN',
+      'te': 'te-IN',
+      'kn': 'kn-IN',
+      'ml': 'ml-IN',
+      'or': 'or-IN',
+      'as': 'as-IN'
+    };
+    return ttsLanguages[langCode as keyof typeof ttsLanguages] || 'en-US';
+  };
+
+  // Voice commands mapping with multilingual support
+  const getVoiceCommands = (currentLanguage: string): VoiceCommand[] => {
+    const commandMappings = {
+      'en': [
+        {
+          command: 'show me apples',
+          response: 'Showing apples in your area',
+          action: () => window.location.href = '/customer/shop?search=apples'
+        },
+        {
+          command: 'find deals near me',
+          response: 'Finding the best deals near you',
+          action: () => window.location.href = '/customer/shop?filter=deals'
+        },
+        {
+          command: 'scan qr code',
+          response: 'Opening QR code scanner',
+          action: () => window.location.href = '/customer/shop?action=scan'
+        },
+        {
+          command: 'show my orders',
+          response: 'Displaying your order history',
+          action: () => window.location.href = '/order-history'
+        },
+        {
+          command: 'help',
+          response: 'Here are the available voice commands',
+          action: () => setIsExpanded(true)
+        }
+      ],
+      'hi': [
+        {
+          command: 'मुझे सेब दिखाओ',
+          response: 'आपके क्षेत्र में सेब दिखा रहा हूं',
+          action: () => window.location.href = '/customer/shop?search=apples'
+        },
+        {
+          command: 'मेरे पास के डील्स खोजो',
+          response: 'आपके पास के बेहतरीन डील्स खोज रहा हूं',
+          action: () => window.location.href = '/customer/shop?filter=deals'
+        },
+        {
+          command: 'क्यूआर कोड स्कैन करो',
+          response: 'क्यूआर कोड स्कैनर खोल रहा हूं',
+          action: () => window.location.href = '/customer/shop?action=scan'
+        },
+        {
+          command: 'मेरे ऑर्डर दिखाओ',
+          response: 'आपका ऑर्डर हिस्ट्री दिखा रहा हूं',
+          action: () => window.location.href = '/order-history'
+        },
+        {
+          command: 'मदद',
+          response: 'यहां उपलब्ध वॉइस कमांड्स हैं',
+          action: () => setIsExpanded(true)
+        }
+      ],
+      'bn': [
+        {
+          command: 'আমাকে আপেল দেখান',
+          response: 'আপনার এলাকায় আপেল দেখাচ্ছি',
+          action: () => window.location.href = '/customer/shop?search=apples'
+        },
+        {
+          command: 'আমার কাছের ডিল খুঁজুন',
+          response: 'আপনার কাছের সেরা ডিল খুঁজছি',
+          action: () => window.location.href = '/customer/shop?filter=deals'
+        },
+        {
+          command: 'কিউআর কোড স্ক্যান করুন',
+          response: 'কিউআর কোড স্ক্যানার খুলছি',
+          action: () => window.location.href = '/customer/shop?action=scan'
+        },
+        {
+          command: 'আমার অর্ডার দেখান',
+          response: 'আপনার অর্ডার ইতিহাস দেখাচ্ছি',
+          action: () => window.location.href = '/order-history'
+        },
+        {
+          command: 'সাহায্য',
+          response: 'এখানে উপলব্ধ ভয়েস কমান্ড রয়েছে',
+          action: () => setIsExpanded(true)
+        }
+      ]
+    };
+
+    return commandMappings[currentLanguage as keyof typeof commandMappings] || commandMappings.en;
+  };
+
+  // Initialize speech recognition with language detection
   useEffect(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -81,7 +182,7 @@ export function VoiceAssistant({ isActive, onToggle, className = '' }: VoiceAssi
       if (recognitionRef.current) {
         recognitionRef.current.continuous = true;
         recognitionRef.current.interimResults = true;
-        recognitionRef.current.lang = 'hi-IN'; // Default to Hindi, can be changed based on user preference
+        recognitionRef.current.lang = getRecognitionLanguage(language);
         
         recognitionRef.current.onstart = () => {
           setIsListening(true);
@@ -115,6 +216,11 @@ export function VoiceAssistant({ isActive, onToggle, className = '' }: VoiceAssi
           console.error('Speech recognition error:', event.error);
           setIsListening(false);
           stopAudioVisualization();
+          
+          // Handle language-specific errors
+          if (event.error === 'language-not-supported') {
+            speak(t('voice.errors.languageNotSupported'), 'en');
+          }
         };
         
         recognitionRef.current.onend = () => {
@@ -143,6 +249,14 @@ export function VoiceAssistant({ isActive, onToggle, className = '' }: VoiceAssi
       stopAudioVisualization();
     };
   }, []);
+
+  // Update recognition language when user language changes
+  useEffect(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.lang = getRecognitionLanguage(language);
+      setDetectedLanguage(language);
+    }
+  }, [language]);
 
   // Start/stop recognition based on isActive
   useEffect(() => {
@@ -195,44 +309,139 @@ export function VoiceAssistant({ isActive, onToggle, className = '' }: VoiceAssi
     setAudioLevel(0);
   };
 
-  // Process voice commands
-  const processVoiceCommand = (command: string) => {
+  // Process voice commands with language detection
+  const processVoiceCommand = async (command: string) => {
     setLastCommand(command);
+    setIsProcessing(true);
     
-    const matchedCommand = voiceCommands.find(cmd => 
-      command.includes(cmd.command.toLowerCase()) ||
-      cmd.command.toLowerCase().includes(command)
-    );
-    
-    if (matchedCommand) {
-      speak(matchedCommand.response);
-      if (matchedCommand.action) {
-        setTimeout(matchedCommand.action, 1000);
+    try {
+      // Detect language from the command
+      const detectedLang = detectLanguageFromText(command);
+      setDetectedLanguage(detectedLang);
+      
+      // Get commands for detected language
+      const voiceCommands = getVoiceCommands(detectedLang);
+      
+      const matchedCommand = voiceCommands.find(cmd => 
+        command.includes(cmd.command.toLowerCase()) ||
+        cmd.command.toLowerCase().includes(command) ||
+        calculateSimilarity(command, cmd.command.toLowerCase()) > 0.6
+      );
+      
+      if (matchedCommand) {
+        await speak(matchedCommand.response, detectedLang);
+        if (matchedCommand.action) {
+          setTimeout(matchedCommand.action, 1000);
+        }
+      } else {
+        // Try to process with backend voice intent service
+        try {
+          const response = await fetch('/api/voice/intent', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              text: command,
+              language: detectedLang,
+              userId: 'current-user-id', // Get from auth context
+              userType: 'customer' // Get from user context
+            })
+          });
+          
+          if (response.ok) {
+            const result = await response.json();
+            if (result.audioResponse) {
+              // Play the audio response from backend
+              const audio = new Audio(result.audioResponse);
+              audio.play();
+            } else {
+              await speak(result.response || t('voice.responses.processed'), detectedLang);
+            }
+          } else {
+            await speak(t('voice.responses.notUnderstood'), detectedLang);
+          }
+        } catch (error) {
+          console.error('Backend voice processing failed:', error);
+          await speak(t('voice.responses.notUnderstood'), detectedLang);
+        }
       }
-    } else {
-      speak(t('voice.responses.notUnderstood'));
+    } catch (error) {
+      console.error('Voice command processing failed:', error);
+      await speak(t('voice.responses.error'), language);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  // Text-to-speech
-  const speak = (text: string) => {
-    if (synthRef.current) {
-      setIsSpeaking(true);
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'hi-IN';
-      utterance.rate = 0.9;
-      utterance.pitch = 1;
-      
-      utterance.onend = () => {
-        setIsSpeaking(false);
-      };
-      
-      utterance.onerror = () => {
-        setIsSpeaking(false);
-      };
-      
-      synthRef.current.speak(utterance);
+  // Simple language detection based on text patterns
+  const detectLanguageFromText = (text: string): string => {
+    const languagePatterns = {
+      'hi': /[\u0900-\u097F]/,  // Devanagari
+      'bn': /[\u0980-\u09FF]/,  // Bengali
+      'gu': /[\u0A80-\u0AFF]/,  // Gujarati
+      'pa': /[\u0A00-\u0A7F]/,  // Gurmukhi
+      'or': /[\u0B00-\u0B7F]/,  // Oriya
+      'ta': /[\u0B80-\u0BFF]/,  // Tamil
+      'te': /[\u0C00-\u0C7F]/,  // Telugu
+      'kn': /[\u0C80-\u0CFF]/,  // Kannada
+      'ml': /[\u0D00-\u0D7F]/,  // Malayalam
+      'mr': /[\u0900-\u097F]/,  // Marathi (shares Devanagari)
+      'as': /[\u0980-\u09FF]/   // Assamese (shares Bengali)
+    };
+
+    for (const [lang, regex] of Object.entries(languagePatterns)) {
+      if (regex.test(text)) {
+        return lang;
+      }
     }
+
+    return language; // Default to current user language
+  };
+
+  // Calculate text similarity
+  const calculateSimilarity = (text1: string, text2: string): number => {
+    const words1 = text1.split(' ');
+    const words2 = text2.split(' ');
+    
+    let matches = 0;
+    for (const word1 of words1) {
+      for (const word2 of words2) {
+        if (word1.includes(word2) || word2.includes(word1)) {
+          matches++;
+          break;
+        }
+      }
+    }
+
+    return matches / Math.max(words1.length, words2.length);
+  };
+
+  // Text-to-speech with language support
+  const speak = async (text: string, lang: string = language): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if (synthRef.current) {
+        setIsSpeaking(true);
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = getTTSLanguage(lang);
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        
+        utterance.onend = () => {
+          setIsSpeaking(false);
+          resolve();
+        };
+        
+        utterance.onerror = (error) => {
+          setIsSpeaking(false);
+          reject(error);
+        };
+        
+        synthRef.current.speak(utterance);
+      } else {
+        resolve();
+      }
+    });
   };
 
   // Toggle voice assistant
@@ -241,6 +450,7 @@ export function VoiceAssistant({ isActive, onToggle, className = '' }: VoiceAssi
     if (isActive) {
       setTranscript('');
       setLastCommand('');
+      setDetectedLanguage(language);
     }
   };
 
@@ -283,6 +493,9 @@ export function VoiceAssistant({ isActive, onToggle, className = '' }: VoiceAssi
     );
   }
 
+  const currentLanguageInfo = supportedLanguages[detectedLanguage as keyof typeof supportedLanguages];
+  const voiceCommands = getVoiceCommands(detectedLanguage);
+
   return (
     <AnimatePresence>
       <motion.div
@@ -310,8 +523,19 @@ export function VoiceAssistant({ isActive, onToggle, className = '' }: VoiceAssi
                     {t('voice.assistant.speaking')}
                   </Badge>
                 )}
+                {isProcessing && (
+                  <Badge variant="secondary" className="text-xs">
+                    {t('voice.assistant.processing')}
+                  </Badge>
+                )}
               </div>
               <div className="flex items-center gap-2">
+                {/* Language indicator */}
+                <div className="flex items-center gap-1 text-xs text-gray-500">
+                  <Globe className="h-3 w-3" />
+                  <span>{currentLanguageInfo?.flag}</span>
+                  <span>{detectedLanguage.toUpperCase()}</span>
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -369,6 +593,7 @@ export function VoiceAssistant({ isActive, onToggle, className = '' }: VoiceAssi
                 variant={isActive ? "default" : "outline"}
                 onClick={handleToggle}
                 className="flex-1"
+                disabled={isProcessing}
               >
                 {isActive ? <Mic className="h-4 w-4 mr-2" /> : <MicOff className="h-4 w-4 mr-2" />}
                 {isActive ? t('voice.assistant.stop') : t('voice.assistant.start')}
@@ -393,7 +618,7 @@ export function VoiceAssistant({ isActive, onToggle, className = '' }: VoiceAssi
               >
                 <h4 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
                   <Zap className="h-4 w-4" />
-                  {t('voice.assistant.commands')}
+                  {t('voice.assistant.commands')} ({detectedLanguage.toUpperCase()})
                 </h4>
                 <div className="space-y-2">
                   {voiceCommands.map((cmd, index) => (
@@ -416,6 +641,11 @@ export function VoiceAssistant({ isActive, onToggle, className = '' }: VoiceAssi
                 <p className="text-xs text-gray-500">
                   {t('voice.assistant.lastCommand')}: "{lastCommand}"
                 </p>
+                {detectedLanguage !== language && (
+                  <p className="text-xs text-blue-500 mt-1">
+                    {t('voice.assistant.detectedLanguage')}: {currentLanguageInfo?.nativeName}
+                  </p>
+                )}
               </div>
             )}
           </CardContent>

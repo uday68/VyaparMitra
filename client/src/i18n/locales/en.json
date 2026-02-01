@@ -48,6 +48,8 @@
     "orders": "Orders",
     "profile": "Profile",
     "settings": "Settings",
+    "dashboard": "Dashboard",
+    "inventory": "Inventory",
     "help": "Help",
     "goToDashboard": "Go to Dashboard"
   },
@@ -104,30 +106,6 @@
       "secure": "Secure Transactions"
     }
   },
-  "permissions": {
-    "title": "Voice Permissions",
-    "subtitle": "Enable voice features for the best experience",
-    "microphone": {
-      "title": "Microphone Access",
-      "description": "Allow microphone access to use voice commands and negotiations",
-      "grant": "Grant Permission",
-      "granted": "Permission Granted"
-    },
-    "notifications": {
-      "title": "Notifications",
-      "description": "Get notified about new bids and deals",
-      "enable": "Enable Notifications",
-      "enabled": "Notifications Enabled"
-    },
-    "location": {
-      "title": "Location Access",
-      "description": "Find nearby vendors and products",
-      "allow": "Allow Location",
-      "allowed": "Location Allowed"
-    },
-    "readyToShop": "Ready to Shop!",
-    "skipForNow": "Skip for Now"
-  },
   "shop": {
     "title": "Shop Products",
     "searchPlaceholder": "Search products...",
@@ -149,7 +127,7 @@
       "all": "All Products",
       "deals": "Deals",
       "nearby": "Nearby",
-      "rating": "High Rated"
+      "highRated": "High Rated"
     },
     "product": {
       "price": "Price",
@@ -209,7 +187,81 @@
       "translated": "Translated from {{language}}"
     }
   },
+  
   "vendor": {
+    "stats": {
+      "totalProducts": "Total Products",
+      "activeNegotiations": "Active Negotiations",
+      "todaysSales": "Today's Sales",
+      "totalRevenue": "Total Revenue",
+      "inventoryValue": "Inventory Value"
+    },
+    "sections": {
+      "businessOverview": "Business Overview",
+      "quickActions": "Quick Actions",
+      "shopLocation": "Shop Location",
+      "qrCode": "QR Code",
+      "activeNegotiations": "Active Negotiations",
+      "yourProducts": "Your Products",
+      "recentOrders": "Recent Orders",
+      "inventoryAnalytics": "Inventory Analytics",
+      "profitabilityAnalysis": "Profitability Analysis",
+      "negotiationPerformance": "Negotiation Performance",
+      "fastMovingItems": "Fast Moving Items",
+      "reorderRecommendations": "Reorder Recommendations",
+      "voiceVsTextPerformance": "Voice vs Text Performance"
+    },
+    "quickActions": {
+      "addProduct": "Add Product",
+      "viewOrders": "View Orders",
+      "manageInventory": "Manage Inventory",
+      "generateQR": "Generate QR Code",
+      "analytics": "Analytics",
+      "voiceSettings": "Voice Settings"
+    },
+    "negotiations": {
+      "noActive": "No active negotiations",
+      "newWillAppear": "New negotiations will appear here",
+      "viewAll": "View All",
+      "addNew": "Add New",
+      "accept": "Accept",
+      "counter": "Counter",
+      "reject": "Reject",
+      "customerOffer": "Customer Offer:",
+      "yourPrice": "Your Price:"
+    },
+    "analytics": {
+      "successRate": "Success Rate",
+      "avgTime": "Avg Time",
+      "avgDiscount": "Avg Discount",
+      "totalNegotiations": "Total Negotiations",
+      "voice": "Voice",
+      "text": "Text",
+      "revenue": "Revenue",
+      "profit": "Profit",
+      "roi": "ROI",
+      "loadingAnalytics": "Loading analytics...",
+      "salesPerDay": "sales/day",
+      "daysLeft": "days left",
+      "current": "Current",
+      "recommended": "Recommended",
+      "margin": "margin",
+      "negotiations": "negotiations"
+    },
+    "products": {
+      "stock": "Stock",
+      "view": "View",
+      "left": "left"
+    },
+    "voice": {
+      "ready": "Voice AI ready to help with your business",
+      "listening": "🎤 Voice Assistant is listening...",
+      "tryVoice": "Try Voice",
+      "stop": "Stop"
+    },
+    "language": {
+      "chooseLanguage": "Choose Language"
+    },
     "dashboard": {
       "title": "Vendor Dashboard",
       "welcome": "Welcome back, {{name}}",
@@ -217,15 +269,63 @@
         "totalProducts": "Total Products",
         "activeNegotiations": "Active Negotiations",
         "todaysSales": "Today's Sales",
-        "totalRevenue": "Total Revenue"
+        "totalRevenue": "Total Revenue",
+        "inventoryValue": "Inventory Value"
+      },
+      "sections": {
+        "businessOverview": "Business Overview",
+        "quickActions": "Quick Actions",
+        "shopLocation": "Shop Location",
+        "qrCode": "QR Code",
+        "activeNegotiations": "Active Negotiations",
+        "yourProducts": "Your Products",
+        "recentOrders": "Recent Orders",
+        "inventoryAnalytics": "Inventory Analytics",
+        "profitabilityAnalysis": "Profitability Analysis",
+        "negotiationPerformance": "Negotiation Performance",
+        "fastMovingItems": "Fast Moving Items",
+        "reorderRecommendations": "Reorder Recommendations",
+        "voiceVsTextPerformance": "Voice vs Text Performance"
       },
       "quickActions": {
         "addProduct": "Add Product",
         "viewOrders": "View Orders",
         "manageInventory": "Manage Inventory",
-        "generateQR": "Generate QR Code"
+        "generateQR": "Generate QR Code",
+        "analytics": "Analytics",
+        "voiceSettings": "Voice Settings"
+      },
+      "negotiations": {
+        "noActive": "No active negotiations",
+        "newWillAppear": "New negotiations will appear here",
+        "viewAll": "View All",
+        "addNew": "Add New",
+        "accept": "Accept",
+        "counter": "Counter",
+        "reject": "Reject",
+        "customerOffer": "Customer Offer:",
+        "yourPrice": "Your Price:"
+      },
+      "analytics": {
+        "successRate": "Success Rate",
+        "avgTime": "Avg Time",
+        "avgDiscount": "Avg Discount",
+        "totalNegotiations": "Total Negotiations",
+        "voice": "Voice",
+        "text": "Text",
+        "revenue": "Revenue",
+        "profit": "Profit",
+        "roi": "ROI",
+        "loadingAnalytics": "Loading analytics...",
+        "salesPerDay": "sales/day",
+        "daysLeft": "days left",
+        "current": "Current",
+        "recommended": "Recommended",
+        "margin": "margin",
+        "negotiations": "negotiations"
       }
     },
+  
     "products": {
       "title": "My Products",
       "addNew": "Add New Product",
@@ -260,6 +360,29 @@
     "markShipped": "Mark as Shipped"
   },
   "voice": {
+    "assistant": {
+      "title": "Voice Assistant",
+      "listening": "Listening",
+      "speaking": "Speaking",
+      "processing": "Processing",
+      "start": "Start Voice",
+      "stop": "Stop Voice",
+      "commands": "Voice Commands",
+      "confidence": "Confidence",
+      "lastCommand": "Last Command",
+      "detectedLanguage": "Detected Language",
+      "languagePrompt": "Hi! Choose your language, or just say 'I speak English'"
+    },
+    "responses": {
+      "showingApples": "Showing apples in your area",
+      "findingDeals": "Finding the best deals near you",
+      "openingScanner": "Opening QR code scanner",
+      "showingOrders": "Displaying your order history",
+      "help": "Here are the available voice commands",
+      "notUnderstood": "I didn't understand that. Could you please repeat?",
+      "processed": "Command processed successfully",
+      "error": "Sorry, there was an error processing your command"
+    },
     "settings": {
       "title": "Voice Settings",
       "language": "Voice Language",
@@ -308,6 +431,7 @@
       "permissionDenied": "Microphone permission denied",
       "networkError": "Network error during voice processing",
       "recognitionFailed": "Voice recognition failed",
+      "languageNotSupported": "Language not supported for voice recognition",
       "tryAgain": "Please try again"
     }
   },

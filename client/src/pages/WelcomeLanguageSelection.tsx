@@ -1,107 +1,126 @@
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useTranslation } from '../hooks/useTranslation';
-import { LanguageGrid } from '../components/LanguageSelector';
+import { 
+  Container, 
+  Section, 
+  Stack,
+  TouchTargetButton,
+  VoiceAssistantBanner 
+} from '../design-system/components';
+import { RadioGroup } from '../design-system/components/RadioGroup';
+import { cn } from '../design-system/utils/cn';
 
 export function WelcomeLanguageSelection() {
   const [, setLocation] = useLocation();
-  const { t } = useTranslation();
-  const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
+  const { t, language, changeLanguage, supportedLanguages } = useTranslation();
+  const [selectedLanguage, setSelectedLanguage] = useState(language);
+  const [isVoiceListening, setIsVoiceListening] = useState(false);
 
-  const handleLanguageSelect = (language: string) => {
-    // Language is already changed by LanguageGrid component
-    console.log('Language selected:', language);
+  const handleLanguageSelect = async (newLanguage: string) => {
+    setSelectedLanguage(newLanguage);
+    try {
+      await changeLanguage(newLanguage);
+      localStorage.setItem('vyapar-mitra-language', newLanguage);
+    } catch (error) {
+      console.error('Failed to change language:', error);
+    }
   };
 
   const handleContinue = () => {
-    // Store voice preference
-    localStorage.setItem('voiceEnabled', isVoiceEnabled.toString());
-    
     // Navigate to main app
     setLocation('/customer/shop');
   };
 
   const handleVoiceToggle = () => {
-    setIsVoiceEnabled(!isVoiceEnabled);
+    setIsVoiceListening(!isVoiceListening);
   };
 
+  // Convert supported languages to radio options
+  const languageOptions = Object.entries(supportedLanguages).map(([code, info]) => ({
+    value: code,
+    label: info.nativeName,
+    description: info.name
+  }));
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex flex-col">
-      <div className="flex-1 flex flex-col max-w-md mx-auto w-full px-6 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <span className="material-symbols-outlined text-white text-3xl">translate</span>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            {t('welcome.title')}
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 text-base leading-relaxed">
-            {t('welcome.description')}
-          </p>
+    <div className="min-h-screen bg-background-light dark:bg-background-dark flex flex-col">
+      {/* Phone Container for Mobile-First Design */}
+      <Container maxWidth="mobile" className="flex-1 flex flex-col min-h-screen">
+        
+        {/* Top Illustration Section */}
+        <div className="w-full aspect-[4/3] bg-center bg-no-repeat bg-cover rounded-b-xl overflow-hidden"
+             style={{
+               backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuBiuZVc5fhFR05SJOynYfqYguILJchK2EELf3b2WobHxkrhcMwMhjFwpszBWo3nd1j9eos1HluZmUrDUNy-iCTT8cSKgcDl09ja5o1quXJWOEWhfQukAqt5X4-ADWqv1czMv5gXwm1Enm1jky7x3HlJBubt9APNmB3jONafHpT6YJ_mNVSZueQqgy6s8q44U1u8sVZIag7qMMRFpV6lvljY78EQLFQDm5lEZc6ha2Z5CtsgGzhzUBcFzoDLfisncjfxdqQyk4YP")`
+             }}>
         </div>
 
-        {/* Language Selection */}
-        <div className="flex-1">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            {t('welcome.selectLanguage')}
-          </h2>
-          
-          <LanguageGrid 
-            onLanguageSelect={handleLanguageSelect}
-            className="mb-8"
-          />
-
-          {/* Voice Settings */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 mb-8">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-green-600 text-lg">mic</span>
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-900 dark:text-white">{t('voice.settings.title')}</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {t('permissions.microphone.description')}
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={handleVoiceToggle}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  isVoiceEnabled ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    isVoiceEnabled ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
+        {/* Content Section */}
+        <Section spacing="component" className="flex-1 flex flex-col">
+          <Stack spacing="component">
+            
+            {/* Headline */}
+            <div className="text-center sm:text-left">
+              <h1 className="text-foreground dark:text-white tracking-tight text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight mb-2">
+                {t('welcome.title')}
+              </h1>
+              <p className="text-foreground-muted dark:text-primary/70 text-base font-normal leading-normal">
+                {t('welcome.description')}
+              </p>
             </div>
-          </div>
+
+            {/* Voice Assistant Banner */}
+            <VoiceAssistantBanner
+              status={isVoiceListening ? 'listening' : 'idle'}
+              message={isVoiceListening ? 'Listening...' : t('voice.assistant.languagePrompt')}
+              onToggle={handleVoiceToggle}
+              colorScheme="green"
+              className="border border-border dark:border-primary/20 bg-card dark:bg-background-dark/50"
+            />
+
+            {/* Language Selection */}
+            <div className="flex-1">
+              <RadioGroup
+                value={selectedLanguage}
+                onValueChange={handleLanguageSelect}
+                options={languageOptions}
+                className="space-y-3"
+                itemClassName={cn(
+                  "flex items-center gap-4 rounded-xl border border-solid border-border dark:border-primary/10",
+                  "p-4 flex-row-reverse bg-card dark:bg-background-dark/40",
+                  "cursor-pointer hover:border-primary-green transition-colors",
+                  "touch-target-minimum"
+                )}
+                radioClassName={cn(
+                  "h-6 w-6 border-2 border-border bg-transparent text-transparent",
+                  "checked:border-primary-green checked:bg-primary-green",
+                  "focus:outline-none focus:ring-2 focus:ring-primary-green focus:ring-offset-2",
+                  "checked:focus:border-primary-green"
+                )}
+                labelClassName="text-foreground dark:text-white text-base font-medium leading-normal"
+              />
+            </div>
+
+          </Stack>
+        </Section>
+
+        {/* Sticky Footer with Continue Button */}
+        <div className="sticky bottom-0 bg-gradient-to-t from-background-light dark:from-background-dark via-background-light dark:via-background-dark pt-8 pb-10">
+          <TouchTargetButton
+            onClick={handleContinue}
+            size="large"
+            className={cn(
+              "w-full h-14 rounded-xl text-lg font-bold leading-normal tracking-wide",
+              "bg-primary-green text-foreground shadow-lg shadow-primary-green/30",
+              "hover:bg-primary-green/90 active:scale-[0.98] transition-all"
+            )}
+            aria-label={t('welcome.getStarted')}
+          >
+            {t('welcome.getStarted')}
+          </TouchTargetButton>
         </div>
 
-        {/* Continue Button */}
-        <button
-          onClick={handleContinue}
-          className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-600/20 hover:bg-blue-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-        >
-          <span>{t('welcome.getStarted')}</span>
-          <span className="material-symbols-outlined">arrow_forward</span>
-        </button>
-
-        {/* Footer Info */}
-        <div className="mt-6 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-            {t('settings.general.language')} {t('common.and')} {t('voice.settings.title')} {t('common.canBeChanged')}
-          </p>
-        </div>
-      </div>
-
-      {/* Decorative Elements */}
-      <div className="absolute top-10 right-10 w-20 h-20 bg-blue-200 dark:bg-blue-800 rounded-full opacity-20 animate-pulse"></div>
-      <div className="absolute bottom-20 left-10 w-16 h-16 bg-indigo-200 dark:bg-indigo-800 rounded-full opacity-20 animate-pulse" style={{animationDelay: '1s'}}></div>
+      </Container>
     </div>
   );
 }

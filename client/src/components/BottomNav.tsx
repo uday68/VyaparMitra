@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import QRScanner from "./QRScanner";
 
 interface BottomNavProps {
-  currentPage?: "shop" | "bids" | "account" | "qr";
+  currentPage?: "shop" | "bids" | "account" | "qr" | "dashboard" | "inventory" | "add";
 }
 
 export function BottomNav({ currentPage }: BottomNavProps = {}) {
@@ -107,9 +107,10 @@ export function BottomNav({ currentPage }: BottomNavProps = {}) {
   const getNavItems = () => {
     if (user.type === 'vendor') {
       return [
-        { href: "/vendor", key: "bids", label: t('navigation.negotiations'), icon: "dashboard" },
-        { href: "/add-product", key: "shop", label: "Add Product", icon: "add_box" },
-        { href: "/profile", key: "account", label: t('navigation.profile'), icon: "account_circle", isProfile: true },
+        { href: "/vendor", key: "dashboard", label: "Home", icon: "dashboard" },
+        { href: "/vendor/inventory", key: "inventory", label: "Stock", icon: "inventory" },
+        { href: "/add-product", key: "add", label: "Add", icon: "add_circle" },
+        { href: "/profile", key: "account", label: "Profile", icon: "account_circle", isProfile: true },
       ];
     } else {
       return [
@@ -207,89 +208,130 @@ export function BottomNav({ currentPage }: BottomNavProps = {}) {
         onMouseLeave={() => !isMobile && setTimeout(() => setIsVisible(false), 1000)}
       >
         <div className="flex items-center justify-around px-1 py-1">
-          {/* Left Navigation Items */}
-          <div className="flex flex-1 justify-around">
-            {navItems.slice(0, Math.ceil(navItems.length / 2)).map((item) => {
-              const isActive = currentPage === item.key || location === item.href;
-              return (
-                <button
-                  key={item.href}
-                  onClick={() => handleProfileClick(item)}
-                  className={cn(
-                    "flex flex-col items-center gap-1 py-1 px-2 rounded-lg transition-colors relative",
-                    isActive ? "text-blue-600 bg-blue-50" : "text-gray-600 hover:text-blue-600"
-                  )}
-                >
-                  <span className={cn(
-                    "material-symbols-outlined text-lg",
-                    isActive ? "font-bold" : ""
-                  )}>
-                    {item.icon}
-                  </span>
-                  <span className={cn(
-                    "text-xs",
-                    isActive ? "font-bold" : "font-medium"
-                  )}>
-                    {item.label}
-                  </span>
-                  {/* Sign out indicator for mobile profile */}
-                  {isMobile && item.isProfile && showSignOutMenu && (
-                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Center QR Scanner Button - PhonePe Style */}
-          <div className="mx-2">
-            <button
-              onClick={handleQRScan}
-              className="relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full p-3 shadow-lg transform hover:scale-105 transition-all duration-200 active:scale-95"
-            >
-              <span className="material-symbols-outlined text-xl">qr_code_scanner</span>
-              <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center animate-pulse">
-                <span className="material-symbols-outlined text-xs">add</span>
-              </div>
-            </button>
-            <div className="text-center mt-0.5">
-              <span className="text-xs font-medium text-gray-700">Scan QR</span>
+          {user.type === 'vendor' ? (
+            // Vendor Navigation - Clean 4-item layout
+            <div className="flex items-center justify-between w-full max-w-sm mx-auto px-2 sm:px-4">
+              {navItems.map((item) => {
+                const isActive = currentPage === item.key || location === item.href;
+                return (
+                  <button
+                    key={item.href}
+                    onClick={() => handleProfileClick(item)}
+                    className={cn(
+                      "flex flex-col items-center gap-1 py-2 px-2 sm:px-3 rounded-xl transition-all duration-200 relative min-w-[60px] sm:min-w-[70px]",
+                      isActive 
+                        ? "text-blue-600 bg-blue-50 shadow-sm scale-105" 
+                        : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+                    )}
+                  >
+                    <span className={cn(
+                      "material-symbols-outlined transition-all duration-200",
+                      isActive ? "text-xl font-bold" : "text-lg"
+                    )}>
+                      {item.icon}
+                    </span>
+                    <span className={cn(
+                      "text-xs font-medium transition-all duration-200 text-center leading-tight",
+                      isActive ? "font-bold" : "font-normal"
+                    )}>
+                      {item.label}
+                    </span>
+                    {isActive && (
+                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-600 rounded-full"></div>
+                    )}
+                    {/* Sign out indicator for mobile profile */}
+                    {isMobile && item.isProfile && showSignOutMenu && (
+                      <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+                    )}
+                  </button>
+                );
+              })}
             </div>
-          </div>
+          ) : (
+            // Customer Navigation - Original layout with QR scanner
+            <>
+              {/* Navigation Items */}
+              <div className="flex flex-1 justify-around">
+                {navItems.slice(0, -1).map((item) => {
+                  const isActive = currentPage === item.key || location === item.href;
+                  return (
+                    <button
+                      key={item.href}
+                      onClick={() => handleProfileClick(item)}
+                      className={cn(
+                        "flex flex-col items-center gap-1 py-1 px-2 rounded-lg transition-colors relative",
+                        isActive ? "text-blue-600 bg-blue-50" : "text-gray-600 hover:text-blue-600"
+                      )}
+                    >
+                      <span className={cn(
+                        "material-symbols-outlined text-lg",
+                        isActive ? "font-bold" : ""
+                      )}>
+                        {item.icon}
+                      </span>
+                      <span className={cn(
+                        "text-xs",
+                        isActive ? "font-bold" : "font-medium"
+                      )}>
+                        {item.label}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
 
-          {/* Right Navigation Items */}
-          <div className="flex flex-1 justify-around">
-            {navItems.slice(Math.ceil(navItems.length / 2)).map((item) => {
-              const isActive = currentPage === item.key || location === item.href;
-              return (
+              {/* Center QR Scanner Button - PhonePe Style */}
+              <div className="mx-2">
                 <button
-                  key={item.href}
-                  onClick={() => handleProfileClick(item)}
-                  className={cn(
-                    "flex flex-col items-center gap-1 py-1 px-2 rounded-lg transition-colors relative",
-                    isActive ? "text-blue-600 bg-blue-50" : "text-gray-600 hover:text-blue-600"
-                  )}
+                  onClick={handleQRScan}
+                  className="relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full p-3 shadow-lg transform hover:scale-105 transition-all duration-200 active:scale-95"
                 >
-                  <span className={cn(
-                    "material-symbols-outlined text-lg",
-                    isActive ? "font-bold" : ""
-                  )}>
-                    {item.icon}
-                  </span>
-                  <span className={cn(
-                    "text-xs",
-                    isActive ? "font-bold" : "font-medium"
-                  )}>
-                    {item.label}
-                  </span>
-                  {/* Sign out indicator for mobile profile */}
-                  {isMobile && item.isProfile && showSignOutMenu && (
-                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
-                  )}
+                  <span className="material-symbols-outlined text-xl">qr_code_scanner</span>
+                  <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center animate-pulse">
+                    <span className="material-symbols-outlined text-xs">add</span>
+                  </div>
                 </button>
-              );
-            })}
-          </div>
+                <div className="text-center mt-0.5">
+                  <span className="text-xs font-medium text-gray-700">Scan QR</span>
+                </div>
+              </div>
+
+              {/* Profile Item */}
+              <div className="flex justify-center">
+                {(() => {
+                  const profileItem = navItems[navItems.length - 1];
+                  const isActive = currentPage === profileItem.key || location === profileItem.href;
+                  return (
+                    <button
+                      key={profileItem.href}
+                      onClick={() => handleProfileClick(profileItem)}
+                      className={cn(
+                        "flex flex-col items-center gap-1 py-1 px-2 rounded-lg transition-colors relative",
+                        isActive ? "text-blue-600 bg-blue-50" : "text-gray-600 hover:text-blue-600"
+                      )}
+                    >
+                      <span className={cn(
+                        "material-symbols-outlined text-lg",
+                        isActive ? "font-bold" : ""
+                      )}>
+                        {profileItem.icon}
+                      </span>
+                      <span className={cn(
+                        "text-xs",
+                        isActive ? "font-bold" : "font-medium"
+                      )}>
+                        {profileItem.label}
+                      </span>
+                      {/* Sign out indicator for mobile profile */}
+                      {isMobile && profileItem.isProfile && showSignOutMenu && (
+                        <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+                      )}
+                    </button>
+                  );
+                })()}
+              </div>
+            </>
+          )}
         </div>
       </motion.nav>
     </>

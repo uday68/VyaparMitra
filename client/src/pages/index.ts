@@ -2,6 +2,7 @@
 export { default as Home } from './Home';
 export { default as Chat } from './Chat';
 export { default as Vendor } from './Vendor';
+export { default as VendorInventory } from './VendorInventory';
 export { default as CustomerNegotiation } from './CustomerNegotiation';
 export { default as DealConfirmation } from './DealConfirmation';
 export { default as AddProduct } from './AddProduct';

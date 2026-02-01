@@ -219,3 +219,34 @@ export function getResponsiveSpacing(
   const values = responsiveSpacing[variant];
   return generateResponsiveClasses(property, values);
 }
+
+/**
+ * Voice UI responsive utilities
+ */
+export const voiceUIResponsive = {
+  waveform: {
+    mobile: 'w-8 h-8',
+    tablet: 'w-10 h-10',
+    desktop: 'w-12 h-12'
+  },
+  banner: {
+    mobile: 'p-3 text-sm',
+    tablet: 'p-4 text-base',
+    desktop: 'p-6 text-lg'
+  },
+  statusIndicator: {
+    mobile: 'w-6 h-6',
+    tablet: 'w-8 h-8', 
+    desktop: 'w-10 h-10'
+  }
+} as const;
+
+/**
+ * Get responsive voice UI classes
+ */
+export function getVoiceUIClasses(
+  component: keyof typeof voiceUIResponsive
+): string {
+  const values = voiceUIResponsive[component];
+  return generateResponsiveClasses('', values);
+}

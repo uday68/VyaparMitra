@@ -7,6 +7,8 @@ import { useCustomerDashboard } from '../hooks/useCustomerDashboard';
 import { Header } from '../components/Header';
 import { BottomNav } from '../components/BottomNav';
 import QRScanner from '../components/QRScanner';
+import { CrossLanguageQRScanner } from '../components/CrossLanguageQRScanner';
+import { NegotiationInterface } from '../components/NegotiationInterface';
 import { VoiceAssistant } from '../components/VoiceAssistant';
 import { LanguageSelector } from '../components/LanguageSelector';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -73,6 +75,11 @@ export function CustomerDashboard() {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [showQRScanner, setShowQRScanner] = useState(false);
+  const [showCrossLanguageScanner, setShowCrossLanguageScanner] = useState(false);
+  const [activeNegotiationSession, setActiveNegotiationSession] = useState<{
+    sessionId: string;
+    customerLanguage: string;
+  } | null>(null);
   const [isVoiceActive, setIsVoiceActive] = useState(false);
   const [currentLocation, setCurrentLocation] = useState('');
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
@@ -199,7 +206,15 @@ export function CustomerDashboard() {
   };
 
   const handleQRScan = () => {
-    setShowQRScanner(true);
+    setShowCrossLanguageScanner(true);
+  };
+
+  const handleCrossLanguageQRScanSuccess = (sessionData: any, customerLanguage: string) => {
+    setShowCrossLanguageScanner(false);
+    setActiveNegotiationSession({
+      sessionId: sessionData.sessionId,
+      customerLanguage
+    });
   };
 
   const handleQRScanSuccess = (vendorData: { vendorId: string; shopName?: string }) => {
@@ -399,7 +414,7 @@ export function CustomerDashboard() {
               </Button>
             </motion.div>
 
-            {/* QR Scanner Button */}
+            {/* Cross-Language QR Scanner Button */}
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -413,7 +428,7 @@ export function CustomerDashboard() {
                   <QrCode className="h-6 w-6" />
                 </div>
                 <span className="text-sm font-semibold text-purple-700 dark:text-purple-300">
-                  {t('dashboard.actions.scanQR')}
+                  Scan QR & Negotiate
                 </span>
               </Button>
             </motion.div>
@@ -747,6 +762,91 @@ export function CustomerDashboard() {
       
       {/* Voice Assistant Component */}
       <VoiceAssistant isActive={isVoiceActive} onToggle={setIsVoiceActive} />
+
+      {/* Cross-Language QR Scanner Modal */}
+      <AnimatePresence>
+        {showCrossLanguageScanner && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg shadow-xl max-w-md w-full"
+            >
+              <div className="p-4 border-b">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold">Scan Vendor QR Code</h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowCrossLanguageScanner(false)}
+                  >
+                    ×
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="p-4">
+                <CrossLanguageQRScanner
+                  onScanSuccess={handleCrossLanguageQRScanSuccess}
+                  onScanError={(error) => {
+                    console.error('QR scan error:', error);
+                  }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Active Negotiation Interface */}
+      <AnimatePresence>
+        {activeNegotiationSession && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            onClick={() => setActiveNegotiationSession(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-4 border-b">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold">Negotiation in Progress</h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setActiveNegotiationSession(null)}
+                  >
+                    ×
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="h-[600px]">
+                <NegotiationInterface
+                  sessionId={activeNegotiationSession.sessionId}
+                  userId={user?.id || ''}
+                  userType="CUSTOMER"
+                  initialLanguage={activeNegotiationSession.customerLanguage as any}
+                  graphqlClient={null} // Would need to pass actual GraphQL client
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

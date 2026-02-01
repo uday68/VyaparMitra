@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useLocation } from 'wouter';
 
 export function CustomerVoiceNegotiation() {
   const { productId } = useParams<{ productId: string }>();
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
   const [isListening, setIsListening] = useState(true);
   const [currentOffer, setCurrentOffer] = useState('₹170');
   const [vendorCounter, setVendorCounter] = useState('₹180');
@@ -20,7 +20,7 @@ export function CustomerVoiceNegotiation() {
   };
 
   const handleAccept = () => {
-    navigate(`/customer/deal-confirmation/${productId}`);
+    setLocation(`/customer/deal-confirmation/${productId}`);
   };
 
   const handleCounterOffer = () => {
@@ -48,7 +48,7 @@ export function CustomerVoiceNegotiation() {
     <div className="relative flex h-screen w-full flex-col max-w-[430px] mx-auto bg-white dark:bg-gray-900 overflow-hidden shadow-2xl">
       {/* TopAppBar */}
       <div className="flex items-center bg-white dark:bg-gray-900 p-4 pb-2 justify-between border-b dark:border-gray-800 sticky top-0 z-10">
-        <div className="text-gray-900 dark:text-white flex size-12 shrink-0 items-center justify-start cursor-pointer" onClick={() => navigate(-1)}>
+        <div className="text-gray-900 dark:text-white flex size-12 shrink-0 items-center justify-start cursor-pointer" onClick={() => window.history.back()}>
           <span className="material-symbols-outlined">arrow_back_ios</span>
         </div>
         <h2 className="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">

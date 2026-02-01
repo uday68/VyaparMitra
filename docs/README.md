@@ -764,7 +764,212 @@ npm run build
 npm start
 ```
 
-## 🎯 Voice Commerce Features
+## 🎯 Enhanced QR Code System
+
+### 🆕 **Dual QR Code Types with Voice Translation**
+
+VyaparMitra now supports two distinct types of QR codes, each designed for different interaction scenarios:
+
+#### 1. **Product-Specific QR Codes**
+- **Purpose**: Direct negotiation for specific products
+- **Use Case**: Vendor generates QR code for a particular product (e.g., "Fresh Apples - ₹80/kg")
+- **Customer Experience**: Scan → See product details → Start price negotiation
+- **Voice Features**: Real-time voice translation during product-specific negotiations
+
+#### 2. **General Conversation QR Codes**
+- **Purpose**: Open communication channel between vendor and customers
+- **Use Case**: Vendor generates general QR code for inquiries, questions, or browsing
+- **Customer Experience**: Scan → Start conversation → Ask questions in any language
+- **Voice Features**: Real-time voice translation for general inquiries and support
+
+### 🎙️ **Real-Time Voice Translation Flow**
+
+Both QR code types support seamless cross-language communication:
+
+```
+Customer speaks in Hindi → Voice Recognition → Translation to English → Played to Vendor
+                                                                              ↓
+Vendor responds in English → Voice Recognition → Translation to Hindi → Played to Customer
+```
+
+#### **Supported Voice Translation Languages**
+- **Primary**: Hindi ↔ English ↔ Bengali ↔ Tamil ↔ Telugu
+- **Extended**: Kannada, Malayalam, Marathi, Gujarati, Punjabi, Oriya, Assamese
+- **Voice Quality**: Natural TTS with regional accents and proper pronunciation
+
+### 🔧 **QR Code Generation Process**
+
+#### **For Vendors**
+1. **Access QR Generator**: Click "Generate QR Code" button on vendor dashboard
+2. **Choose QR Type**: Select between "Product Negotiation" or "General Conversation"
+3. **Configure Settings**: 
+   - Select your preferred language
+   - Choose specific product (for product QR codes)
+   - Set session duration (default: 24 hours)
+4. **Generate & Share**: Download, print, or share QR code with customers
+
+#### **For Customers**
+1. **Scan QR Code**: Use phone camera or in-app QR scanner
+2. **Select Language**: Choose your preferred language for communication
+3. **Start Interaction**: 
+   - **Product QR**: View product details and start negotiation
+   - **General QR**: Start open conversation with vendor
+4. **Voice Communication**: Speak naturally in your language, hear responses in real-time
+
+### 📱 **QR Code Features**
+
+#### **Smart QR Code Generation**
+- **Dynamic Content**: QR codes contain session tokens, not static URLs
+- **Security**: JWT-based tokens with expiration and validation
+- **Session Management**: Each QR code creates a unique negotiation session
+- **Multi-Device**: Works across phones, tablets, and desktop browsers
+
+#### **Voice-Enhanced Interactions**
+- **Automatic Translation**: Voice messages translated and played automatically
+- **Context Preservation**: Translation maintains negotiation context and intent
+- **Audio Caching**: Frequently used phrases cached for faster playback
+- **Offline Fallback**: Basic functionality works without internet connection
+
+#### **Session Management**
+- **24-Hour Validity**: QR codes expire after 24 hours for security
+- **Real-Time Status**: Live session status with customer join notifications
+- **Session History**: Track all QR code sessions and interactions
+- **Analytics**: Detailed metrics on QR code usage and success rates
+
+### 🛠️ **Technical Implementation**
+
+#### **Database Schema Updates**
+```sql
+-- Enhanced QR Sessions table with session type support
+ALTER TABLE qr_sessions 
+ADD COLUMN session_type VARCHAR(20) NOT NULL DEFAULT 'PRODUCT' 
+CHECK (session_type IN ('PRODUCT', 'GENERAL'));
+
+-- Make product_id nullable for general conversations
+ALTER TABLE qr_sessions 
+ALTER COLUMN product_id DROP NOT NULL;
+
+-- Add customer tracking
+ALTER TABLE qr_sessions 
+ADD COLUMN customer_id UUID REFERENCES users(id) ON DELETE SET NULL;
+```
+
+#### **API Endpoints**
+```typescript
+// Generate product-specific QR code
+POST /api/qr-sessions/generate
+{
+  "productId": "uuid",
+  "vendorLanguage": "hi"
+}
+
+// Generate general conversation QR code
+POST /api/qr-sessions/generate-general
+{
+  "vendorId": "uuid", 
+  "vendorLanguage": "hi"
+}
+
+// Validate and join QR session
+POST /api/qr-sessions/validate
+{
+  "qrToken": "jwt-token-from-qr-code"
+}
+
+// Real-time voice translation
+POST /api/qr-sessions/voice/tts
+{
+  "text": "Can you reduce the price?",
+  "language": "en",
+  "targetLanguage": "hi"
+}
+```
+
+#### **Frontend Components**
+- **QRCodeGenerator**: Enhanced component supporting both QR types
+- **QRScanner**: Updated scanner with voice feedback and language selection
+- **NegotiationInterface**: Voice-enabled chat interface for both QR types
+- **VoiceTranslation**: Real-time voice translation component
+
+### 🎯 **Use Cases & Examples**
+
+#### **Scenario 1: Product Negotiation**
+```
+Vendor: Generates QR code for "Fresh Mangoes - ₹120/kg"
+Customer: Scans QR → Sees product → Says "Can you do ₹100?"
+System: Translates to vendor's language → Plays audio to vendor
+Vendor: Responds "How about ₹110?" → Translated back to customer
+Result: Successful negotiation with voice translation
+```
+
+#### **Scenario 2: General Inquiry**
+```
+Vendor: Generates general QR code for shop inquiries
+Customer: Scans QR → Asks "Do you have organic vegetables?"
+System: Translates question → Vendor responds with product list
+Customer: Asks follow-up questions → All translated in real-time
+Result: Customer gets information and may start specific negotiations
+```
+
+#### **Scenario 3: Cross-Language Support**
+```
+Tamil Customer + Hindi Vendor:
+Customer speaks Tamil → Recognized → Translated to Hindi → Played to vendor
+Vendor responds in Hindi → Recognized → Translated to Tamil → Played to customer
+Result: Seamless communication despite language barrier
+```
+
+### 📊 **QR Code Analytics**
+
+#### **Vendor Dashboard Metrics**
+- **QR Code Usage**: Number of scans per QR code type
+- **Session Success Rate**: Percentage of scans leading to negotiations
+- **Language Distribution**: Popular customer languages
+- **Voice vs Text**: Usage patterns for voice vs text communication
+- **Conversion Rate**: QR scans leading to completed purchases
+
+#### **Performance Metrics**
+- **Translation Speed**: Average time for voice translation
+- **Voice Quality**: Customer satisfaction with voice clarity
+- **Session Duration**: Average length of QR code sessions
+- **Error Rates**: Voice recognition and translation accuracy
+- **Device Compatibility**: QR code performance across devices
+
+### 🔒 **Security & Privacy**
+
+#### **QR Code Security**
+- **JWT Tokens**: Cryptographically signed session tokens
+- **Expiration**: Automatic expiration after 24 hours
+- **Session Validation**: Server-side validation for all QR sessions
+- **Rate Limiting**: Protection against QR code abuse
+- **Audit Logging**: Complete audit trail for all QR interactions
+
+#### **Voice Privacy**
+- **Consent Management**: Explicit consent for voice recording
+- **Data Retention**: Configurable retention policies for voice data
+- **Encryption**: End-to-end encryption for voice communications
+- **Local Processing**: Option for local voice recognition
+- **Anonymization**: Voice data anonymized after session completion
+
+### 🚀 **Future Enhancements**
+
+#### **Planned Features**
+- **QR Code Customization**: Custom branding and colors for QR codes
+- **Batch QR Generation**: Generate multiple QR codes for different products
+- **QR Analytics Dashboard**: Detailed analytics and insights
+- **Voice Profiles**: Personalized voice settings for regular customers
+- **Offline QR Support**: QR code functionality without internet connection
+
+#### **Advanced Voice Features**
+- **Voice Shortcuts**: Quick voice commands for common negotiations
+- **Emotion Detection**: Detect customer sentiment from voice tone
+- **Voice Cloning**: Personalized vendor voice for consistent experience
+- **Multi-Party Conversations**: Support for group negotiations via QR codes
+- **Voice Summaries**: Automatic summaries of voice negotiations
+
+---
+
+### 🎯 Voice Commerce Features
 
 ### Customer Journey
 1. **Voice Onboarding**: Multilingual welcome with voice-guided setup
@@ -831,9 +1036,17 @@ npm start
 - `POST /api/voice/transcribe` - Convert speech to text
 
 #### QR Sessions & Integration
-- `POST /api/qr/session` - Create QR session for vendor
-- `GET /api/qr/session/:id` - Validate and join QR session
-- `POST /api/qr/scan` - Process QR code scan with voice feedback
+- `POST /api/qr-sessions/generate` - Create QR session for specific product negotiation
+- `POST /api/qr-sessions/generate-general` - Create QR session for general conversation
+- `POST /api/qr-sessions/validate` - Validate QR code and get session information
+- `POST /api/qr-sessions/join` - Join a negotiation session as customer
+- `GET /api/qr-sessions/active` - Get active sessions for authenticated user
+- `POST /api/qr-sessions/:sessionId/end` - End a QR session
+- `POST /api/qr-sessions/translate` - Real-time text translation utility
+- `POST /api/qr-sessions/voice/stt` - Speech-to-text conversion for voice messages
+- `POST /api/qr-sessions/voice/tts` - Text-to-speech conversion for voice responses
+- `GET /api/qr-sessions/audio/:messageId` - Retrieve audio file for voice message
+- `GET /api/qr-sessions/health` - Health check for QR and voice services
 
 ### GraphQL Schema
 
