@@ -4,3 +4,18 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gzlogs/*.log
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+!.env.development.example
+*.env
+
+# IDE & Editor
+.vscode/
+.idea/
+
+# Binaries & archives
+*.zip
+*.tar.gz
