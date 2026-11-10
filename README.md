@@ -6,6 +6,9 @@
 [![Vite](https://img.shields.io/badge/Frontend-Vite%20%2B%20React-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Bhashini AI](https://img.shields.io/badge/AI-Bhashini%20Multilingual-FF9933)](https://bhashini.gov.in/)
 [![Architecture](https://img.shields.io/badge/Architecture-Event--Driven%20WebSocket-00C7B7)]()
+[![Last Updated](https://img.shields.io/badge/Last%20Updated-November%202026-brightgreen.svg)]()
+[![Latest Commit](https://img.shields.io/github/last-commit/uday68/VyaparMitra?color=brightgreen&label=Last%20Commit)](https://github.com/uday68/VyaparMitra/commits/main)
+[![Status](https://img.shields.io/badge/Status-Active%20Development-success.svg)]()
 
 > **Real-time multilingual linguistic bridge, voice negotiation engine, and cross-language QR-commerce platform for local trade and vernacular commerce.**
 
@@ -69,7 +72,6 @@ VyaparMitra bridges language barriers between local merchants, vendors, and cons
 git clone https://github.com/uday68/VyaparMitra.git
 cd VyaparMitra
 npm install
-cd client && npm install && cd ..
 ```
 
 ### 3. Environment Configuration
@@ -92,6 +94,15 @@ BHASHINI_API_KEY="your_bhashini_api_key_here"
 # Start backend and frontend concurrently
 npm run dev
 ```
+
+---
+
+## 🔄 Recent Updates & Maintenance
+
+- **November 2026:**
+  - Standardized Docker Compose build orchestration contexts and multi-stage container configurations.
+  - Sanitized log file tracking and ignore patterns in .gitignore.
+  - Streamlined unified root dependency installation and documentation.
 
 ---
 

@@ -1,11 +1,9 @@
-version: '3.8'
-
 services:
   # Main Application
   vyapar-mitra-api:
     build:
-      context: .
-      dockerfile: Dockerfile.production
+      context: ..
+      dockerfile: docker/Dockerfile.production
     ports:
       - "4000:4000"
       - "9090:9090"  # Metrics port
